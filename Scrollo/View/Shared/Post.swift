@@ -31,7 +31,10 @@ struct PostView: View{
         VStack(alignment: .leading, spacing: 0) {
             HStack(spacing: 0) {
                 HStack(spacing: 0){
-                    Avatar()
+                    NavigationLink(destination: PostOverview(post: $post)
+                                    .ignoreDefaultHeaderBar){
+                        Avatar()
+                    }
                     VStack(alignment: .leading, spacing: 0) {
                         Text(post.creator.login)
                             .font(.system(size: 14))
@@ -164,7 +167,14 @@ struct PostView: View{
         }
         .padding(.vertical, 18)
         .padding(.horizontal, 14)
-        .background(Color.white)
+        .background(
+            NavigationLink(destination: PostOverview(post: $post)
+                            .environmentObject(postViewModel)
+                            .ignoreDefaultHeaderBar){
+                                Color.white
+                            }
+                .buttonStyle(FlatLinkStyle())
+        )
         .cornerRadius(20)
         .shadow(color: Color.black.opacity(0.2), radius: 9, x: 0, y: 0)
         .padding(.vertical, 13.5)
@@ -204,7 +214,7 @@ struct PostView: View{
     }
 }
 
-private struct TruncateTextView: View {
+struct TruncateTextView: View {
     @State private var fullPost: Bool = false
     var text: String
     let limitedTextLength: Int = 140
@@ -241,7 +251,7 @@ private struct TruncateTextView: View {
     }
 }
 
-private struct PostActionsSheet: View {
+struct PostActionsSheet: View {
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
    let postId: String?
     
@@ -337,7 +347,7 @@ private struct PostActionsSheet: View {
    }
 }
 
-private struct ShareBottomSheet: View{
+struct ShareBottomSheet: View{
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
     let postId: String
     @State var searchText: String = ""
