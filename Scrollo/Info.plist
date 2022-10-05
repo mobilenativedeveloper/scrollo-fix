@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<true/>
+	</dict>
+	<key>UIAppFonts</key>
+	<array>
+		<string>gotham_xlight.ttf</string>
+		<string>gotham_thin.ttf</string>
+		<string>gotham_thin_italic.ttf</string>
+		<string>gotham_black.ttf</string>
+		<string>gotham_bold.ttf</string>
+		<string>gotham_book.ttf</string>
+		<string>gotham_light.ttf</string>
+		<string>gotham_medium.ttf</string>
+	</array>
+	<key>UILaunchScreen</key>
+	<dict/>
+</dict>
+</plist>
