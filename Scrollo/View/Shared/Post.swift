@@ -25,6 +25,8 @@ struct PostView: View{
     
     @State private var animation: PostListAnimation = .none
     
+    @State var isSharePresent: Bool = false
+    
     var body: some View{
         VStack(alignment: .leading, spacing: 0) {
             HStack(spacing: 0) {
@@ -65,7 +67,7 @@ struct PostView: View{
                 .cornerRadius(50)
                 .offset(x: 14)
                 .bottomSheet(isPresented: $isPostSettings, detents: [.custom(360)]) {
-                    PostActionsSheet(postId: post.id, isPresent: self.$isPostSettings, deletePost: $deletePost)
+                    PostActionsSheet(postId: post.id, deletePost: $deletePost)
                 }
             }
             .padding(.bottom, 13)
@@ -129,7 +131,7 @@ struct PostView: View{
                     .frame(width: 61, height: 20)
                 }
                 Button(action: {
-                    
+                    self.isSharePresent.toggle()
                 }) {
                     Image("share")
                         .resizable()
@@ -137,6 +139,9 @@ struct PostView: View{
                         .frame(width: 21, height: 21)
                 }
                 .frame(width: 61, height: 20)
+                .bottomSheet(isPresented: $isSharePresent, detents: [.custom(440)]) {
+                    ShareBottomSheet(postId: post.id)
+                }
                 Spacer(minLength: 0)
                 Button(action: {
                     
@@ -239,8 +244,6 @@ private struct TruncateTextView: View {
 private struct PostActionsSheet: View {
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
    let postId: String?
-   
-   @Binding var isPresent: Bool
     
     @Binding var deletePost: Bool
 
@@ -332,4 +335,123 @@ private struct PostActionsSheet: View {
                .modifier(RoundedEdge(width: 1, color: Color(hex: "#DFDFDF"), cornerRadius: 10))
        )
    }
+}
+
+private struct ShareBottomSheet: View{
+    @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
+    let postId: String
+    @State var searchText: String = ""
+    var body: some View{
+        VStack(spacing: 0){
+            RoundedRectangle(cornerRadius: 40)
+                .fill(Color(hex: "#F2F2F2"))
+                .frame(width: 40, height: 4)
+                .padding(.bottom, 11)
+                .padding(.top, 11)
+            HStack(spacing: 0){
+                Text("поделиться")
+                    .font(.custom(GothamBold, size: 27))
+                    .foregroundColor(Color(hex: "#2E313C"))
+                    .textCase(.lowercase)
+                Spacer()
+                Button(action:{}){
+                    Image("share.square.blue")
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
+                        .frame(width: 22, height: 22)
+                }
+            }
+            .padding(.bottom, 25)
+            
+            HStack(spacing: 0){
+                Image(systemName: "magnifyingglass")
+                    .font(.system(size: 20))
+                    .foregroundColor(Color(hex: "#444A5E"))
+                TextField("Найти", text: self.$searchText)
+                    .padding(.leading, 8)
+            }
+            .padding(.horizontal, 17)
+            .padding(.vertical, 10)
+            .background(
+                RoundedRectangle(cornerRadius: 10).stroke(Color(hex: "#DDE8E8"))
+            )
+            .padding(.bottom, 42)
+            
+            HStack(spacing: 0){
+                Button(action:{}){
+                    ShareUserView(image: "testUserPhoto", login: "Lana Smith")
+                }
+                Spacer()
+                Button(action:{}){
+                    ShareUserView(image: "testUserPhoto", login: "Joe Evans")
+                }
+                Spacer()
+                Button(action: {}){
+                    ShareUserView(image: "testUserPhoto", login: "Diana Slown")
+                }
+                Spacer()
+                Button(action: {}){
+                    ShareUserView(image: "testUserPhoto", login: "John Doe")
+                }
+            }
+            .padding(.bottom, 21)
+            .padding(.horizontal, 28)
+            
+            HStack(spacing: 0){
+                Button(action:{}){
+                    ShareUserView(image: "testUserPhoto", login: "Lana Smith")
+                }
+                Spacer()
+                Button(action:{}){
+                    ShareUserView(image: "testUserPhoto", login: "Joe Evans")
+                }
+                Spacer()
+                Button(action: {}){
+                    ShareUserView(image: "testUserPhoto", login: "Diana Slown")
+                }
+                Spacer()
+                Button(action: {}){
+                    ShareUserView(image: "testUserPhoto", login: "John Doe")
+                }
+            }
+            .padding(.bottom, 25)
+            .padding(.horizontal, 28)
+            
+            Button(action: {}){
+                Text("Отправить")
+                    .font(.system(size: 14))
+                    .fontWeight(.heavy)
+                    .foregroundColor(.white)
+                    .padding(.horizontal, 25)
+                    .padding(.vertical, 17)
+                    .background(
+                        LinearGradient(colors: [Color(hex: "#36DCD8"),Color(hex: "#5B86E5")], startPoint: .leading, endPoint: .trailing)
+                            .cornerRadius(40)
+                    )
+            }
+           
+            
+            Spacer()
+        }
+        .padding(.horizontal, 32)
+        .padding(.bottom, 24)
+    }
+}
+
+struct ShareUserView: View{
+    let image: String
+    let login: String
+    var body: some View{
+        VStack(spacing: 0){
+            Image(image)
+                .resizable()
+                .aspectRatio(contentMode: .fill)
+                .frame(width: 54, height: 54)
+                .cornerRadius(10)
+            Text(login)
+                .foregroundColor(Color(hex: "#444A5E"))
+                .font(.system(size: 12))
+                .padding(.top, 10)
+        }
+    }
 }
