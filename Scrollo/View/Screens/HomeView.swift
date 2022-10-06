@@ -10,8 +10,8 @@ import SwiftUI
 struct HomeView: View {
     @State var selectedTab = "home"
     @State var upload: Bool = false
-    
-    @Namespace var tabbarAnimation
+    @Binding var offset: CGFloat
+    @Binding var isScrollEnabled: Bool
     
     var body: some View {
         NavigationView{
@@ -19,9 +19,17 @@ struct HomeView: View {
             ZStack(alignment: Alignment(horizontal: .center, vertical: .bottom)) {
                 VStack(spacing: 0){
                     GeometryReader{_ in
-                        FeedView()
+                        FeedView(offset: $offset)
                             .ignoresSafeArea(SafeAreaRegions.container, edges: .bottom)
                             .opacity(selectedTab == "home" ? 1 : 0)
+                            .onAppear(perform: {
+                                if selectedTab == "home" {
+                                    isScrollEnabled = true
+                                }
+                            })
+                            .onDisappear {
+                                isScrollEnabled = false
+                            }
                         Text("SearchView")
                             .opacity(selectedTab == "search" ? 1 : 0)
                         Text("ActionsView")
@@ -43,29 +51,35 @@ struct HomeView: View {
                             withAnimation(.easeInOut) {
                                 self.upload = false
                             }
+                            isScrollEnabled = true
                         }
                 }
                 HStack(spacing: 0) {
                     TabbarButton(image: "home_inactive", image_active: "home_active", action: {
                         onPressTab(tab: "home")
+                        isScrollEnabled = true
                     }, isActive: selectedTab == "home" && !self.upload)
                     Spacer(minLength: 0)
                     TabbarButton(image: "search_inactive", image_active: "search_active", action: {
                         onPressTab(tab: "search")
+                        isScrollEnabled = false
                     }, isActive: selectedTab == "search" && !self.upload)
                     Spacer(minLength: 0)
                     TabbarButton(image: "plus_fill_inactive", image_active: "plus_fill_active", action: {
                         withAnimation(.easeInOut(duration: 0.2)){
                             self.upload.toggle()
                         }
+                        isScrollEnabled = false
                     }, isActive: self.upload)
                     Spacer(minLength: 0)
                     TabbarButton(image: "alarm_inactive", image_active: "alarm_active", action: {
                         onPressTab(tab: "activities")
+                        isScrollEnabled = false
                     }, isActive: selectedTab == "activities" && !self.upload)
                     Spacer(minLength: 0)
                     TabbarButton(image: "profile_inactive", image_active: "profile_active", action: {
                         onPressTab(tab: "profile")
+                        isScrollEnabled = false
                     },isActive: selectedTab == "profile" && !self.upload)
                 }
                 .frame(height: 50)

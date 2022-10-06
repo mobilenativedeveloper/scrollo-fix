@@ -39,6 +39,11 @@ let API_URL_LIKE = "/api/v1/post/like/"
 
 let API_URL_DISLIKE = "/api/v1/post/dislike/"
 
+let API_CHAT = "/api/v1/chat/"
+
+let API_CHAT_FAVORITE = "/api/v1/chat/favorite/"
+
+let API_GET_USER_FOLLOWING = "/api/v1/follow/following/me"
 //let API_USER_GET_POST = "/api/v1/post/user/"
 
 //let API_USER_FIND = "/api/v1/user/finding/"
@@ -71,12 +76,10 @@ let API_URL_DISLIKE = "/api/v1/post/dislike/"
 //let API_GET_ACTIONS = "/api/v1/action/"
 //
 //
-//let API_GET_USER_FOLLOWING = "/api/v1/follow/following/me"
+
 //let API_REMOVE_FOLLOWING = "/api/v1/follow/following/"
 //let API_FOLLOW_ON_USER = "/api/v1/follow/"
 //
 //let API_REMOVE_FOLLOWER = "/api/v1/follow/following/"
 //let API_GET_USER_FOLLOWERS = "/api/v1/follow/followers/me"
 //
-//let API_CHAT = "/api/v1/chat/"
-//let API_CHAT_FAVORITE = "/api/v1/chat/favorite/"

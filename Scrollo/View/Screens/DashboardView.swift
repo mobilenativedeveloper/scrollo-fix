@@ -9,18 +9,19 @@ import SwiftUI
 
 struct DashboardView: View {
     @State var offset: CGFloat = 0
-    
+    @State var isScrollEnabled: Bool = false
     var body: some View {
         GeometryReader{reader in
             
             let frame = reader.frame(in: .global)
             
-            ScrollableTabBar(tabs: ["",""], rect: frame, offset: $offset){
+            ScrollableTabBar(tabs: ["",""], rect: frame, offset: $offset, isScrollEnabled: isScrollEnabled){
                 
-                HomeView()
+                HomeView(offset: $offset, isScrollEnabled: $isScrollEnabled)
                 
-                Color.red
-                    .edgesIgnoringSafeArea(.all)
+                ChatView(offset: $offset)
+                    
+                
             }
             .ignoresSafeArea()
         }
@@ -37,13 +38,16 @@ private struct ScrollableTabBar<Content: View>: UIViewRepresentable{
     
     var tabs: [Any]
     
+    var isScrollEnabled: Bool
+    
     let scrollView = UIScrollView()
     
-    init (tabs: [Any], rect: CGRect, offset: Binding<CGFloat>, @ViewBuilder content: () -> Content){
+    init (tabs: [Any], rect: CGRect, offset: Binding<CGFloat>, isScrollEnabled: Bool, @ViewBuilder content: () -> Content){
         self.content = content()
         self._offset = offset
         self.rect = rect
         self.tabs = tabs
+        self.isScrollEnabled = isScrollEnabled
     }
     
     func makeCoordinator() -> Coordinator {
@@ -64,7 +68,7 @@ private struct ScrollableTabBar<Content: View>: UIViewRepresentable{
     }
     
     func updateUIView(_ uiView: UIScrollView, context: Context) {
-        
+        uiView.isScrollEnabled = isScrollEnabled
         if uiView.contentOffset.x != offset{
             
             uiView.delegate = nil

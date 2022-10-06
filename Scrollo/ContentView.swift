@@ -37,3 +37,4 @@ struct ContentView: View {
 }
 
 var edges = UIApplication.shared.windows.first?.safeAreaInsets
+var screen_rect = UIScreen.main.bounds

@@ -33,6 +33,12 @@
 		AC9F301828EDCA9100444E08 /* CommentsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC9F301728EDCA9100444E08 /* CommentsViewModel.swift */; };
 		AC9F301A28EDCD0800444E08 /* CommentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC9F301928EDCD0800444E08 /* CommentView.swift */; };
 		AC9F301D28EE07B400444E08 /* CommentsOverview.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC9F301C28EE07B400444E08 /* CommentsOverview.swift */; };
+		AC9F302028EF224600444E08 /* ChatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC9F301F28EF224600444E08 /* ChatView.swift */; };
+		AC9F302228EF232200444E08 /* ChatViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC9F302128EF232200444E08 /* ChatViewModel.swift */; };
+		AC9F302428EF237500444E08 /* ChatModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC9F302328EF237500444E08 /* ChatModel.swift */; };
+		AC9F302628EF36D700444E08 /* CreateChatViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC9F302528EF36D600444E08 /* CreateChatViewModel.swift */; };
+		AC9F302828EF373800444E08 /* FollowModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC9F302728EF373800444E08 /* FollowModel.swift */; };
+		AC9F302A28EF3F5500444E08 /* ModalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC9F302928EF3F5500444E08 /* ModalView.swift */; };
 		ACC4E5D628DCB4DE0081F2E5 /* ScrolloApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACC4E5D528DCB4DE0081F2E5 /* ScrolloApp.swift */; };
 		ACC4E5D828DCB4DE0081F2E5 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACC4E5D728DCB4DE0081F2E5 /* ContentView.swift */; };
 		ACC4E5DA28DCB4E60081F2E5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = ACC4E5D928DCB4E60081F2E5 /* Assets.xcassets */; };
@@ -84,6 +90,12 @@
 		AC9F301728EDCA9100444E08 /* CommentsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentsViewModel.swift; sourceTree = "<group>"; };
 		AC9F301928EDCD0800444E08 /* CommentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentView.swift; sourceTree = "<group>"; };
 		AC9F301C28EE07B400444E08 /* CommentsOverview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentsOverview.swift; sourceTree = "<group>"; };
+		AC9F301F28EF224600444E08 /* ChatView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatView.swift; sourceTree = "<group>"; };
+		AC9F302128EF232200444E08 /* ChatViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatViewModel.swift; sourceTree = "<group>"; };
+		AC9F302328EF237500444E08 /* ChatModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatModel.swift; sourceTree = "<group>"; };
+		AC9F302528EF36D600444E08 /* CreateChatViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateChatViewModel.swift; sourceTree = "<group>"; };
+		AC9F302728EF373800444E08 /* FollowModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FollowModel.swift; sourceTree = "<group>"; };
+		AC9F302928EF3F5500444E08 /* ModalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModalView.swift; sourceTree = "<group>"; };
 		ACC4E5D228DCB4DE0081F2E5 /* Scrollo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Scrollo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		ACC4E5D528DCB4DE0081F2E5 /* ScrolloApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScrolloApp.swift; sourceTree = "<group>"; };
 		ACC4E5D728DCB4DE0081F2E5 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -145,6 +157,14 @@
 			path = Login;
 			sourceTree = "<group>";
 		};
+		AC9F301E28EF206500444E08 /* Chat */ = {
+			isa = PBXGroup;
+			children = (
+				AC9F301F28EF224600444E08 /* ChatView.swift */,
+			);
+			path = Chat;
+			sourceTree = "<group>";
+		};
 		ACC4E5C928DCB4DD0081F2E5 = {
 			isa = PBXGroup;
 			children = (
@@ -189,6 +209,7 @@
 		ACC4E5E328DCB5030081F2E5 /* View */ = {
 			isa = PBXGroup;
 			children = (
+				AC9F301E28EF206500444E08 /* Chat */,
 				ACC4E5E728DCB54F0081F2E5 /* Shared */,
 				ACC4E5E628DCB5450081F2E5 /* Screens */,
 			);
@@ -204,6 +225,9 @@
 				ACC4E61D28DD9F020081F2E5 /* SendConfirmCodeResponseModel.swift */,
 				AC3E357228EAF741002570AE /* PostModel.swift */,
 				AC3E359528ECAB1A002570AE /* AssetModel.swift */,
+				AC9F302328EF237500444E08 /* ChatModel.swift */,
+				AC9F302728EF373800444E08 /* FollowModel.swift */,
+				AC9F302928EF3F5500444E08 /* ModalView.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -220,6 +244,8 @@
 				AC3E359328ECAB09002570AE /* AddStoryViewModel.swift */,
 				AC3E359728ECAD5B002570AE /* CameraController.swift */,
 				AC9F301728EDCA9100444E08 /* CommentsViewModel.swift */,
+				AC9F302128EF232200444E08 /* ChatViewModel.swift */,
+				AC9F302528EF36D600444E08 /* CreateChatViewModel.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -367,6 +393,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				AC3E357128EAF718002570AE /* PostViewModel.swift in Sources */,
+				AC9F302828EF373800444E08 /* FollowModel.swift in Sources */,
 				AC3E357328EAF741002570AE /* PostModel.swift in Sources */,
 				ACC4E61828DD9DB70081F2E5 /* Api.swift in Sources */,
 				ACC4E61028DD8E170081F2E5 /* AuthView.swift in Sources */,
@@ -376,6 +403,8 @@
 				ACC4E62028DD9F330081F2E5 /* DashboardView.swift in Sources */,
 				AC9F301D28EE07B400444E08 /* CommentsOverview.swift in Sources */,
 				AC3E359628ECAB1A002570AE /* AssetModel.swift in Sources */,
+				AC9F302428EF237500444E08 /* ChatModel.swift in Sources */,
+				AC9F302228EF232200444E08 /* ChatViewModel.swift in Sources */,
 				ACC4E5F228DCB6D80081F2E5 /* Extension.swift in Sources */,
 				ACC4E61228DD9D0B0081F2E5 /* OTPViewModel.swift in Sources */,
 				AC3E356728EADF37002570AE /* SignUpView.swift in Sources */,
@@ -384,6 +413,7 @@
 				AC3E356528EADF12002570AE /* SignInView.swift in Sources */,
 				ACC4E61628DD9D870081F2E5 /* Request.swift in Sources */,
 				ACC4E5F428DCB7460081F2E5 /* StoryViewModel.swift in Sources */,
+				AC9F302628EF36D700444E08 /* CreateChatViewModel.swift in Sources */,
 				ACC4E60E28DD8D6F0081F2E5 /* TextWithHashtags.swift in Sources */,
 				AC9F301A28EDCD0800444E08 /* CommentView.swift in Sources */,
 				AC3E359028EC8FC5002570AE /* RoundedEdge.swift in Sources */,
@@ -396,11 +426,13 @@
 				AC9F301428ED9F9B00444E08 /* EmojiListView.swift in Sources */,
 				AC3E359828ECAD5B002570AE /* CameraController.swift in Sources */,
 				AC3E359428ECAB09002570AE /* AddStoryViewModel.swift in Sources */,
+				AC9F302A28EF3F5500444E08 /* ModalView.swift in Sources */,
 				AC3E359228ECAA83002570AE /* PublicationStoryView.swift in Sources */,
 				ACC4E61A28DD9E840081F2E5 /* UserModel.swift in Sources */,
 				AC3E356928EADF51002570AE /* TextFieldLogin.swift in Sources */,
 				ACC4E62228DDA01E0081F2E5 /* KeyboardHelper.swift in Sources */,
 				AC3E356F28EAE6A2002570AE /* SignUpViewModel.swift in Sources */,
+				AC9F302028EF224600444E08 /* ChatView.swift in Sources */,
 				ACC4E5D628DCB4DE0081F2E5 /* ScrolloApp.swift in Sources */,
 				AC90049128E053FA0043ED66 /* NotificationCenter.swift in Sources */,
 				AC3E356D28EAE03D002570AE /* DefaultAvatar.swift in Sources */,

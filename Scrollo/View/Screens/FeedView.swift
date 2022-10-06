@@ -15,6 +15,8 @@ struct FeedView: View {
     
     @State var refreshing: Bool = false
     
+    @Binding var offset: CGFloat
+    
     var body: some View {
         VStack(spacing: 0) {
             HStack {
@@ -22,7 +24,9 @@ struct FeedView: View {
                     .resizable()
                     .frame(width: 95, height: 21)
                 Spacer()
-                NavigationLink(destination: Text("Chat")) {
+                Button(action: {
+                    offset = screen_rect.width
+                }){
                     Image("messanger")
                         .shadow(color: Color.black.opacity(0.15), radius: 4, x: 0, y: 4)
                 }
@@ -75,7 +79,6 @@ struct FeedView: View {
                         done()
                     }
                 }
-                
             }
         }
         .background(Color(hex: "#F9F9F9"))
