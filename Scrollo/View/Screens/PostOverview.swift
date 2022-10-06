@@ -12,6 +12,8 @@ struct PostOverview: View {
     @Environment(\.presentationMode) var presentation: Binding<PresentationMode>
     @EnvironmentObject var postViewModel: PostViewModel
     
+    @StateObject var commentsViewModel: CommentsViewModel = CommentsViewModel()
+    
     @Binding var post: PostModel
     @State var comment: String = ""
     
@@ -87,51 +89,46 @@ struct PostOverview: View {
                     
                     if post.type == "TEXT" {
                         HStack(spacing: 5) {
-                            Button(action: {
-                                
-                            }) {
-                                HStack(spacing: 0) {
-                                    Image(post.liked ? "heart_active" : "heart_inactive")
-                                        .resizable()
-                                        .aspectRatio(contentMode: .fit)
-                                        .frame(width: 21, height: 21)
-                                        .padding(.trailing, 6)
-                                    if let count = post.likesCount {
-                                        Text("\(count)")
-                                            .font(Font.custom(GothamBold, size: 12))
-                                            .foregroundColor(Color.black)
+                            SpringButton(
+                                image: post.liked ? "heart_active" : "heart_inactive",
+                                count: post.likesCount,
+                                ifDelivered: post.liked) {
+                                    if !post.disliked{
+                                        if post.liked {
+                                            postViewModel.removeLike(postId: post.id) {
+                                                post.liked.toggle()
+                                                post.likesCount = post.likesCount - 1
+                                            }
+                                        }
+                                        else{
+                                            postViewModel.addLike(postId: post.id) {
+                                                post.liked.toggle()
+                                                post.likesCount = post.likesCount + 1
+                                            }
+                                        }
                                     }
                                 }
-                            }
-                            .frame(height: 20)
-                            .padding(.horizontal, 17)
-                            .padding(.vertical, 6)
-                            .background(post.liked ? Color(hex: "#F0F0F0") : Color.clear)
-                            .cornerRadius(30)
-                            Button(action: {
-                              
-                            }) {
-                                HStack(spacing: 0) {
-                                    Image(post.disliked ? "dislike_active" : "dislike_inactive")
-                                        .resizable()
-                                        .aspectRatio(contentMode: .fit)
-                                        .frame(width: 21, height: 21)
-                                        .padding(.trailing, 6)
-                                    if let count = post.dislikeCount {
-                                        Text("\(count)")
-                                            .font(Font.custom(GothamBold, size: 12))
-                                            .foregroundColor(Color.black)
+                            SpringButton(
+                                image: post.disliked ? "dislike_active" : "dislike_inactive",
+                                count: post.dislikeCount,
+                                ifDelivered: post.disliked) {
+                                    if !post.liked{
+                                        if post.disliked {
+                                            postViewModel.removeDislike(postId: post.id) {
+                                                post.disliked.toggle()
+                                                post.dislikeCount = post.dislikeCount - 1
+                                            }
+                                        }
+                                        else{
+                                            postViewModel.addDislike(postId: post.id) {
+                                                post.disliked.toggle()
+                                                post.dislikeCount = post.dislikeCount + 1
+                                            }
+                                        }
                                     }
-                                }
                             }
-                            .frame(height: 20)
-                            .padding(.horizontal, 17)
-                            .padding(.vertical, 6)
-                            .background(post.disliked ? Color(hex: "#F0F0F0") : Color.clear)
-                            .cornerRadius(30)
-                            Button(action: {
-                                
-                            }) {
+                            NavigationLink(destination: CommentsOverview(post: $post)
+                                            .ignoreDefaultHeaderBar){
                                 HStack(spacing: 0) {
                                     Image("comments")
                                         .resizable()
@@ -230,12 +227,40 @@ struct PostOverview: View {
                 .clipShape(CustomCorner(radius: 17, corners: [.bottomRight, .bottomLeft]))
                 .shadow(color: Color.black.opacity(0.1), radius: 10, x: 0, y: 20)
                 .padding(.bottom, 25)
-                //MARK: Comments
+                if commentsViewModel.load {
+                    ForEach(0..<commentsViewModel.comments.count, id: \.self) {index in
+                        CommentCardView(comment: $commentsViewModel.comments[index], message: $commentsViewModel.content)
+                            .padding(.bottom, 19)
+                            .padding(.horizontal)
+                            .transition(.opacity)
+                            .environmentObject(commentsViewModel)
+                    }
+                } else {
+                    ProgressView()
+                }
             }
             
             Spacer(minLength: 0)
             
             VStack(spacing: 0){
+                if commentsViewModel.reply != nil {
+                    HStack(alignment: .top){
+                        Text("Ваш ответ \(commentsViewModel.reply!.login)")
+                            .foregroundColor(Color(hex: "#a8a8a8"))
+                        Spacer(minLength: 0)
+                        Button(action: {
+                            withAnimation(.easeInOut){
+                                commentsViewModel.reply = nil
+                            }
+                        }) {
+                            Image(systemName: "xmark")
+                                .foregroundColor(Color(hex: "#000000"))
+                        }
+                    }
+                    .padding(.all, 10)
+                    .background(Color(hex: "#efefef"))
+                    .transition(.opacity)
+                }
                 VStack(spacing: 0) {
                     EmojiListView(comment: $comment)
                         .padding(.vertical, 5)
@@ -244,7 +269,23 @@ struct PostOverview: View {
                     HStack {
                         TextField("Добавьте комментарий...", text: $comment)
                         Button(action: {
-                            
+                            if !commentsViewModel.content.isEmpty{
+                                if commentsViewModel.reply == nil{
+                                    commentsViewModel.addComment(postId: post.id) {
+                                        commentsViewModel.content = String()
+                                        UIApplication.shared.endEditing()
+                                    }
+                                }
+                                else{
+                                    if let postCommentId = commentsViewModel.reply?.postCommentId {
+                                        commentsViewModel.addReply(postCommentId: postCommentId) {
+                                            commentsViewModel.content = String()
+                                            UIApplication.shared.endEditing()
+                                            commentsViewModel.reply = nil
+                                        }
+                                    }
+                                }
+                            }
                         }) {
                             Image("send.comment.button")
                                 .resizable()
@@ -275,6 +316,9 @@ struct PostOverview: View {
         .onTapGesture(perform: {
             UIApplication.shared.endEditing()
         })
+        .onAppear {
+            commentsViewModel.getPostComments(postId: post.id)
+        }
     }
     @ViewBuilder
     func Avatar() -> some View{

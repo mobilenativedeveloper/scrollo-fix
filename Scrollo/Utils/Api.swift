@@ -25,17 +25,31 @@ let API_GET_FEED_POST = "/api/v1/post/feed"
 
 let API_POST = "/api/v1/post/"
 
+let API_GET_COMMENTS = "/api/v1/post/comments/"
+
+let API_COMMENT = "/api/v1/post/comment/"
+
+let API_LIKE_COMMENT = "/api/v1/post/comment/like/"
+
+let API_URL_ADD_REPLY_COMMENT = "/api/v1/post/comment-reply"
+
+let API_REPLY_LIKE = "/api/v1/post/comment-reply/like"
+
+let API_URL_LIKE = "/api/v1/post/like/"
+
+let API_URL_DISLIKE = "/api/v1/post/dislike/"
+
 //let API_USER_GET_POST = "/api/v1/post/user/"
 
 //let API_USER_FIND = "/api/v1/user/finding/"
-//let API_URL_LIKE = "/api/v1/post/like/"
-//let API_URL_DISLIKE = "/api/v1/post/dislike/"
-//let API_GET_COMMENTS = "/api/v1/post/comments/"
-//let API_URL_ADD_COMMENT = "/api/v1/post/comment/"
-//let API_URL_ADD_REPLY_COMMENT = "/api/v1/post/comment-reply"
-//let API_LIKE_COMMENT = "/api/v1/post/comment/like"
+
+
+
+
+
+
 //let API_LIKE_REMOVE_COMMENT = "/api/v1/post/comment/like/"
-//let API_REPLY_LIKE = "/api/v1/post/comment-reply/like"
+
 //let API_GET_USER = "/api/v1/user/"
 //let API_EDIT_USER = "/api/v1/user/"
 //let API_UPDATE_USER_BACKGROUND = "/api/v1/user/background"

@@ -30,6 +30,9 @@
 		AC9F301228ED9DCD00444E08 /* PostOverview.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC9F301128ED9DCD00444E08 /* PostOverview.swift */; };
 		AC9F301428ED9F9B00444E08 /* EmojiListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC9F301328ED9F9B00444E08 /* EmojiListView.swift */; };
 		AC9F301628EDA3FE00444E08 /* FlatLinkStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC9F301528EDA3FD00444E08 /* FlatLinkStyle.swift */; };
+		AC9F301828EDCA9100444E08 /* CommentsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC9F301728EDCA9100444E08 /* CommentsViewModel.swift */; };
+		AC9F301A28EDCD0800444E08 /* CommentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC9F301928EDCD0800444E08 /* CommentView.swift */; };
+		AC9F301D28EE07B400444E08 /* CommentsOverview.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC9F301C28EE07B400444E08 /* CommentsOverview.swift */; };
 		ACC4E5D628DCB4DE0081F2E5 /* ScrolloApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACC4E5D528DCB4DE0081F2E5 /* ScrolloApp.swift */; };
 		ACC4E5D828DCB4DE0081F2E5 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACC4E5D728DCB4DE0081F2E5 /* ContentView.swift */; };
 		ACC4E5DA28DCB4E60081F2E5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = ACC4E5D928DCB4E60081F2E5 /* Assets.xcassets */; };
@@ -78,6 +81,9 @@
 		AC9F301128ED9DCD00444E08 /* PostOverview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostOverview.swift; sourceTree = "<group>"; };
 		AC9F301328ED9F9B00444E08 /* EmojiListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmojiListView.swift; sourceTree = "<group>"; };
 		AC9F301528EDA3FD00444E08 /* FlatLinkStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlatLinkStyle.swift; sourceTree = "<group>"; };
+		AC9F301728EDCA9100444E08 /* CommentsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentsViewModel.swift; sourceTree = "<group>"; };
+		AC9F301928EDCD0800444E08 /* CommentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentView.swift; sourceTree = "<group>"; };
+		AC9F301C28EE07B400444E08 /* CommentsOverview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentsOverview.swift; sourceTree = "<group>"; };
 		ACC4E5D228DCB4DE0081F2E5 /* Scrollo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Scrollo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		ACC4E5D528DCB4DE0081F2E5 /* ScrolloApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScrolloApp.swift; sourceTree = "<group>"; };
 		ACC4E5D728DCB4DE0081F2E5 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -213,6 +219,7 @@
 				AC3E357628EAFD0D002570AE /* AddTextPostViewModel.swift */,
 				AC3E359328ECAB09002570AE /* AddStoryViewModel.swift */,
 				AC3E359728ECAD5B002570AE /* CameraController.swift */,
+				AC9F301728EDCA9100444E08 /* CommentsViewModel.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -227,6 +234,7 @@
 				AC3E359128ECAA83002570AE /* PublicationStoryView.swift */,
 				AC9F300F28ED88D300444E08 /* HomeView.swift */,
 				AC9F301128ED9DCD00444E08 /* PostOverview.swift */,
+				AC9F301C28EE07B400444E08 /* CommentsOverview.swift */,
 			);
 			path = Screens;
 			sourceTree = "<group>";
@@ -242,6 +250,7 @@
 				AC3E356A28EADF68002570AE /* OTPField.swift */,
 				AC3E356C28EAE03D002570AE /* DefaultAvatar.swift */,
 				AC9F301328ED9F9B00444E08 /* EmojiListView.swift */,
+				AC9F301928EDCD0800444E08 /* CommentView.swift */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -365,6 +374,7 @@
 				ACC4E5ED28DCB5E90081F2E5 /* BottomSheet.swift in Sources */,
 				ACC4E5F628DCB7BD0081F2E5 /* StoryModel.swift in Sources */,
 				ACC4E62028DD9F330081F2E5 /* DashboardView.swift in Sources */,
+				AC9F301D28EE07B400444E08 /* CommentsOverview.swift in Sources */,
 				AC3E359628ECAB1A002570AE /* AssetModel.swift in Sources */,
 				ACC4E5F228DCB6D80081F2E5 /* Extension.swift in Sources */,
 				ACC4E61228DD9D0B0081F2E5 /* OTPViewModel.swift in Sources */,
@@ -375,6 +385,7 @@
 				ACC4E61628DD9D870081F2E5 /* Request.swift in Sources */,
 				ACC4E5F428DCB7460081F2E5 /* StoryViewModel.swift in Sources */,
 				ACC4E60E28DD8D6F0081F2E5 /* TextWithHashtags.swift in Sources */,
+				AC9F301A28EDCD0800444E08 /* CommentView.swift in Sources */,
 				AC3E359028EC8FC5002570AE /* RoundedEdge.swift in Sources */,
 				ACC4E5F928DCB8180081F2E5 /* Fonts.swift in Sources */,
 				ACC4E5F028DCB6150081F2E5 /* CustomCorner.swift in Sources */,
@@ -397,6 +408,7 @@
 				ACC4E61E28DD9F020081F2E5 /* SendConfirmCodeResponseModel.swift in Sources */,
 				ACC4E61C28DD9EE40081F2E5 /* ResponseModel.swift in Sources */,
 				AC9F301628EDA3FE00444E08 /* FlatLinkStyle.swift in Sources */,
+				AC9F301828EDCA9100444E08 /* CommentsViewModel.swift in Sources */,
 				ACC4E60728DCC2FE0081F2E5 /* StoriesListItem.swift in Sources */,
 				AC9F301228ED9DCD00444E08 /* PostOverview.swift in Sources */,
 				AC3E357728EAFD0D002570AE /* AddTextPostViewModel.swift in Sources */,

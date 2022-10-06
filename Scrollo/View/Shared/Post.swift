@@ -31,7 +31,7 @@ struct PostView: View{
         VStack(alignment: .leading, spacing: 0) {
             HStack(spacing: 0) {
                 HStack(spacing: 0){
-                    NavigationLink(destination: PostOverview(post: $post)
+                    NavigationLink(destination: Text("Profile")
                                     .ignoreDefaultHeaderBar){
                         Avatar()
                     }
@@ -75,52 +75,48 @@ struct PostView: View{
             }
             .padding(.bottom, 13)
             TruncateTextView(text: post.content)
+            
             HStack(spacing: 5) {
-                Button(action: {
-                    
-                }) {
-                    HStack(spacing: 0) {
-                        Image(post.liked ? "heart_active" : "heart_inactive")
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(width: 21, height: 21)
-                            .padding(.trailing, 6)
-                        if let count = post.likesCount {
-                            Text("\(count)")
-                                .font(Font.custom(GothamBold, size: 12))
-                                .foregroundColor(Color.black)
+                SpringButton(
+                    image: post.liked ? "heart_active" : "heart_inactive",
+                    count: post.likesCount,
+                    ifDelivered: post.liked) {
+                        if !post.disliked{
+                            if post.liked {
+                                postViewModel.removeLike(postId: post.id) {
+                                    post.liked.toggle()
+                                    post.likesCount = post.likesCount - 1
+                                }
+                            }
+                            else{
+                                postViewModel.addLike(postId: post.id) {
+                                    post.liked.toggle()
+                                    post.likesCount = post.likesCount + 1
+                                }
+                            }
                         }
                     }
-                }
-                .frame(height: 20)
-                .padding(.horizontal, 17)
-                .padding(.vertical, 6)
-                .background(post.liked ? Color(hex: "#F0F0F0") : Color.clear)
-                .cornerRadius(30)
-                Button(action: {
-                  
-                }) {
-                    HStack(spacing: 0) {
-                        Image(post.disliked ? "dislike_active" : "dislike_inactive")
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(width: 21, height: 21)
-                            .padding(.trailing, 6)
-                        if let count = post.dislikeCount {
-                            Text("\(count)")
-                                .font(Font.custom(GothamBold, size: 12))
-                                .foregroundColor(Color.black)
+                SpringButton(
+                    image: post.disliked ? "dislike_active" : "dislike_inactive",
+                    count: post.dislikeCount,
+                    ifDelivered: post.disliked) {
+                        if !post.liked{
+                            if post.disliked {
+                                postViewModel.removeDislike(postId: post.id) {
+                                    post.disliked.toggle()
+                                    post.dislikeCount = post.dislikeCount - 1
+                                }
+                            }
+                            else{
+                                postViewModel.addDislike(postId: post.id) {
+                                    post.disliked.toggle()
+                                    post.dislikeCount = post.dislikeCount + 1
+                                }
+                            }
                         }
-                    }
                 }
-                .frame(height: 20)
-                .padding(.horizontal, 17)
-                .padding(.vertical, 6)
-                .background(post.disliked ? Color(hex: "#F0F0F0") : Color.clear)
-                .cornerRadius(30)
-                Button(action: {
-                    
-                }) {
+                NavigationLink(destination: CommentsOverview(post: $post)
+                                .ignoreDefaultHeaderBar){
                     HStack(spacing: 0) {
                         Image("comments")
                             .resizable()
@@ -164,6 +160,7 @@ struct PostView: View{
                 }
             }
             .padding(.top, 17)
+            .background(Color.white)
         }
         .padding(.vertical, 18)
         .padding(.horizontal, 14)
@@ -210,6 +207,43 @@ struct PostView: View{
             DefaultAvatar(width: 35, height: 35, cornerRadius: 10)
                 .clipped()
                 .padding(.trailing, 7)
+        }
+    }
+}
+
+struct SpringButton: View{
+    var image: String
+    var count: Int
+    var ifDelivered: Bool
+    var action: ()->()
+    
+    @State var animated: Bool = false
+    
+    var body: some View{
+        HStack(spacing: 0) {
+            Image(image)
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(width: 21, height: 21)
+                .padding(.trailing, 6)
+            if let count = self.count {
+                Text("\(count)")
+                    .font(Font.custom(GothamBold, size: 12))
+                    .foregroundColor(Color.black)
+            }
+        }
+        .frame(height: 20)
+        .padding(.horizontal, 17)
+        .padding(.vertical, 6)
+        .background(ifDelivered ? Color(hex: "#F0F0F0").scaleEffect(self.animated ? 0.9 : 1) : Color.clear.scaleEffect(self.animated ? 0.9 : 1))
+        .cornerRadius(30)
+        .scaleEffect(self.animated ? 0.9 : 1)
+        .onTapGesture {
+            withAnimation(.easeInOut(duration: 0.2)){self.animated = true}
+            DispatchQueue.main.asyncAfter(deadline: .now()+0.2) {
+                withAnimation(.spring()){self.animated = false}
+            }
+            action()
         }
     }
 }
