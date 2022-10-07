@@ -16,6 +16,8 @@ struct ProfileView: View {
     
     var userId: String
     
+    @State var selectedTab: String = "media"
+    
     @State var isPublicationSheet: Bool = false
     
     @State var isSettingsSheet: Bool = false
@@ -127,7 +129,7 @@ struct ProfileView: View {
                         .padding(.horizontal)
                         .padding(.top, 10)
                     }
-                    
+                    .padding(.horizontal)
                     VStack{
                         Text("\(user?.login ?? "")")
                             .font(.system(size: 18))
@@ -156,15 +158,69 @@ struct ProfileView: View {
                     }
                     .frame(maxWidth: .infinity)
                     .padding(.top, 10)
+                    .padding(.horizontal)
                     
+                    if self.userId == UserDefaults.standard.string(forKey: "userId") {
+                        NavigationLink(destination: EditUserProfile()
+                                        ) {
+                            HStack {
+                                Text("Редактировать профиль")
+                                    .font(.system(size: 14))
+                                    .foregroundColor(Color(hex: "#2E313C"))
+                                    .padding(.vertical, 15)
+                            }
+                            .frame(maxWidth: .infinity)
+                            .background(
+                                RoundedRectangle(cornerRadius: 10)
+                                    .fill(Color(hex: "#F9F9F9"))
+                                    .modifier(RoundedEdge(width: 1, color: Color(hex: "#DDE8E8"), cornerRadius: 15))
+                            )
+                            .padding(.horizontal)
+                            .padding(.top, 12)
+                        }
+                        
+                    }
+                    else{
+                        
+                    }
                     
-                    //Content
+                    ActualStoryList()
+                        .padding(.top)
                     
+                    HStack(spacing: 0) {
+                        Button(action: {
+                            self.selectedTab = "media"
+                        }) {
+                            Rectangle()
+                                .stroke(Color(hex: "#DDE8E8"), style: StrokeStyle(lineWidth: 1))
+                                .overlay(
+                                    Image(self.selectedTab == "media" ? "profile.media.post.tab.active" : "profile.media.post.tab.inactive")
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fit)
+                                        .frame(width: 22, height: 22)
+                                )
+                        }
+                        Button(action: {
+                            self.selectedTab = "text"
+                        }) {
+                            Rectangle()
+                                .stroke(Color(hex: "#DDE8E8"), style: StrokeStyle(lineWidth: 1))
+                                .overlay(
+                                    Image(self.selectedTab == "text" ? "profile.text.post.tab.active" : "profile.text.post.tab.inactive")
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fit)
+                                        .frame(width: 22, height: 22)
+                                )
+                        }
+                    }
+                    .frame(height: 55)
+                    .padding(.bottom, 21)
+                    .padding(.top)
                 }
-                .padding(.horizontal)
                 .zIndex(-offset > 80 ? 0 : 1)
             }
         }
+        .background(Color(hex: "#F9F9F9"))
         .overlay(
             HStack {
                 Button(action: {
@@ -199,6 +255,7 @@ struct ProfileView: View {
                                     EmptyView()
                                 })
                 NavigationLink(destination: SavedView()
+                                .environmentObject(postViewModel)
                                 .ignoreDefaultHeaderBar, isActive: self.$savedPresent, label: {
                                     EmptyView()
                                 })
@@ -259,6 +316,52 @@ private struct BlurView: UIViewRepresentable{
     
     func updateUIView(_ uiView: UIVisualEffectView, context: Context) {
         
+    }
+}
+
+private struct ActualStoryList: View{
+    var body: some View{
+        VStack{
+            VStack(alignment: .leading){
+                Text("Актуальное из историй")
+                    .font(.system(size: 14))
+                    .foregroundColor(.black)
+                    .fontWeight(.bold)
+                Text("Сохраняйте свои лучшие истории в профиле")
+                    .font(.system(size: 14))
+                    .foregroundColor(.black)
+                    .padding(.trailing, 70)
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.bottom, 5)
+            .padding(.horizontal)
+            ScrollView(.horizontal, showsIndicators: false){
+                HStack(spacing: 20){
+                    VStack{
+                        Circle()
+                            .stroke(Color.gray.opacity(0.2), lineWidth: 1)
+                            .frame(width: 60, height: 60)
+                            .overlay(
+                                Image(systemName: "plus")
+                            )
+                        Text("Добавить")
+                            .font(.system(size: 12))
+                            .foregroundColor(.black)
+                    }
+                    ForEach(0..<5, id: \.self){_ in
+                        VStack{
+                            Circle()
+                                .fill(Color.gray.opacity(0.2))
+                                .frame(width: 60, height: 60)
+                            Text("")
+                                .font(.system(size: 12))
+                                .foregroundColor(.black)
+                        }
+                    }
+                }
+                .padding(.horizontal)
+            }
+        }
     }
 }
 
