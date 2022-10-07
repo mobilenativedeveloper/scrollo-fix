@@ -135,7 +135,7 @@ class CommentsViewModel: ObservableObject {
         
         URLSession.shared.dataTask(with: request) {data, response, _ in
             guard let response = response as? HTTPURLResponse else {return}
-            print("liked \(response.statusCode)")
+            print("replyLike statusCode: \(response.statusCode), postCommentReplyId: \(postCommentReplyId)")
             if response.statusCode == 200 {
                 DispatchQueue.main.async {
                     completion()
@@ -152,7 +152,10 @@ class CommentsViewModel: ObservableObject {
         
         URLSession.shared.dataTask(with: request) {data, response, _ in
             guard let response = response as? HTTPURLResponse else {return}
-            print("removed \(response.statusCode)")
+            if let token = UserDefaults.standard.string(forKey: "token"){
+                print(token)
+            }
+            print("replyLikeRemove statusCode: \(response.statusCode), postCommentReplyId: \(postCommentReplyId)")
             
             if response.statusCode == 200 {
                 DispatchQueue.main.async {

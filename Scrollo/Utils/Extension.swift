@@ -104,3 +104,9 @@ extension NSMutableData {
         append(data!)
     }
 }
+
+extension View{
+    func getRect() -> CGRect{
+        return UIScreen.main.bounds
+    }
+}

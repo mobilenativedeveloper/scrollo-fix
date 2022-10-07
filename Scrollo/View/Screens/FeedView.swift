@@ -6,6 +6,16 @@
 //
 
 import SwiftUI
+import SDWebImageSwiftUI
+
+struct FrendModel: Identifiable {
+    var id = UUID().uuidString
+    var image: String
+    var login: String
+    var career: String
+    var posts: [String]
+    var subtitle: String
+}
 
 struct FeedView: View {
     @StateObject var storyData: StoryViewModel = StoryViewModel()
@@ -16,6 +26,8 @@ struct FeedView: View {
     @State var refreshing: Bool = false
     
     @Binding var offset: CGFloat
+    
+    
     
     var body: some View {
         VStack(spacing: 0) {
@@ -47,25 +59,20 @@ struct FeedView: View {
                     }
                 }
                 if self.loadPosts{
-                    if postViewModel.posts.count > 0{
+                    if postViewModel.posts.count == 0{
                         ForEach(0..<postViewModel.posts.count, id: \.self){index in
                             PostView(post: $postViewModel.posts[index])
                                 .environmentObject(postViewModel)
+                            
+                            if index == postViewModel.posts.count - 1{
+                                Color.clear.frame(height: 200)
+                            }
                         }
                     }
                     else{
-                        VStack(alignment: .center) {
-                            Text("Добро пожаловать в Scrollo!")
-                                .fontWeight(.semibold)
-                                .foregroundColor(Color.black)
-                                .padding(.bottom, 5)
-                            Text("Здесь будут показываться фото и видео людей, на которых вы подпишитесь.")
-                                .font(.system(size: 14))
-                                .foregroundColor(.gray)
-                                .multilineTextAlignment(.center)
-                                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
-                                .padding(.horizontal, 40)
-                        }
+                        EmptyFeed()
+                            .padding(.top, 20)
+                            .transition(.opacity)
                     }
                 }
                 else{
@@ -89,6 +96,117 @@ struct FeedView: View {
                 }
             }
             
+        }
+    }
+}
+
+private struct RecommendationCard: View{
+    var account: FrendModel
+    var proxy: GeometryProxy
+    var body: some View{
+        VStack{
+            Image(account.image)
+                .resizable()
+                .aspectRatio(contentMode: .fill)
+                .frame(width: 70, height: 70)
+                .clipShape(Circle())
+            
+            Text(account.login)
+                .font(.system(size: 14))
+                .foregroundColor(.black)
+                .fontWeight(.bold)
+            Text(account.career)
+                .font(.system(size: 12))
+                .foregroundColor(.gray)
+            HStack(spacing: 1){
+                ForEach(0..<account.posts.count, id: \.self){index in
+                    WebImage(url: URL(string: account.posts[index])!)
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
+                        .frame(width: proxy.size.width/3.5, height: proxy.size.width/3.5)
+                        .clipped()
+                }
+            }
+            .padding(.horizontal, 5)
+            
+            Text(account.subtitle)
+                .font(.system(size: 10))
+                .foregroundColor(.gray)
+                .padding(.vertical, 7)
+            
+            Button(action:{}){
+                Text("Подписаться")
+                    .foregroundColor(.white)
+                    .padding(.vertical, 5)
+                    .padding(.horizontal, 20)
+                    .background(Color(hex: "#5B86E5"))
+                    .cornerRadius(8)
+            }
+        }
+        .padding(.vertical)
+        .background(
+            RoundedRectangle(cornerRadius: 20)
+                .fill(Color.white)
+                .shadow(color: Color.gray.opacity(0.1), radius: 15, x: 0, y: 0)
+        )
+        .padding(.vertical)
+        .frame(width: proxy.size.width)
+    }
+}
+
+private struct EmptyFeed: View{
+    @State var currentIndex: Int = 0
+    let data: [FrendModel] = [
+        FrendModel(image: "natgeo_logo", login: "natgeo", career: "National Geographic", posts: [
+            "https://picsum.photos/200/300?random=1",
+            "https://picsum.photos/200/300?random=2",
+            "https://picsum.photos/200/300?random=3",
+        ], subtitle: "Популярное"),
+        FrendModel(image: "nasa_logo", login: "nasa", career: "NASA", posts: [
+            "https://picsum.photos/200/300?random=4",
+            "https://picsum.photos/200/300?random=5",
+            "https://picsum.photos/200/300?random=6",
+        ], subtitle: "Популярное"),
+        FrendModel(image: "marga_owski", login: "marga_owski", career: "Margarete Stokowski", posts: [
+            "https://picsum.photos/200/300?random=7",
+            "https://picsum.photos/200/300?random=8",
+            "https://picsum.photos/200/300?random=9",
+        ], subtitle: "Рекомендации Scrollo"),
+        FrendModel(image: "natgeo_logo", login: "natgeo", career: "National Geographic", posts: [
+            "https://picsum.photos/200/300?random=10",
+            "https://picsum.photos/200/300?random=11",
+            "https://picsum.photos/200/300?random=12",
+        ], subtitle: "Популярное"),
+        FrendModel(image: "marga_owski", login: "marga_owski", career: "Margarete Stokowski", posts: [
+            "https://picsum.photos/200/300?random=13",
+            "https://picsum.photos/200/300?random=14",
+            "https://picsum.photos/200/300?random=15",
+        ], subtitle: "Рекомендации Scrollo"),
+        FrendModel(image: "nasa_logo", login: "nasa", career: "NASA", posts: [
+            "https://picsum.photos/200/300?random=16",
+            "https://picsum.photos/200/300?random=17",
+            "https://picsum.photos/200/300?random=18",
+        ], subtitle: "Популярное"),
+    ]
+    var body: some View{
+        VStack(alignment: .center, spacing: 0) {
+            Text("Добро пожаловать в Scrollo!")
+                .fontWeight(.semibold)
+                .foregroundColor(Color.black)
+                .padding(.bottom, 5)
+            Text("Здесь будут показываться фото и видео людей, на которых вы подпишитесь.")
+                .font(.system(size: 14))
+                .foregroundColor(.gray)
+                .multilineTextAlignment(.center)
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
+                .padding(.horizontal, 40)
+            
+            SnapCarousel(spacing: 0, trailingSpace: 160, index: $currentIndex, items: data) {account in
+                GeometryReader{proxy in
+                    RecommendationCard(account: account, proxy: proxy)
+                }
+            }
+            .padding(.top)
         }
     }
 }
