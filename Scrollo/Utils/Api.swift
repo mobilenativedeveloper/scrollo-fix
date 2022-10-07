@@ -44,6 +44,15 @@ let API_CHAT = "/api/v1/chat/"
 let API_CHAT_FAVORITE = "/api/v1/chat/favorite/"
 
 let API_GET_USER_FOLLOWING = "/api/v1/follow/following/me"
+
+let API_USER = "/api/v1/user/"
+
+let API_SAVED_TEXT_POSTS = "/api/v1/post/saved-text-posts"
+
+let API_SAVE_MEDIA_POSTS_ALBUM = "/api/v1/post/saved-album/posts/"
+
+let API_SAVED_ALBUM = "/api/v1/post/saved-album"
+
 //let API_USER_GET_POST = "/api/v1/post/user/"
 
 //let API_USER_FIND = "/api/v1/user/finding/"
@@ -55,7 +64,7 @@ let API_GET_USER_FOLLOWING = "/api/v1/follow/following/me"
 
 //let API_LIKE_REMOVE_COMMENT = "/api/v1/post/comment/like/"
 
-//let API_GET_USER = "/api/v1/user/"
+
 //let API_EDIT_USER = "/api/v1/user/"
 //let API_UPDATE_USER_BACKGROUND = "/api/v1/user/background"
 //let API_UPDATE_USER_AVATAR = "/api/v1/user/avatar"
@@ -65,10 +74,10 @@ let API_GET_USER_FOLLOWING = "/api/v1/follow/following/me"
 //let API_NOTIFY_SETTINGS = "/api/v1/user/notification-settings"
 //let API_CONFIDENTIALITY = "/api/v1/user/confidentiality"
 //let API_CHECK_FOLLOW_ON_USER = "/api/v1/follow/followed-on-him/"
-//let API_SAVED_ALBUM = "/api/v1/post/saved-album"
+
 //let API_SAVE_POST = "/api/v1/post/save"
-//let API_SAVED_TEXT_POSTS = "/api/v1/post/saved-text-posts"
-//let API_SAVE_MEDIA_POSTS_ALBUM = "/api/v1/post/saved-album/posts/"
+
+
 //let API_DELETE_ALBUM = "/api/v1/post/saved-album/"
 //let API_POST_CREATION_START = "/api/v1/post-creation/start"
 //let API_POST_CREATION_LOAD_PART = "/api/v1/post-creation/load-part"

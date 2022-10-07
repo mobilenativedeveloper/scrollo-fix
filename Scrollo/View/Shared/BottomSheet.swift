@@ -20,6 +20,7 @@ struct BottomSheet<T: Any, ContentView: View>: ViewModifier {
     private let widthFollowsPreferredContentSizeWhenEdgeAttached: Bool
     private let isModalInPresentation: Bool
     private var onDismiss: (() -> Void)?
+    private let backgroundColor: UIColor
     private let contentView: () -> ContentView
     
     @State private var bottomSheetViewController: BottomSheetViewController<ContentView>?
@@ -35,6 +36,7 @@ struct BottomSheet<T: Any, ContentView: View>: ViewModifier {
         widthFollowsPreferredContentSizeWhenEdgeAttached: Bool = false,
         isModalInPresentation: Bool = false,
         onDismiss: (() -> Void)? = nil,
+        backgroundColor: UIColor = .white,
         @ViewBuilder contentView: @escaping () -> ContentView
     ) {
         _isPresented = isPresented
@@ -48,6 +50,7 @@ struct BottomSheet<T: Any, ContentView: View>: ViewModifier {
         self.isModalInPresentation = isModalInPresentation
         self.contentView = contentView
         self.onDismiss = onDismiss
+        self.backgroundColor = backgroundColor
     }
     
     init(
@@ -60,6 +63,7 @@ struct BottomSheet<T: Any, ContentView: View>: ViewModifier {
         selectedDetentIdentifier: Binding<UISheetPresentationController.Detent.Identifier?> = Binding.constant(nil),
         widthFollowsPreferredContentSizeWhenEdgeAttached: Bool = false,
         isModalInPresentation: Bool = false,
+        backgroundColor: UIColor = .white,
         onDismiss: (() -> Void)? = nil,
         @ViewBuilder contentView: @escaping () -> ContentView
      ) {
@@ -76,6 +80,7 @@ struct BottomSheet<T: Any, ContentView: View>: ViewModifier {
         self._selectedDetentIdentifier = selectedDetentIdentifier
         self.widthFollowsPreferredContentSizeWhenEdgeAttached = widthFollowsPreferredContentSizeWhenEdgeAttached
         self.isModalInPresentation = isModalInPresentation
+        self.backgroundColor = backgroundColor
         self.contentView = contentView
      }
 
@@ -108,6 +113,7 @@ struct BottomSheet<T: Any, ContentView: View>: ViewModifier {
                 selectedDetentIdentifier: $selectedDetentIdentifier,
                 widthFollowsPreferredContentSizeWhenEdgeAttached: widthFollowsPreferredContentSizeWhenEdgeAttached,
                 isModalInPresentation: isModalInPresentation,
+                backgroundColor: backgroundColor,
                 content: contentView()
             )
 
@@ -143,6 +149,7 @@ extension View {
     public func bottomSheet<ContentView: View>(
         isPresented: Binding<Bool>,
         detents: [UISheetPresentationController.Detent] = [.medium(), .large()],
+        backgroundColor: UIColor = .white,
         largestUndimmedDetentIdentifier: UISheetPresentationController.Detent.Identifier? = nil,
         prefersGrabberVisible: Bool = false,
         prefersScrollingExpandsWhenScrolledToEdge: Bool = true,
@@ -157,13 +164,7 @@ extension View {
             BottomSheet<Any, ContentView>(
                 isPresented: isPresented,
                 detents: detents,
-                largestUndimmedDetentIdentifier:  largestUndimmedDetentIdentifier, prefersGrabberVisible: prefersGrabberVisible,
-                prefersScrollingExpandsWhenScrolledToEdge: prefersScrollingExpandsWhenScrolledToEdge,
-                prefersEdgeAttachedInCompactHeight: prefersEdgeAttachedInCompactHeight,
-                selectedDetentIdentifier: selectedDetentIdentifier,
-                widthFollowsPreferredContentSizeWhenEdgeAttached: widthFollowsPreferredContentSizeWhenEdgeAttached,
-                isModalInPresentation: isModalInPresentation,
-                onDismiss: onDismiss,
+                largestUndimmedDetentIdentifier:  largestUndimmedDetentIdentifier, prefersGrabberVisible: prefersGrabberVisible, prefersScrollingExpandsWhenScrolledToEdge: prefersScrollingExpandsWhenScrolledToEdge, prefersEdgeAttachedInCompactHeight: prefersEdgeAttachedInCompactHeight, selectedDetentIdentifier: selectedDetentIdentifier, widthFollowsPreferredContentSizeWhenEdgeAttached: widthFollowsPreferredContentSizeWhenEdgeAttached, isModalInPresentation: isModalInPresentation, onDismiss: onDismiss, backgroundColor: backgroundColor,
                 contentView: contentView
             )
         )
@@ -193,6 +194,7 @@ extension View {
         selectedDetentIdentifier: Binding<UISheetPresentationController.Detent.Identifier?> = Binding.constant(nil),
         widthFollowsPreferredContentSizeWhenEdgeAttached: Bool = false,
         isModalInPresentation: Bool = false,
+        backgroundColor: UIColor = .white,
         onDismiss: (() -> Void)? = nil,
         @ViewBuilder contentView: @escaping () -> ContentView
     ) -> some View {
@@ -200,12 +202,15 @@ extension View {
             BottomSheet(
                 item: item,
                 detents: detents,
-                largestUndimmedDetentIdentifier:  largestUndimmedDetentIdentifier, prefersGrabberVisible: prefersGrabberVisible,
+                largestUndimmedDetentIdentifier:  largestUndimmedDetentIdentifier,
+                prefersGrabberVisible: prefersGrabberVisible,
+                
                 prefersScrollingExpandsWhenScrolledToEdge: prefersScrollingExpandsWhenScrolledToEdge,
                 prefersEdgeAttachedInCompactHeight: prefersEdgeAttachedInCompactHeight,
                 selectedDetentIdentifier: selectedDetentIdentifier,
                 widthFollowsPreferredContentSizeWhenEdgeAttached: widthFollowsPreferredContentSizeWhenEdgeAttached,
                 isModalInPresentation: isModalInPresentation,
+                backgroundColor: backgroundColor,
                 onDismiss: onDismiss,
                 contentView: contentView
             )
@@ -223,6 +228,8 @@ class BottomSheetViewController<Content: View>: UIViewController, UISheetPresent
     private let prefersEdgeAttachedInCompactHeight: Bool
     @Binding private var selectedDetentIdentifier: UISheetPresentationController.Detent.Identifier?
     private let widthFollowsPreferredContentSizeWhenEdgeAttached: Bool
+    
+    private let backgroundColor: UIColor
 
     private let contentView: UIHostingController<Content>
 
@@ -236,6 +243,7 @@ class BottomSheetViewController<Content: View>: UIViewController, UISheetPresent
         selectedDetentIdentifier: Binding<UISheetPresentationController.Detent.Identifier?> = Binding.constant(nil),
         widthFollowsPreferredContentSizeWhenEdgeAttached: Bool = false,
         isModalInPresentation: Bool = false,
+        backgroundColor: UIColor = .white,
         content: Content
     ) {
         _isPresented = isPresented
@@ -247,6 +255,7 @@ class BottomSheetViewController<Content: View>: UIViewController, UISheetPresent
         self.prefersEdgeAttachedInCompactHeight = prefersEdgeAttachedInCompactHeight
         self._selectedDetentIdentifier = selectedDetentIdentifier
         self.widthFollowsPreferredContentSizeWhenEdgeAttached = widthFollowsPreferredContentSizeWhenEdgeAttached
+        self.backgroundColor = backgroundColor
         
         self.contentView = UIHostingController(rootView: content)
 
@@ -265,6 +274,7 @@ class BottomSheetViewController<Content: View>: UIViewController, UISheetPresent
         view.addSubview(contentView.view)
 
         contentView.view.translatesAutoresizingMaskIntoConstraints = false
+        contentView.view.backgroundColor = backgroundColor
 
         NSLayoutConstraint.activate([
             contentView.view.topAnchor.constraint(equalTo: view.topAnchor),

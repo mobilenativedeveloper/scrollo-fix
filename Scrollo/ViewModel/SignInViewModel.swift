@@ -44,13 +44,9 @@ class SignInViewModel: ObservableObject {
                 
                 guard let debugJson = try? JSONSerialization.jsonObject(with: data!, options: []) else{return}
                 
-                debugPrint(debugJson)
-                
-                
                 if response.statusCode == 200 {
                     if let user = try? JSONDecoder().decode(UserModel.self, from: data!) {
                         DispatchQueue.main.async {
-                            debugPrint("OK")
                             self.load = false
                             UserDefaults.standard.set(user.token, forKey: "token")
                             UserDefaults.standard.set(user.user.id, forKey: "userId")

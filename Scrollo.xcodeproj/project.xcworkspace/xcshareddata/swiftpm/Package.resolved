@@ -20,6 +20,15 @@
         }
       },
       {
+        "package": "SwiftUICharts",
+        "repositoryURL": "https://github.com/willdale/SwiftUICharts.git",
+        "state": {
+          "branch": "main",
+          "revision": "9a71bffb72c35960c6836891ca1e13e089532991",
+          "version": null
+        }
+      },
+      {
         "package": "UISheetPresentationControllerCustomDetent",
         "repositoryURL": "https://github.com/iMinichrispy/UISheetPresentationControllerCustomDetent",
         "state": {

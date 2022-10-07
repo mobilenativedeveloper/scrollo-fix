@@ -7,6 +7,14 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		AC18A24728F09BF0005CDE7D /* FollowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC18A24628F09BEF005CDE7D /* FollowView.swift */; };
+		AC18A24928F0BC21005CDE7D /* YourActivityView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC18A24828F0BC21005CDE7D /* YourActivityView.swift */; };
+		AC18A24C28F0BCC5005CDE7D /* SwiftUICharts in Frameworks */ = {isa = PBXBuildFile; productRef = AC18A24B28F0BCC5005CDE7D /* SwiftUICharts */; };
+		AC18A24E28F0BFFB005CDE7D /* SavedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC18A24D28F0BFFB005CDE7D /* SavedView.swift */; };
+		AC18A25028F0C10B005CDE7D /* SavedPostsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC18A24F28F0C10B005CDE7D /* SavedPostsViewModel.swift */; };
+		AC18A25228F0C1DB005CDE7D /* TabButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC18A25128F0C1DB005CDE7D /* TabButton.swift */; };
+		AC18A25428F0C3E3005CDE7D /* AlbumsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC18A25328F0C3E3005CDE7D /* AlbumsViewModel.swift */; };
+		AC18A25628F0C3FA005CDE7D /* AlbumModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC18A25528F0C3FA005CDE7D /* AlbumModel.swift */; };
 		AC3E356228EADCE1002570AE /* SDWebImageSwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = AC3E356128EADCE1002570AE /* SDWebImageSwiftUI */; };
 		AC3E356528EADF12002570AE /* SignInView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC3E356428EADF12002570AE /* SignInView.swift */; };
 		AC3E356728EADF37002570AE /* SignUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC3E356628EADF37002570AE /* SignUpView.swift */; };
@@ -69,6 +77,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		AC18A24628F09BEF005CDE7D /* FollowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FollowView.swift; sourceTree = "<group>"; };
+		AC18A24828F0BC21005CDE7D /* YourActivityView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YourActivityView.swift; sourceTree = "<group>"; };
+		AC18A24D28F0BFFB005CDE7D /* SavedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavedView.swift; sourceTree = "<group>"; };
+		AC18A24F28F0C10B005CDE7D /* SavedPostsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavedPostsViewModel.swift; sourceTree = "<group>"; };
+		AC18A25128F0C1DB005CDE7D /* TabButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabButton.swift; sourceTree = "<group>"; };
+		AC18A25328F0C3E3005CDE7D /* AlbumsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlbumsViewModel.swift; sourceTree = "<group>"; };
+		AC18A25528F0C3FA005CDE7D /* AlbumModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlbumModel.swift; sourceTree = "<group>"; };
 		AC3E356428EADF12002570AE /* SignInView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInView.swift; sourceTree = "<group>"; };
 		AC3E356628EADF37002570AE /* SignUpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpView.swift; sourceTree = "<group>"; };
 		AC3E356828EADF51002570AE /* TextFieldLogin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextFieldLogin.swift; sourceTree = "<group>"; };
@@ -143,6 +158,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				AC3E358E28EC88F6002570AE /* UISheetPresentationControllerCustomDetentObjc in Frameworks */,
+				AC18A24C28F0BCC5005CDE7D /* SwiftUICharts in Frameworks */,
 				AC3E356228EADCE1002570AE /* SDWebImageSwiftUI in Frameworks */,
 				AC3E358C28EC88F6002570AE /* UISheetPresentationControllerCustomDetent in Frameworks */,
 			);
@@ -232,6 +248,7 @@
 				AC9F302328EF237500444E08 /* ChatModel.swift */,
 				AC9F302728EF373800444E08 /* FollowModel.swift */,
 				AC9F302928EF3F5500444E08 /* ModalView.swift */,
+				AC18A25528F0C3FA005CDE7D /* AlbumModel.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -250,6 +267,8 @@
 				AC9F301728EDCA9100444E08 /* CommentsViewModel.swift */,
 				AC9F302128EF232200444E08 /* ChatViewModel.swift */,
 				AC9F302528EF36D600444E08 /* CreateChatViewModel.swift */,
+				AC18A24F28F0C10B005CDE7D /* SavedPostsViewModel.swift */,
+				AC18A25328F0C3E3005CDE7D /* AlbumsViewModel.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -266,6 +285,9 @@
 				AC9F301128ED9DCD00444E08 /* PostOverview.swift */,
 				AC9F301C28EE07B400444E08 /* CommentsOverview.swift */,
 				AC9F302D28F0700900444E08 /* ProfileView.swift */,
+				AC18A24628F09BEF005CDE7D /* FollowView.swift */,
+				AC18A24828F0BC21005CDE7D /* YourActivityView.swift */,
+				AC18A24D28F0BFFB005CDE7D /* SavedView.swift */,
 			);
 			path = Screens;
 			sourceTree = "<group>";
@@ -283,6 +305,7 @@
 				AC9F301328ED9F9B00444E08 /* EmojiListView.swift */,
 				AC9F301928EDCD0800444E08 /* CommentView.swift */,
 				AC9F302B28F01F0400444E08 /* SnapCarousel.swift */,
+				AC18A25128F0C1DB005CDE7D /* TabButton.swift */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -339,6 +362,7 @@
 				AC3E356128EADCE1002570AE /* SDWebImageSwiftUI */,
 				AC3E358B28EC88F6002570AE /* UISheetPresentationControllerCustomDetent */,
 				AC3E358D28EC88F6002570AE /* UISheetPresentationControllerCustomDetentObjc */,
+				AC18A24B28F0BCC5005CDE7D /* SwiftUICharts */,
 			);
 			productName = Scrollo;
 			productReference = ACC4E5D228DCB4DE0081F2E5 /* Scrollo.app */;
@@ -371,6 +395,7 @@
 			packageReferences = (
 				AC3E356028EADCE1002570AE /* XCRemoteSwiftPackageReference "SDWebImageSwiftUI" */,
 				AC3E358A28EC88F6002570AE /* XCRemoteSwiftPackageReference "UISheetPresentationControllerCustomDetent" */,
+				AC18A24A28F0BCC5005CDE7D /* XCRemoteSwiftPackageReference "SwiftUICharts" */,
 			);
 			productRefGroup = ACC4E5D328DCB4DE0081F2E5 /* Products */;
 			projectDirPath = "";
@@ -401,8 +426,11 @@
 				AC3E357128EAF718002570AE /* PostViewModel.swift in Sources */,
 				AC9F302828EF373800444E08 /* FollowModel.swift in Sources */,
 				AC3E357328EAF741002570AE /* PostModel.swift in Sources */,
+				AC18A25228F0C1DB005CDE7D /* TabButton.swift in Sources */,
+				AC18A24728F09BF0005CDE7D /* FollowView.swift in Sources */,
 				ACC4E61828DD9DB70081F2E5 /* Api.swift in Sources */,
 				ACC4E61028DD8E170081F2E5 /* AuthView.swift in Sources */,
+				AC18A25628F0C3FA005CDE7D /* AlbumModel.swift in Sources */,
 				ACC4E5D828DCB4DE0081F2E5 /* ContentView.swift in Sources */,
 				ACC4E5ED28DCB5E90081F2E5 /* BottomSheet.swift in Sources */,
 				ACC4E5F628DCB7BD0081F2E5 /* StoryModel.swift in Sources */,
@@ -417,6 +445,7 @@
 				AC3E356728EADF37002570AE /* SignUpView.swift in Sources */,
 				ACC4E5EB28DCB5BF0081F2E5 /* FeedView.swift in Sources */,
 				AC9F301028ED88D300444E08 /* HomeView.swift in Sources */,
+				AC18A25028F0C10B005CDE7D /* SavedPostsViewModel.swift in Sources */,
 				AC3E356528EADF12002570AE /* SignInView.swift in Sources */,
 				ACC4E61628DD9D870081F2E5 /* Request.swift in Sources */,
 				ACC4E5F428DCB7460081F2E5 /* StoryViewModel.swift in Sources */,
@@ -429,6 +458,8 @@
 				AC9F302E28F0700A00444E08 /* ProfileView.swift in Sources */,
 				AC3E356B28EADF68002570AE /* OTPField.swift in Sources */,
 				ACC4E5E928DCB5670081F2E5 /* PullToRefresh.swift in Sources */,
+				AC18A24E28F0BFFB005CDE7D /* SavedView.swift in Sources */,
+				AC18A24928F0BC21005CDE7D /* YourActivityView.swift in Sources */,
 				ACC4E61428DD9D420081F2E5 /* SignInViewModel.swift in Sources */,
 				AC3E357528EAFC89002570AE /* PublicationTextPostView.swift in Sources */,
 				AC9F301428ED9F9B00444E08 /* EmojiListView.swift in Sources */,
@@ -437,6 +468,7 @@
 				AC9F302A28EF3F5500444E08 /* ModalView.swift in Sources */,
 				AC3E359228ECAA83002570AE /* PublicationStoryView.swift in Sources */,
 				ACC4E61A28DD9E840081F2E5 /* UserModel.swift in Sources */,
+				AC18A25428F0C3E3005CDE7D /* AlbumsViewModel.swift in Sources */,
 				AC3E356928EADF51002570AE /* TextFieldLogin.swift in Sources */,
 				ACC4E62228DDA01E0081F2E5 /* KeyboardHelper.swift in Sources */,
 				AC3E356F28EAE6A2002570AE /* SignUpViewModel.swift in Sources */,
@@ -660,6 +692,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		AC18A24A28F0BCC5005CDE7D /* XCRemoteSwiftPackageReference "SwiftUICharts" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/willdale/SwiftUICharts.git";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
+		};
 		AC3E356028EADCE1002570AE /* XCRemoteSwiftPackageReference "SDWebImageSwiftUI" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/SDWebImage/SDWebImageSwiftUI.git";
@@ -679,6 +719,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		AC18A24B28F0BCC5005CDE7D /* SwiftUICharts */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = AC18A24A28F0BCC5005CDE7D /* XCRemoteSwiftPackageReference "SwiftUICharts" */;
+			productName = SwiftUICharts;
+		};
 		AC3E356128EADCE1002570AE /* SDWebImageSwiftUI */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = AC3E356028EADCE1002570AE /* XCRemoteSwiftPackageReference "SDWebImageSwiftUI" */;
