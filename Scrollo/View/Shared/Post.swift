@@ -21,6 +21,8 @@ struct PostView: View{
     
     @EnvironmentObject var postViewModel: PostViewModel
     
+    @State var profilePresent: Bool = false
+    
     @State var isPostSettings: Bool = false
     @State private var deletePost: Bool = false
     
@@ -33,28 +35,30 @@ struct PostView: View{
     var body: some View{
         VStack(alignment: .leading, spacing: 0) {
             HStack(spacing: 0) {
-                HStack(spacing: 0){
-                    NavigationLink(destination: ProfileView(userId: post.creator.id)
-                                    .ignoreDefaultHeaderBar){
+                NavigationLink(destination: ProfileView(userId: post.creator.id)
+                                .ignoreDefaultHeaderBar){
+                    HStack(spacing: 0){
+                        
                         Avatar()
-                    }
-                    VStack(alignment: .leading, spacing: 0) {
-                        Text(post.creator.login)
-                            .font(.system(size: 14))
-                            .fontWeight(Font.Weight.bold)
-                            .foregroundColor(Color(hex: "#333333"))
-                            .offset(y: -5)
-                        if let place = post.place {
-                            Text("\(place.name)")
-                                .font(.system(size: 12))
-                                .foregroundColor(Color(hex: "#909090"))
-                        } else {
-                            Text("")
-                                .font(.system(size: 12))
-                                .foregroundColor(Color(hex: "#909090"))
+                        VStack(alignment: .leading, spacing: 0) {
+                            Text(post.creator.login)
+                                .font(.system(size: 14))
+                                .fontWeight(Font.Weight.bold)
+                                .foregroundColor(Color(hex: "#333333"))
+                                .offset(y: -5)
+                            if let place = post.place {
+                                Text("\(place.name)")
+                                    .font(.system(size: 12))
+                                    .foregroundColor(Color(hex: "#909090"))
+                            } else {
+                                Text("")
+                                    .font(.system(size: 12))
+                                    .foregroundColor(Color(hex: "#909090"))
+                            }
                         }
                     }
                 }
+                
                 Spacer()
                 Button(action: {
                     self.isPostSettings.toggle()
@@ -163,10 +167,17 @@ struct PostView: View{
                                 post.inSaved = true
                             }
                         }
-                        
                     }
                     if post.type == "STANDART"{
-                        mediaPostSaveAlbumPresent.toggle()
+                        if post.inSaved {
+                            postViewModel.unSavePost(postId: post.id) {
+                                post.inSaved = false
+                            }
+                        }
+                        else{
+                            mediaPostSaveAlbumPresent.toggle()
+                        }
+                        
                     }
                 }) {
                     if post.inSaved {
@@ -186,7 +197,7 @@ struct PostView: View{
             .padding(.top, 17)
             .background(Color.white)
             .fullScreenCover(isPresented: $mediaPostSaveAlbumPresent) {
-                SelectAlbum(isPresented: $mediaPostSaveAlbumPresent)
+                SelectAlbum(isPresented: $mediaPostSaveAlbumPresent, post: $post)
             }
             if post.type == "STANDART"{
                 ShareUsersPost()
@@ -726,6 +737,15 @@ struct ShareUsersPost: View {
 
 struct SelectAlbum: View {
     @Binding var isPresented: Bool
+    @Binding var post: PostModel
+    
+    @ObservedObject var postViewModel: PostViewModel = PostViewModel()
+    
+    @StateObject var albumsViewModel: AlbumsViewModel = AlbumsViewModel(composition: true)
+    
+    let savedItemSize: CGFloat = (screen_rect.width / 2) - 26 - 9
+    
+    @State var createAlbumPresent: Bool = false
     
     var body: some View{
         VStack{
@@ -748,7 +768,9 @@ struct SelectAlbum: View {
                     .foregroundColor(Color(hex: "#1F2128"))
                 Spacer(minLength: 0)
                 Button(action: {
-                   
+                    withAnimation{
+                        createAlbumPresent.toggle()
+                    }
                 }) {
                     
                     Image("blue.circle.outline.plus")
@@ -760,7 +782,130 @@ struct SelectAlbum: View {
             .padding(.bottom)
             .padding(.horizontal)
             
+            if albumsViewModel.load{
+                if albumsViewModel.albumsComposition.count > 0{
+                    ScrollView {
+                        VStack(spacing: 0) {
+                            ForEach(0..<albumsViewModel.albumsComposition.count, id: \.self){index in
+                                ForEach(0..<albumsViewModel.albumsComposition[index].count, id: \.self) {_ in
+                                    
+                                    HStack(spacing: 0) {
+                                        if albumsViewModel.albumsComposition[index].count >= 1 {
+                                            SavedItem(album: albumsViewModel.albumsComposition[index][0])
+                                                .onTapGesture {
+                                                    postViewModel.savePost(postId: post.id, albumId: albumsViewModel.albumsComposition[index][0].id) {
+                                                        post.inSaved = true
+                                                        isPresented.toggle()
+                                                    }
+                                                }
+                                        }
+                                        Spacer(minLength: 0)
+                                        if albumsViewModel.albumsComposition[index].count == 2 {
+                                            SavedItem(album: albumsViewModel.albumsComposition[index][1])
+                                                .onTapGesture {
+                                                    postViewModel.savePost(postId: post.id, albumId: albumsViewModel.albumsComposition[index][1].id) {
+                                                        post.inSaved = true
+                                                        isPresented.toggle()
+                                                    }
+                                                }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        .padding([.horizontal, .top])
+                    }
+                }
+                else{
+                    Text("Clear")
+                }
+            }
+            else{
+                Spacer(minLength: 0)
+                ProgressView()
+            }
+            
             Spacer(minLength: 0)
         }
+        .navigationView(isPresent: $createAlbumPresent, content: {
+            CreateAlbumView(isPresent: $createAlbumPresent)
+                .environmentObject(albumsViewModel)
+        })
+    }
+    
+    @ViewBuilder
+    private func SavedItem(album: AlbumModel) -> some View {
+        VStack {
+            VStack(spacing: 1) {
+                HStack(spacing: 1) {
+                    if album.preview.count >= 1 {
+                        WebImage(url: URL(string: "\(API_URL)/uploads/\(album.preview[0])"))
+                            .resizable()
+                            .scaledToFill()
+                            .frame(width: savedItemSize / 2, height: savedItemSize / 2)
+                            .cornerRadius(6)
+                    } else {
+                        Color(hex: "#efefef")
+                            .frame(width: savedItemSize / 2, height: savedItemSize / 2)
+                            .cornerRadius(6)
+                    }
+                    
+                    if album.preview.count >= 2 {
+                        WebImage(url: URL(string: "\(API_URL)/uploads/\(album.preview[1])"))
+                            .resizable()
+                            .scaledToFill()
+                            .frame(width: savedItemSize / 2, height: savedItemSize / 2)
+                            .cornerRadius(6)
+                    } else {
+                        Color(hex: "#efefef")
+                            .frame(width: savedItemSize / 2, height: savedItemSize / 2)
+                            .cornerRadius(6)
+                    }
+                }
+                HStack(spacing: 1) {
+                    if album.preview.count >= 3 {
+                        WebImage(url: URL(string: "\(API_URL)/uploads/\(album.preview[2])"))
+                            .resizable()
+                            .scaledToFill()
+                            .frame(width: savedItemSize / 2, height: savedItemSize / 2)
+                            .cornerRadius(6)
+                    } else {
+                        Color(hex: "#efefef")
+                            .frame(width: savedItemSize / 2, height: savedItemSize / 2)
+                            .cornerRadius(6)
+                    }
+                    
+                    if album.preview.count >= 4 {
+                        WebImage(url: URL(string: "\(API_URL)/uploads/\(album.preview[3])"))
+                            .resizable()
+                            .scaledToFill()
+                            .frame(width: savedItemSize / 2, height: savedItemSize / 2)
+                            .cornerRadius(6)
+                    } else {
+                        Color(hex: "#efefef")
+                            .frame(width: savedItemSize / 2, height: savedItemSize / 2)
+                            .cornerRadius(6)
+                    }
+                }
+                
+            }
+            .frame(width: savedItemSize, height: savedItemSize)
+            .clipped()
+            .background(
+                RoundedRectangle(cornerRadius: 10)
+                    .strokeBorder(
+                        style: StrokeStyle(lineWidth: 1)
+                    )
+                    .frame(width: savedItemSize + 12, height: savedItemSize + 12)
+                    .foregroundColor(Color(hex: "#909090"))
+            )
+            .padding(.bottom, 10)
+            Text(album.name)
+                .font(.custom(GothamBold, size: 14))
+                .foregroundColor(Color(hex: "#2E313C"))
+                .padding(.bottom, 10)
+            
+        }
+        .padding(.bottom, 10)
     }
 }

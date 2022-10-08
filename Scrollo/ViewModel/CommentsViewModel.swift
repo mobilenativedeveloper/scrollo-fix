@@ -69,7 +69,7 @@ class CommentsViewModel: ObservableObject {
     }
     
     func addReply (postCommentId: String, completion: @escaping()->Void) -> Void {
-        let url = URL(string: "\(API_URL)\(API_URL_ADD_REPLY_COMMENT)")!
+        let url = URL(string: "\(API_URL)\(API_URL_REPLY_COMMENT)")!
         let data: [String: Any] = ["postCommentId": postCommentId, "content": self.content]
         
         guard let request = Request(url: url, httpMethod: "POST", body: data) else { return }
@@ -172,7 +172,7 @@ class CommentsViewModel: ObservableObject {
         URLSession.shared.dataTask(with: request) {_, response, _ in
             
             guard let response = response as? HTTPURLResponse else { return }
-            print(response.statusCode)
+            print("removeComment: \(response.statusCode)")
             if response.statusCode == 200 {
                 DispatchQueue.main.async {
                     completed()
@@ -180,4 +180,22 @@ class CommentsViewModel: ObservableObject {
             }
         }.resume()
     }
+    
+    func removeReply (commentId: String, completed: @escaping () -> Void) {
+        guard let url = URL(string: "\(API_URL)\(API_URL_REPLY_COMMENT)/\(commentId)") else {return}
+        guard let request = Request(url: url, httpMethod: "DELETE", body: nil) else {return}
+        
+        URLSession.shared.dataTask(with: request) {_, response, _ in
+            
+            guard let response = response as? HTTPURLResponse else { return }
+            print("removeReply: \(response.statusCode)")
+            if response.statusCode == 200 {
+                DispatchQueue.main.async {
+                    completed()
+                }
+            }
+        }.resume()
+    }
+    
+    
 }

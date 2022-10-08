@@ -10,11 +10,12 @@ import SwiftUI
 class AlbumsViewModel: ObservableObject {
     @Published var albums: [AlbumModel] = []
     @Published var albumsComposition: [[AlbumModel]] = []
-    @Published var status: AlbumStatus = .initial
+    @Published var load: Bool = false
     
     @Published var page = 0
     @Published var pageSize = 5
     
+    @Published var name: String = ""
     
     init (composition: Bool = false) {
         getAlbums(composition: composition)
@@ -34,10 +35,11 @@ class AlbumsViewModel: ObservableObject {
                 
                 DispatchQueue.main.async {
                     self.albums = responseJson.data
+                    
                     if composition {
                         self.createCompositionLayoutAlbums()
                     }
-                    self.status = AlbumStatus.success
+                    self.load = true
                 }
             }
         }.resume()
@@ -57,6 +59,44 @@ class AlbumsViewModel: ObservableObject {
         }
         
         self.albumsComposition = albumsCompositionLayout
+    }
+    
+    func createAlbum (completion: @escaping(AlbumModel)->Void) {
+        if self.name.isEmpty {
+//            self.alert = AlertModel(title: "Ошибка", message: "Введите название альбома.", show: true)
+            return
+        }
+        
+        guard let url = URL(string: "\(API_URL)\(API_SAVED_ALBUM)") else { return }
+        guard let request = Request(url: url, httpMethod: "POST", body: ["name": self.name]) else { return }
+        
+        URLSession.shared.dataTask(with: request) { data, response, _ in
+            guard let response = response as? HTTPURLResponse else { return }
+            guard let data = data else {return}
+            
+            if response.statusCode == 201 {
+                guard let newAlbum = try? JSONDecoder().decode(AlbumModel.self, from: data) else {return}
+                
+                DispatchQueue.main.async {
+                    completion(newAlbum)
+                }
+            }
+        }.resume()
+    }
+    
+    func removeAlbum (albumId: String, completion: @escaping()->Void) {
+        guard let url = URL(string: "\(API_URL)\(API_SAVED_ALBUM)\(albumId)") else { return }
+        guard let request = Request(url: url, httpMethod: "DELETE", body: nil) else { return }
+        
+        URLSession.shared.dataTask(with: request) { _, response, _ in
+            guard let response = response as? HTTPURLResponse else { return }
+            
+            if response.statusCode == 200 {
+                DispatchQueue.main.async {
+                    completion()
+                }
+            }
+        }.resume()
     }
 }
 

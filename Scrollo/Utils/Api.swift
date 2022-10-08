@@ -31,7 +31,7 @@ let API_COMMENT = "/api/v1/post/comment/"
 
 let API_LIKE_COMMENT = "/api/v1/post/comment/like/"
 
-let API_URL_ADD_REPLY_COMMENT = "/api/v1/post/comment-reply"
+let API_URL_REPLY_COMMENT = "/api/v1/post/comment-reply"
 
 let API_REPLY_LIKE = "/api/v1/post/comment-reply/like"
 
@@ -80,7 +80,7 @@ let API_POST_SAVE = "/api/v1/post/save"
 //let API_SAVE_POST = "/api/v1/post/save"
 
 
-//let API_DELETE_ALBUM = "/api/v1/post/saved-album/"
+
 //let API_POST_CREATION_START = "/api/v1/post-creation/start"
 //let API_POST_CREATION_LOAD_PART = "/api/v1/post-creation/load-part"
 

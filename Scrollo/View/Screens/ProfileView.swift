@@ -517,6 +517,12 @@ private struct AddPublicationSheet: View {
             Color.white
             
             VStack {
+                RoundedRectangle(cornerRadius: 40)
+                    .fill(Color(hex: "#F2F2F2"))
+                    .frame(width: 40, height: 4)
+                    .padding(.top, 15)
+                    .padding(.bottom, 24)
+                
                 VStack(alignment: .leading, spacing: 0) {
                     HStack(spacing: 0) {
                         Text("Добавить")
@@ -610,6 +616,11 @@ private struct SettingsSheet: View {
     
     var body: some View {
         VStack {
+            RoundedRectangle(cornerRadius: 40)
+                .fill(Color(hex: "#F2F2F2"))
+                .frame(width: 40, height: 4)
+                .padding(.top, 15)
+                .padding(.bottom, 24)
             Button(action: {
                 presentationMode.wrappedValue.dismiss()
                 DispatchQueue.main.asyncAfter(deadline: .now() + time) {
@@ -821,6 +832,7 @@ private struct СompletionCard: View{
             }
         }
         .frame(width: proxy.size.width, height: 230)
+        .background(Color(hex: "#F9F9F9").cornerRadius(10))
         .background(
             RoundedRectangle(cornerRadius: 10)
                 .stroke(Color(hex: "#ededed"))

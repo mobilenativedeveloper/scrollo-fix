@@ -37,7 +37,11 @@ struct CommentCardView : View {
                     commentsViewModel.reply = Reply(postCommentId: comment.id, login: self.comment.user.login)
                 }
             }, onRemove: {
-                
+                commentsViewModel.removeComment(commentId: comment.id) {
+                    withAnimation{
+                        commentsViewModel.comments.removeAll(where: {$0.id == comment.id})
+                    }
+                }
             })
                 .padding(.bottom, 19)
             ForEach(0..<comment.lastSubComments.count, id: \.self) {index in
@@ -67,7 +71,11 @@ struct CommentCardView : View {
                         commentsViewModel.reply = Reply(postCommentId: comment.id, login: replyComment.user.login)
                     }
                 }, onRemove: {
-                    
+                    commentsViewModel.removeReply(commentId: replyComment.id) {
+                        withAnimation(.easeInOut){
+                            comment.lastSubComments.removeAll(where: {$0.id == replyComment.id})
+                        }
+                    }
                 })
                     .padding(.leading, 48)
                     .padding(.bottom)

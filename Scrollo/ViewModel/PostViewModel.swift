@@ -191,7 +191,7 @@ class PostViewModel: ObservableObject{
         
         guard let url = URL(string: "\(API_URL)\(API_POST_SAVE)") else {return}
         
-        guard let request = Request(url: url, httpMethod: "POST", body: ["postId": postId]) else {return}
+        guard let request = Request(url: url, httpMethod: "POST", body: albumId == nil ? ["postId": postId] : ["postId": postId, "albumId": albumId!]) else {return}
         
         URLSession.shared.dataTask(with: request) { _, response, _ in
             
@@ -199,8 +199,6 @@ class PostViewModel: ObservableObject{
             
             print("savePost: \(response.statusCode)")
             if response.statusCode == 200 {
-                
-//                guard let posts = try? JSONDecoder().decode(PostModel.self, from: data) else {return}
                 
                 DispatchQueue.main.async {
                     completion()

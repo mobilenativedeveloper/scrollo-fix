@@ -52,6 +52,8 @@
 		AC9F302E28F0700A00444E08 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC9F302D28F0700900444E08 /* ProfileView.swift */; };
 		ACA4F1D128F18CB000F61983 /* InterestingPeopleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACA4F1D028F18CB000F61983 /* InterestingPeopleView.swift */; };
 		ACA4F1D328F1AF0800F61983 /* VideoThumbnailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACA4F1D228F1AF0800F61983 /* VideoThumbnailViewModel.swift */; };
+		ACA4F1D528F1C7CE00F61983 /* CreateAlbumView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACA4F1D428F1C7CD00F61983 /* CreateAlbumView.swift */; };
+		ACA4F1D728F1DA4B00F61983 /* AlbumOverview.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACA4F1D628F1DA4B00F61983 /* AlbumOverview.swift */; };
 		ACC4E5D628DCB4DE0081F2E5 /* ScrolloApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACC4E5D528DCB4DE0081F2E5 /* ScrolloApp.swift */; };
 		ACC4E5D828DCB4DE0081F2E5 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACC4E5D728DCB4DE0081F2E5 /* ContentView.swift */; };
 		ACC4E5DA28DCB4E60081F2E5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = ACC4E5D928DCB4E60081F2E5 /* Assets.xcassets */; };
@@ -121,6 +123,8 @@
 		AC9F302D28F0700900444E08 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
 		ACA4F1D028F18CB000F61983 /* InterestingPeopleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InterestingPeopleView.swift; sourceTree = "<group>"; };
 		ACA4F1D228F1AF0800F61983 /* VideoThumbnailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoThumbnailViewModel.swift; sourceTree = "<group>"; };
+		ACA4F1D428F1C7CD00F61983 /* CreateAlbumView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateAlbumView.swift; sourceTree = "<group>"; };
+		ACA4F1D628F1DA4B00F61983 /* AlbumOverview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlbumOverview.swift; sourceTree = "<group>"; };
 		ACC4E5D228DCB4DE0081F2E5 /* Scrollo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Scrollo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		ACC4E5D528DCB4DE0081F2E5 /* ScrolloApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScrolloApp.swift; sourceTree = "<group>"; };
 		ACC4E5D728DCB4DE0081F2E5 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -297,6 +301,8 @@
 				AC18A24D28F0BFFB005CDE7D /* SavedView.swift */,
 				AC18A25728F0CBE7005CDE7D /* EditUserProfile.swift */,
 				ACA4F1D028F18CB000F61983 /* InterestingPeopleView.swift */,
+				ACA4F1D428F1C7CD00F61983 /* CreateAlbumView.swift */,
+				ACA4F1D628F1DA4B00F61983 /* AlbumOverview.swift */,
 			);
 			path = Screens;
 			sourceTree = "<group>";
@@ -446,6 +452,7 @@
 				ACC4E5F628DCB7BD0081F2E5 /* StoryModel.swift in Sources */,
 				ACC4E62028DD9F330081F2E5 /* DashboardView.swift in Sources */,
 				AC9F301D28EE07B400444E08 /* CommentsOverview.swift in Sources */,
+				ACA4F1D728F1DA4B00F61983 /* AlbumOverview.swift in Sources */,
 				AC3E359628ECAB1A002570AE /* AssetModel.swift in Sources */,
 				AC9F302428EF237500444E08 /* ChatModel.swift in Sources */,
 				AC9F302228EF232200444E08 /* ChatViewModel.swift in Sources */,
@@ -476,6 +483,7 @@
 				AC3E357528EAFC89002570AE /* PublicationTextPostView.swift in Sources */,
 				AC9F301428ED9F9B00444E08 /* EmojiListView.swift in Sources */,
 				AC3E359828ECAD5B002570AE /* CameraController.swift in Sources */,
+				ACA4F1D528F1C7CE00F61983 /* CreateAlbumView.swift in Sources */,
 				AC3E359428ECAB09002570AE /* AddStoryViewModel.swift in Sources */,
 				AC9F302A28EF3F5500444E08 /* ModalView.swift in Sources */,
 				AC3E359228ECAA83002570AE /* PublicationStoryView.swift in Sources */,

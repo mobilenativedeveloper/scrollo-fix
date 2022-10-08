@@ -21,17 +21,15 @@ struct PostOverview: View {
     
     @State var isSharePresent: Bool = false
     
+    @State var profilePresent: Bool = false
+    
     var body: some View {
         VStack(alignment: .leading){
             ScrollView{
                 VStack(alignment: .leading){
                     HStack(spacing: 0) {
                         HStack(spacing: 0){
-                            NavigationLink(destination: ProfileView(userId: post.creator.id)
-                                            .ignoreDefaultHeaderBar){
-                                Avatar()
-                            }
-                            
+                            Avatar()
                             VStack(alignment: .leading, spacing: 0) {
                                 Text(post.creator.login)
                                     .font(.system(size: 14))
@@ -47,6 +45,11 @@ struct PostOverview: View {
                                         .font(.system(size: 12))
                                         .foregroundColor(Color(hex: "#909090"))
                                 }
+                            }
+                        }
+                        .onTapGesture {
+                            withAnimation(.easeInOut){
+                                profilePresent.toggle()
                             }
                         }
                         Spacer()
@@ -415,6 +418,9 @@ struct PostOverview: View {
         }
         .background(Color(hex: "#F9F9F9").edgesIgnoringSafeArea(.all))
         .ignoresSafeArea(.container, edges: [.bottom, .top])
+        .navigationView(isPresent: $profilePresent){
+            ProfileView(userId: post.creator.id)
+        }
         .onTapGesture(perform: {
             UIApplication.shared.endEditing()
         })
