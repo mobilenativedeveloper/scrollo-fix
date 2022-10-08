@@ -12,12 +12,12 @@ struct CommentCardView : View {
     @EnvironmentObject var commentsViewModel: CommentsViewModel
     @Binding var comment : PostModel.CommentsModel
     @Binding var message : String
-    
+    @Binding var profilePresent: Bool
     var body : some View {
 
         VStack(spacing: 0) {
 
-            CommentView(comment: comment, onPressLike: {
+            CommentView(profilePresent: $profilePresent, comment: comment, onPressLike: {
                 if let liked = comment.liked{
                     if liked {
                         commentsViewModel.likeRemoveComment(postCommentId: comment.id) {
@@ -46,7 +46,7 @@ struct CommentCardView : View {
                 .padding(.bottom, 19)
             ForEach(0..<comment.lastSubComments.count, id: \.self) {index in
                 let replyComment = comment.lastSubComments[index]
-                SubCommentView(comment: replyComment, onPressLike: {
+                SubCommentView(profilePresent: $profilePresent, comment: replyComment, onPressLike: {
                    
                     if let liked = replyComment.liked{
                         if liked {
@@ -85,6 +85,7 @@ struct CommentCardView : View {
 }
 
 private struct CommentView: View{
+    @Binding var profilePresent: Bool
     var comment : PostModel.CommentsModel
     var onPressLike: ()->()
     var onPressReply: () -> ()
@@ -113,20 +114,19 @@ private struct CommentView: View{
             }
             VStack(alignment: .leading, spacing: 0) {
                 HStack(alignment: .top, spacing: 0) {
-                    NavigationLink(destination: ProfileView(userId: comment.user.id)
-                                    .ignoreDefaultHeaderBar){
-                        if let avatar = comment.user.avatar {
-                            AnimatedImage(url: URL(string: "\(API_URL)/uploads/\(avatar)")!)
-                                .resizable()
-                                .scaledToFill()
-                                .frame(width: 32, height: 32)
-                                .background(Color.gray)
-                                .cornerRadius(10)
-                                .padding(.trailing, 16)
-                        } else {
-                            DefaultAvatar(width: 32, height: 32, cornerRadius: 10)
-                                .padding(.trailing, 16)
-                        }
+                    
+                    if let avatar = comment.user.avatar {
+                        AnimatedImage(url: URL(string: "\(API_URL)/uploads/\(avatar)")!)
+                            .resizable()
+                            .scaledToFill()
+                            .frame(width: 32, height: 32)
+                            .background(Color.gray)
+                            .cornerRadius(10)
+                            .padding(.trailing, 16)
+                            
+                    } else {
+                        DefaultAvatar(width: 32, height: 32, cornerRadius: 10)
+                            .padding(.trailing, 16)
                     }
                     
                     Text(comment.user.login).foregroundColor(.black).font(.custom(GothamBold, size: 14)) + Text("  ") + textWithHashtags(comment.comment, color: Color(hex: "#5B86E5")).font(.custom(GothamBook, size: 12)).foregroundColor(Color(hex: "#828282"))
@@ -135,6 +135,11 @@ private struct CommentView: View{
                         .font(.system(size: 10))
                         .foregroundColor(Color(hex: "#828282"))
 
+                }
+                .onTapGesture {
+                    withAnimation(.easeInOut){
+                        profilePresent.toggle()
+                    }
                 }
                 HStack(spacing: 0) {
                     Button(action: {
@@ -232,6 +237,7 @@ private struct CommentView: View{
 }
 
 private struct SubCommentView: View{
+    @Binding var profilePresent: Bool
     var comment : PostModel.LastSubComments
     var onPressLike: ()->()
     var onPressReply: () -> ()
@@ -260,20 +266,17 @@ private struct SubCommentView: View{
             
             VStack(alignment: .leading, spacing: 0) {
                 HStack(alignment: .top, spacing: 0) {
-                    NavigationLink(destination: ProfileView(userId: comment.user.id)
-                                    .ignoreDefaultHeaderBar){
-                        if let avatar = comment.user.avatar {
-                            AnimatedImage(url: URL(string: "\(API_URL)/uploads/\(avatar)")!)
-                                .resizable()
-                                .scaledToFill()
-                                .frame(width: 32, height: 32)
-                                .background(Color.gray)
-                                .cornerRadius(10)
-                                .padding(.trailing, 16)
-                        } else {
-                            DefaultAvatar(width: 32, height: 32, cornerRadius: 10)
-                                .padding(.trailing, 16)
-                        }
+                    if let avatar = comment.user.avatar {
+                        AnimatedImage(url: URL(string: "\(API_URL)/uploads/\(avatar)")!)
+                            .resizable()
+                            .scaledToFill()
+                            .frame(width: 32, height: 32)
+                            .background(Color.gray)
+                            .cornerRadius(10)
+                            .padding(.trailing, 16)
+                    } else {
+                        DefaultAvatar(width: 32, height: 32, cornerRadius: 10)
+                            .padding(.trailing, 16)
                     }
                     Text(comment.user.login).foregroundColor(.black).font(.custom(GothamBold, size: 14)) + Text("  ") + textWithHashtags(comment.content, color: Color(hex: "#5B86E5")).font(.custom(GothamBook, size: 12)).foregroundColor(Color(hex: "#828282"))
                     Spacer()
@@ -281,6 +284,11 @@ private struct SubCommentView: View{
                         .font(.system(size: 10))
                         .foregroundColor(Color(hex: "#828282"))
 
+                }
+                .onTapGesture {
+                    withAnimation(.easeInOut){
+                        profilePresent.toggle()
+                    }
                 }
                 HStack(spacing: 0) {
                     Button(action: {

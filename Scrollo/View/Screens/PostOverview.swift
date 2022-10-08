@@ -332,7 +332,7 @@ struct PostOverview: View {
                     }
                     else{
                         ForEach(0..<commentsViewModel.comments.count, id: \.self) {index in
-                            CommentCardView(comment: $commentsViewModel.comments[index], message: $commentsViewModel.content)
+                            CommentCardView(comment: $commentsViewModel.comments[index], message: $commentsViewModel.content, profilePresent: $profilePresent)
                                 .padding(.bottom, 19)
                                 .padding(.horizontal)
                                 .transition(.opacity)
@@ -419,7 +419,10 @@ struct PostOverview: View {
         .background(Color(hex: "#F9F9F9").edgesIgnoringSafeArea(.all))
         .ignoresSafeArea(.container, edges: [.bottom, .top])
         .navigationView(isPresent: $profilePresent){
-            ProfileView(userId: post.creator.id)
+            NavigationView{
+                ProfileView(userId: post.creator.id)
+                    .ignoreDefaultHeaderBar
+            }
         }
         .onTapGesture(perform: {
             UIApplication.shared.endEditing()

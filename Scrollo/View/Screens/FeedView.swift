@@ -29,6 +29,8 @@ struct FeedView: View {
     
     @State var endFeed: Bool = false
     
+    @State var profilePresent: Bool = false
+    
     
     var body: some View {
         VStack(spacing: 0) {
@@ -135,7 +137,6 @@ struct FeedView: View {
             }
         }
         .background(Color(hex: "#F9F9F9"))
-        
         .onAppear {
             if !self.loadPosts{
                 postViewModel.getPostsFeed {

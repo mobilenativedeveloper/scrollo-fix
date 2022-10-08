@@ -21,7 +21,6 @@ struct PostView: View{
     
     @EnvironmentObject var postViewModel: PostViewModel
     
-    @State var profilePresent: Bool = false
     
     @State var isPostSettings: Bool = false
     @State private var deletePost: Bool = false

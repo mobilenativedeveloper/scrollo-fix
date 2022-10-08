@@ -13,6 +13,8 @@ struct CommentsOverview: View {
     
     @StateObject var commentsViewModel: CommentsViewModel = CommentsViewModel()
     
+    @State var profilePresent: Bool = false
+    
     var body: some View {
         VStack(spacing: 0){
             HStack {
@@ -61,7 +63,7 @@ struct CommentsOverview: View {
                 else{
                     ScrollView {
                         ForEach(0..<commentsViewModel.comments.count, id: \.self) {index in
-                            CommentCardView(comment: $commentsViewModel.comments[index], message: $commentsViewModel.content)
+                            CommentCardView(comment: $commentsViewModel.comments[index], message: $commentsViewModel.content, profilePresent: $profilePresent)
                                 .padding(.bottom, 19)
                                 .transition(.opacity)
                                 .environmentObject(commentsViewModel)
@@ -148,6 +150,12 @@ struct CommentsOverview: View {
         }
         .background(Color(hex: "#F9F9F9").edgesIgnoringSafeArea(.all))
         .ignoresSafeArea(.container, edges: .bottom)
+        .navigationView(isPresent: $profilePresent){
+            NavigationView{
+                ProfileView(userId: post.creator.id)
+                    .ignoreDefaultHeaderBar
+            }
+        }
         .onTapGesture {
             UIApplication.shared.endEditing()
         }
