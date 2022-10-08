@@ -8,6 +8,8 @@
 import SwiftUI
 import SDWebImageSwiftUI
 
+
+
 struct ProfileView: View {
     
     @State var offset: CGFloat = 0
@@ -23,9 +25,17 @@ struct ProfileView: View {
     @State var isSettingsSheet: Bool = false
     
     @State var yourActivityPresent: Bool = false
+    @State var interestingPeoplePresent: Bool = false
+    
+    @StateObject var postViewModel: PostViewModel = PostViewModel()
     
     @State var savedPresent: Bool = false
-    @StateObject var postViewModel: PostViewModel = PostViewModel()
+    
+    @State var textPosts: [PostModel] = []
+    @State var loadTextposts: Bool = false
+    
+    @State var mediaPost: [[[PostModel]]] = []
+    @State var loadMdeiaPost: Bool = false
     
     var body: some View {
         ScrollView(.vertical, showsIndicators: false){
@@ -216,6 +226,41 @@ struct ProfileView: View {
                     .frame(height: 55)
                     .padding(.bottom, 21)
                     .padding(.top)
+                    
+                    if self.selectedTab == "media" {
+                        VStack{
+                            if self.loadMdeiaPost {
+                                PostCompositionView(posts: self.$mediaPost)
+                                    .environmentObject(postViewModel)
+                            }
+                            else{
+                                ProgressView()
+                                    .padding(.bottom)
+                            }
+                            Spacer()
+                        }
+                        
+                        ProfileСompletionView()
+                    }
+                    
+                    if self.selectedTab == "text" {
+                        VStack(alignment: .leading){
+                            if self.loadTextposts {
+                                ForEach(0..<self.textPosts.count, id: \.self){index in
+                                    PostView(post: self.$textPosts[index])
+                                        .environmentObject(postViewModel)
+                                }
+                            }
+                            else{
+                                ProgressView()
+                            }
+                            Spacer()
+                        }
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        
+                    }
+                    Spacer(minLength: 400)
+                    
                 }
                 .zIndex(-offset > 80 ? 0 : 1)
             }
@@ -240,7 +285,8 @@ struct ProfileView: View {
                     .bottomSheet(isPresented: $isSettingsSheet, detents: [.custom(440)], backgroundColor: .clear) {
                         SettingsSheet(
                             yourActivityPresent: self.$yourActivityPresent,
-                            savedPresent: self.$savedPresent
+                            savedPresent: self.$savedPresent,
+                            interestingPeoplePresent: self.$interestingPeoplePresent
                         )
                     }
             }
@@ -259,11 +305,23 @@ struct ProfileView: View {
                                 .ignoreDefaultHeaderBar, isActive: self.$savedPresent, label: {
                                     EmptyView()
                                 })
+                NavigationLink(destination: InterestingPeopleView()
+                                .ignoreDefaultHeaderBar, isActive: self.$interestingPeoplePresent, label: {
+                                    EmptyView()
+                                })
             }
         )
         .ignoresSafeArea(.all, edges: .top)
         .onAppear {
             getProfile()
+            postViewModel.getUserMediaPosts(userId: userId) { compositionPost in
+                self.mediaPost = compositionPost
+                self.loadMdeiaPost = true
+            }
+            postViewModel.getUserTextPosts(userId: userId) { posts in
+                self.textPosts = posts
+                self.loadTextposts = true
+            }
         }
     }
     
@@ -285,6 +343,88 @@ struct ProfileView: View {
             }
         }.resume()
     }
+    
+//    func checkFollowOnUser(userId: String, completion: @escaping (Bool?) -> Void) {
+//        let url = URL(string: "\(API_URL)\(API_CHECK_FOLLOW_ON_USER)\(userId)")!
+//        
+//        if let request = Request(url: url, httpMethod: "GET", body: nil) {
+//            URLSession.shared.dataTask(with: request){data, response, error in
+//                if let _ = error {
+//                    return
+//                }
+//
+//                guard let response = response as? HTTPURLResponse else {return}
+//
+//                if response.statusCode == 200 {
+//                    if let json = try? JSONDecoder().decode(ResponseResult.self, from: data!) {
+//                        DispatchQueue.main.async {
+//                            if json.result == true {
+//                                completion(true)
+//                            } else {
+//                                completion(false)
+//                            }
+//                        }
+//                    }
+//                }
+//            }.resume()
+//        }
+//    }
+    
+//    func followOnUser(userId: String, completion: @escaping () -> Void) -> Void {
+//        let url = URL(string: "\(API_URL)\(API_FOLLOW_ON_USER)")!
+//
+//        let body: [String: String] = [
+//            "userId": userId
+//        ]
+//
+//        if let request = Request(url: url, httpMethod: "POST", body: body) {
+//            URLSession.shared.dataTask(with: request){data, response, error in
+//                if let _ = error {
+//                    return
+//                }
+//
+//                guard let response = response as? HTTPURLResponse else {return}
+//
+//                if response.statusCode == 200 {
+//                    completion()
+//                    print(response)
+//                    if let json = try? JSONSerialization.jsonObject(with: data!, options: []) {
+//                        print(json)
+//                    }
+//                } else {
+//                    print(response)
+//                    if let json = try? JSONSerialization.jsonObject(with: data!, options: []) {
+//                        print(json)
+//                    }
+//                    return
+//                }
+//
+//            }.resume()
+//        }
+//    }
+//
+//    func unFollowOnUser(userId: String, completion: @escaping () -> Void) -> Void {
+//        let url = URL(string: "\(API_URL)\(API_FOLLOW_ON_USER)\(userId)")!
+//
+//
+//        if let request = Request(url: url, httpMethod: "DELETE", body: nil) {
+//            URLSession.shared.dataTask(with: request){data, response, error in
+//                if let _ = error {
+//                    return
+//                }
+//
+//                guard let response = response as? HTTPURLResponse else {return}
+//
+//                if response.statusCode == 200 {
+//                    completion()
+//                    print(response)
+//                    if let json = try? JSONSerialization.jsonObject(with: data!, options: []) {
+//                        print(json)
+//                    }
+//                }
+//            }.resume()
+//        }
+//    }
     
     func getOffset()->CGFloat{
         let progress = (-offset / 80) * 20
@@ -464,6 +604,7 @@ private struct SettingsSheet: View {
     
     @Binding var yourActivityPresent: Bool
     @Binding var savedPresent: Bool
+    @Binding var interestingPeoplePresent: Bool
     
     let time: CGFloat = 0.2
     
@@ -522,10 +663,10 @@ private struct SettingsSheet: View {
                 .padding()
             }
             Button(action: {
-//                presentationMode.wrappedValue.dismiss()
-//                DispatchQueue.main.asyncAfter(deadline: .now() + time) {
-//                    isPresentInterestingPeopleView.toggle()
-//                }
+                presentationMode.wrappedValue.dismiss()
+                DispatchQueue.main.asyncAfter(deadline: .now() + time) {
+                    interestingPeoplePresent.toggle()
+                }
             }) {
                 HStack {
                     Image("add.friend")
@@ -592,3 +733,201 @@ private struct SettingsSheet: View {
     }
 }
 
+private struct ProfileСompletion: Identifiable {
+    var id = UUID().uuidString
+    var icon: String
+    var title: String
+    var subtitle: String
+    var buttonText: String
+}
+
+private struct ProfileСompletionView: View{
+    let completions: [ProfileСompletion] = [
+        ProfileСompletion(icon: "person.2", title: "Найдите людей для подписки", subtitle: "Подпишитесь на 5 или более аккаунтов.", buttonText: "Найти еще"),
+        ProfileСompletion(icon: "person", title: "Укажите свое имя", subtitle: "Добавьте имя и фамилию, чтобы друзья знали, что это вы.", buttonText: "Редактировать имя"),
+        ProfileСompletion(icon: "person.circle", title: "Добавьте фото профиля", subtitle: "Выберите фото для своего профиля Scrollo", buttonText: "Изменить фото"),
+        ProfileСompletion(icon: "person.circle", title: "Добавьте биографию", subtitle: "Расскажите своим подписчикам немного о себе.", buttonText: "Редактировать биографию"),
+        
+    ]
+    
+    @State var currentIndex: Int = 0
+    
+    var body: some View{
+        VStack{
+            VStack(alignment: .leading){
+                Text("Заполните профиль")
+                    .fontWeight(.bold)
+                    .font(.system(size: 14))
+                    .foregroundColor(.black)
+                    .padding(.bottom, 1)
+                (
+                    Text("0 из 4").font(.system(size: 12)).foregroundColor(Color(hex: "#01da2d")) + Text(" готово").font(.system(size: 12)).foregroundColor(.gray)
+                )
+            }
+            .padding(.horizontal)
+            .padding(.top)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            
+            SnapCarousel(spacing: 10, trailingSpace: 190, index: $currentIndex, items: completions) {completion in
+                GeometryReader{proxy in
+                    СompletionCard(completion: completion, proxy: proxy)
+                }
+            }
+            .padding(.top)
+        }
+    }
+}
+
+private struct СompletionCard: View{
+    var completion: ProfileСompletion
+    var proxy: GeometryProxy
+    
+    var body: some View{
+        VStack{
+            Image(systemName: completion.icon)
+                .font(.system(size: 30))
+                .foregroundColor(Color(hex: "#6c6c6c"))
+                .padding()
+                .background(
+                    Circle()
+                        .stroke(Color(hex: "#6c6c6c"), lineWidth: 1)
+                )
+                .padding(.vertical)
+            Text(completion.title)
+                .font(.system(size: 14))
+                .fontWeight(.bold)
+                .foregroundColor(Color(hex: "#191919"))
+                .frame(width: proxy.size.width/1.2)
+                .padding(.bottom, 4)
+                .multilineTextAlignment(.center)
+                .fixedSize(horizontal: false, vertical: true)
+            Text(completion.subtitle)
+                .font(.system(size: 11))
+                .foregroundColor(Color(hex: "#a3a3a3"))
+                .frame(width: proxy.size.width/1.2)
+                .padding(.bottom)
+                .multilineTextAlignment(.center)
+                .fixedSize(horizontal: false, vertical: true)
+            Spacer(minLength: 0)
+            NavigationLink(destination: Text("EditProfile")){
+                Text(completion.buttonText)
+                    .font(.system(size: 12))
+                    .foregroundColor(.black)
+                    .fontWeight(.bold)
+                    .padding(.vertical, 6)
+                    .padding(.horizontal, 13)
+                    .background(Color(hex: "#efefef").cornerRadius(5))
+                    .padding(.bottom)
+            }
+        }
+        .frame(width: proxy.size.width, height: 230)
+        .background(
+            RoundedRectangle(cornerRadius: 10)
+                .stroke(Color(hex: "#ededed"))
+        )
+        
+    }
+}
+
+struct PostCompositionView: View {
+    @EnvironmentObject var postViewModel: PostViewModel
+    @Binding var posts: [[[PostModel]]]
+    
+    var body: some View {
+        VStack(alignment: .leading) {
+            ForEach(0..<posts.count, id: \.self) {index in
+                CompositionStack(stack: $posts[index])
+                    .environmentObject(postViewModel)
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+}
+
+struct CompositionStack: View {
+    @EnvironmentObject var postViewModel: PostViewModel
+    @Binding var stack: [[PostModel]]
+    
+    var body: some View {
+        HStack(alignment: .top, spacing: 8) {
+            ForEach(0..<stack.count, id: \.self) {index in
+                CompositionColumn(posts: $stack[index], columnIndex: index)
+                    .environmentObject(postViewModel)
+            }
+        }
+    }
+}
+
+struct CompositionColumn: View {
+    @EnvironmentObject var postViewModel: PostViewModel
+    @Binding var posts: [PostModel]
+    var columnIndex: Int
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            ForEach(0..<posts.count, id: \.self) {index in
+                UIPostCompositionView(post: $posts[index], index: index, columnIndex: columnIndex)
+                    .environmentObject(postViewModel)
+            }
+        }
+        .padding(.horizontal)
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+}
+
+struct UIPostCompositionView: View {
+    @EnvironmentObject var postViewModel: PostViewModel
+    @Binding var post: PostModel
+    var index: Int
+    var columnIndex: Int
+    let size = (UIScreen.main.bounds.width / 3) - 16
+    
+    var body: some View {
+        if post.files[0].type == "IMAGE" {
+            if let path = post.files[0].filePath {
+                NavigationLink(destination: PostOverview(post: $post)
+                                .environmentObject(postViewModel)
+                                .ignoreDefaultHeaderBar) {
+                    WebImage(url: URL(string: "\(API_URL)/uploads/\(path)")!)
+                        .resizable()
+                        .scaledToFill()
+                        .frame(width: size, height: self.getHeight())
+                        .clipped()
+                        .background(Color.gray.opacity(0.5))
+                        .cornerRadius(6)
+                }
+                                .buttonStyle(FlatLinkStyle())
+            }
+        } else {
+//            if let path = post.files[0].filePath {
+//                NavigationLink(destination:
+//                                PostDetailView(post: $post).ignoreDefaultHeaderBar
+//                ) {
+//                    VideoThumbnail(video: URL(string: "\(API_URL)/uploads/\(path)")!, width: size, height: self.getHeight())
+//                }
+//            }
+        }
+    }
+    
+    func getHeight () -> CGFloat {
+        if columnIndex == 0 && index == 0 {
+            return 121
+        }
+        if columnIndex == 0 && index == 1 {
+            return 189
+        }
+        if columnIndex == 1 && index == 0 {
+            return 189
+        }
+        if columnIndex == 1 && index == 1 {
+            return 121
+        }
+        if columnIndex == 2 && index == 0 {
+            return 121
+        }
+        if columnIndex == 2 && index == 1 {
+            return 189
+        }
+        return 0
+    }
+}

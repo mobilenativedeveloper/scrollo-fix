@@ -27,7 +27,7 @@ struct FeedView: View {
     
     @Binding var offset: CGFloat
     
-    
+    @State var endFeed: Bool = false
     
     var body: some View {
         VStack(spacing: 0) {
@@ -59,13 +59,52 @@ struct FeedView: View {
                     }
                 }
                 if self.loadPosts{
-                    if postViewModel.posts.count == 0{
+                    if postViewModel.posts.count > 0{
                         ForEach(0..<postViewModel.posts.count, id: \.self){index in
                             PostView(post: $postViewModel.posts[index])
                                 .environmentObject(postViewModel)
                             
                             if index == postViewModel.posts.count - 1{
+                                LazyVStack{
+                                if self.endFeed{
+                                    VStack(alignment: .center, spacing: 0) {
+                                        Image(systemName: "checkmark")
+                                            .font(.system(size: 21))
+                                            .gradientForeground(colors: [Color(hex: "#5B86E5"), Color(hex: "#36DCD8")])
+                                            .padding()
+                                            .background(
+                                                Circle()
+                                                    .strokeBorder(
+                                                            AngularGradient(gradient: Gradient(colors: [Color(hex: "#5B86E5"), Color(hex: "#36DCD8")]), center: .center, startAngle: .zero, endAngle: .degrees(360)),
+                                                            lineWidth: 2
+                                                        )
+                                            )
+                                            .padding(.bottom)
+                                            .scaleEffect(endFeed ? 1 : 0)
+                                        Text("Вы посмотрели все обновления")
+                                            .fontWeight(.semibold)
+                                            .foregroundColor(Color.black)
+                                            .padding(.bottom, 5)
+                                        Text("Вы посмотрели все новые публикации за последние 7д.")
+                                            .font(.system(size: 14))
+                                            .foregroundColor(.gray)
+                                            .multilineTextAlignment(.center)
+                                            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
+                                            .padding(.horizontal, 40)
+                                    }
+                                    .padding(.vertical)
+                                    .transition(.opacity)
+                                }
+                                
                                 Color.clear.frame(height: 200)
+                                    .onAppear {
+                                        if !self.endFeed{
+                                            withAnimation(.easeInOut(duration: 0.2)){
+                                                self.endFeed = true
+                                            }
+                                        }
+                                    }
+                                }
                             }
                         }
                     }
@@ -81,8 +120,10 @@ struct FeedView: View {
             }
             .background(Color(hex: "#F9F9F9"))
             .pullToRefresh(refreshing: $refreshing, backgroundColor: Color(hex: "#F9F9F9")) { done in
+                
                 postViewModel.getPostsFeed{
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.2){
+                        self.endFeed = false
                         done()
                     }
                 }

@@ -110,3 +110,15 @@ extension View{
         return UIScreen.main.bounds
     }
 }
+
+extension View {
+    public func gradientForeground(colors: [Color]) -> some View {
+        self.overlay(
+            LinearGradient(
+                colors: colors,
+                startPoint: .topLeading,
+                endPoint: .bottomTrailing)
+        )
+            .mask(self)
+    }
+}

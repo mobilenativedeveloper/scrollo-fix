@@ -53,7 +53,7 @@ let API_SAVE_MEDIA_POSTS_ALBUM = "/api/v1/post/saved-album/posts/"
 
 let API_SAVED_ALBUM = "/api/v1/post/saved-album"
 
-//let API_USER_GET_POST = "/api/v1/post/user/"
+let API_USER_POST = "/api/v1/post/user/"
 
 //let API_USER_FIND = "/api/v1/user/finding/"
 
