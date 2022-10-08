@@ -105,18 +105,22 @@ private struct CommentView: View{
             }
             VStack(alignment: .leading, spacing: 0) {
                 HStack(alignment: .top, spacing: 0) {
-                    if let avatar = comment.user.avatar {
-                        AnimatedImage(url: URL(string: "\(API_URL)/uploads/\(avatar)")!)
-                            .resizable()
-                            .scaledToFill()
-                            .frame(width: 32, height: 32)
-                            .background(Color.gray)
-                            .cornerRadius(10)
-                            .padding(.trailing, 16)
-                    } else {
-                        DefaultAvatar(width: 32, height: 32, cornerRadius: 10)
-                            .padding(.trailing, 16)
+                    NavigationLink(destination: ProfileView(userId: comment.user.id)
+                                    .ignoreDefaultHeaderBar){
+                        if let avatar = comment.user.avatar {
+                            AnimatedImage(url: URL(string: "\(API_URL)/uploads/\(avatar)")!)
+                                .resizable()
+                                .scaledToFill()
+                                .frame(width: 32, height: 32)
+                                .background(Color.gray)
+                                .cornerRadius(10)
+                                .padding(.trailing, 16)
+                        } else {
+                            DefaultAvatar(width: 32, height: 32, cornerRadius: 10)
+                                .padding(.trailing, 16)
+                        }
                     }
+                    
                     Text(comment.user.login).foregroundColor(.black).font(.custom(GothamBold, size: 14)) + Text("  ") + textWithHashtags(comment.comment, color: Color(hex: "#5B86E5")).font(.custom(GothamBook, size: 12)).foregroundColor(Color(hex: "#828282"))
                     Spacer()
                     Text("3ч")
@@ -175,10 +179,15 @@ private struct CommentView: View{
             .padding(.horizontal)
             .background(Color(hex: "#F9F9F9"))
             .offset(x: offset)
-            .gesture(DragGesture().onChanged(onChange(value:)).onEnded(onEnd(value:)))
+            .gesture(isMyComment() ? DragGesture().onChanged(onChange(value:)).onEnded(onEnd(value:)) : nil)
             
         }
     }
+    
+    func isMyComment()->Bool{
+        return UserDefaults.standard.string(forKey: "userId") == comment.user.id
+    }
+    
     func onChange(value: DragGesture.Value){
         if value.translation.width < 0 {
             if self.isSwiped {
@@ -243,17 +252,20 @@ private struct SubCommentView: View{
             
             VStack(alignment: .leading, spacing: 0) {
                 HStack(alignment: .top, spacing: 0) {
-                    if let avatar = comment.user.avatar {
-                        AnimatedImage(url: URL(string: "\(API_URL)/uploads/\(avatar)")!)
-                            .resizable()
-                            .scaledToFill()
-                            .frame(width: 32, height: 32)
-                            .background(Color.gray)
-                            .cornerRadius(10)
-                            .padding(.trailing, 16)
-                    } else {
-                        DefaultAvatar(width: 32, height: 32, cornerRadius: 10)
-                            .padding(.trailing, 16)
+                    NavigationLink(destination: ProfileView(userId: comment.user.id)
+                                    .ignoreDefaultHeaderBar){
+                        if let avatar = comment.user.avatar {
+                            AnimatedImage(url: URL(string: "\(API_URL)/uploads/\(avatar)")!)
+                                .resizable()
+                                .scaledToFill()
+                                .frame(width: 32, height: 32)
+                                .background(Color.gray)
+                                .cornerRadius(10)
+                                .padding(.trailing, 16)
+                        } else {
+                            DefaultAvatar(width: 32, height: 32, cornerRadius: 10)
+                                .padding(.trailing, 16)
+                        }
                     }
                     Text(comment.user.login).foregroundColor(.black).font(.custom(GothamBold, size: 14)) + Text("  ") + textWithHashtags(comment.content, color: Color(hex: "#5B86E5")).font(.custom(GothamBook, size: 12)).foregroundColor(Color(hex: "#828282"))
                     Spacer()

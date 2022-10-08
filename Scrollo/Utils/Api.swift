@@ -55,6 +55,8 @@ let API_SAVED_ALBUM = "/api/v1/post/saved-album"
 
 let API_USER_POST = "/api/v1/post/user/"
 
+let API_POST_SAVE = "/api/v1/post/save"
+
 //let API_USER_FIND = "/api/v1/user/finding/"
 
 

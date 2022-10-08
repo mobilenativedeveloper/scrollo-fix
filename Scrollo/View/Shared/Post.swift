@@ -8,6 +8,7 @@
 import SwiftUI
 import SDWebImageSwiftUI
 import UISheetPresentationControllerCustomDetent
+import AVKit
 
 enum PostListAnimation{
     case delete
@@ -27,11 +28,13 @@ struct PostView: View{
     
     @State var isSharePresent: Bool = false
     
+    @State var mediaPostSaveAlbumPresent: Bool = false
+    
     var body: some View{
         VStack(alignment: .leading, spacing: 0) {
             HStack(spacing: 0) {
                 HStack(spacing: 0){
-                    NavigationLink(destination: Text("Profile")
+                    NavigationLink(destination: ProfileView(userId: post.creator.id)
                                     .ignoreDefaultHeaderBar){
                         Avatar()
                     }
@@ -74,6 +77,12 @@ struct PostView: View{
                 }
             }
             .padding(.bottom, 13)
+            
+            if post.type == "STANDART"{
+                PostMediaCarouselView(images: post.files)
+                    .padding(.bottom, 16)
+            }
+            
             TruncateTextView(text: post.content)
             
             HStack(spacing: 5) {
@@ -143,7 +152,22 @@ struct PostView: View{
                 }
                 Spacer(minLength: 0)
                 Button(action: {
-                    
+                    if post.type == "TEXT"{
+                        if post.inSaved {
+                            postViewModel.unSavePost(postId: post.id) {
+                                post.inSaved = false
+                            }
+                        }
+                        else{
+                            postViewModel.savePost(postId: post.id, albumId: nil) {
+                                post.inSaved = true
+                            }
+                        }
+                        
+                    }
+                    if post.type == "STANDART"{
+                        mediaPostSaveAlbumPresent.toggle()
+                    }
                 }) {
                     if post.inSaved {
                         Image("bookmark_active")
@@ -161,6 +185,12 @@ struct PostView: View{
             }
             .padding(.top, 17)
             .background(Color.white)
+            .fullScreenCover(isPresented: $mediaPostSaveAlbumPresent) {
+                SelectAlbum(isPresented: $mediaPostSaveAlbumPresent)
+            }
+            if post.type == "STANDART"{
+                ShareUsersPost()
+            }
         }
         .padding(.vertical, 18)
         .padding(.horizontal, 14)
@@ -496,6 +526,241 @@ struct ShareUserView: View{
                 .foregroundColor(Color(hex: "#444A5E"))
                 .font(.system(size: 12))
                 .padding(.top, 10)
+        }
+    }
+}
+
+struct PostMediaCarouselView: View {
+    @State var selection : Int = 0
+    
+    var images: [PostModel.PostFiles]
+    
+    var body: some View {
+        ZStack(alignment: Alignment(horizontal: .trailing, vertical: .top)) {
+            VStack {
+                TabView(selection: self.$selection) {
+                    ForEach(0..<images.count, id: \.self){index in
+                        if images[index].type == "IMAGE" {
+                            if let path = self.images[index].filePath {
+                                WebImage(url: URL(string: "\(API_URL)/uploads/\(path)")!)
+                                    .resizable()
+                                    .scaledToFill()
+                                    .frame(height: UIScreen.main.bounds.width - 48)
+                                    .clipped()
+                                    .tag(index)
+                            }
+                        } else if images[index].type == "VIDEO" {
+                            if let path = images[index].filePath {
+                                SlideVideo(path: path)
+                                    .tag(index)
+                            }
+                        }
+                    }
+                }
+                .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
+            }
+            .frame(height: UIScreen.main.bounds.width - 48)
+            .background(Color.white)
+            .cornerRadius(20)
+            .shadow(color: Color.black.opacity(0.2), radius: 9, x: 0, y: 0)
+            Indicator()
+        }
+    }
+    
+    @ViewBuilder
+    func Indicator() -> some View {
+        HStack {
+            ForEach(0..<images.count, id: \.self) {index in
+                RoundedRectangle(cornerRadius: 20)
+                    .fill(Color.white.opacity(0.8))
+                    .frame(width: self.selection == index ? 28 : 7, height: 4)
+                    .padding(.trailing, index != images.count - 1 ? 4 : 0)
+                    .animation(.default)
+            }
+        }
+        .offset(x: -10, y: 10)
+    }
+}
+
+struct SlideVideo: View {
+    @StateObject var videoThumbnailViewModel: VideoThumbnailViewModel = VideoThumbnailViewModel()
+    @State var playVideo: Bool = false
+    var path: String
+    let player = AVPlayer(url:  URL(string: "https://images.all-free-download.com/footage_preview/mp4/jasmine_flower_6891520.mp4")!)
+    
+    var body: some View {
+        ZStack(alignment: Alignment(horizontal: .center, vertical: .center)) {
+            if self.playVideo == false {
+                ZStack(alignment: Alignment(horizontal: .center, vertical: .center)) {
+                    Image(uiImage: videoThumbnailViewModel.thumbnailVideo)
+                        .resizable()
+                        .scaledToFill()
+                        .frame(height: UIScreen.main.bounds.width - 48)
+                        .clipped()
+                        .background(Color(hex: "#f2f2f2"))
+                        .overlay(
+                            ProgressView(),
+                            alignment: Alignment(horizontal: .center, vertical: .center)
+                        )
+                    if !videoThumbnailViewModel.load {
+                        ProgressView()
+                    } else {
+                        Image("play_icon")
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: 73, height: 73)
+                    }
+                }
+                .frame(height: UIScreen.main.bounds.width - 48)
+                .background(Color(hex: "#383838"))
+                .onTapGesture(perform: {
+                    if videoThumbnailViewModel.load {
+                        if self.playVideo == true {
+                            self.playVideo = false
+                        } else {
+                            self.playVideo = true
+                        }
+                    }
+                })
+            } else {
+                PlayerControllerRepresented(player: AVPlayer(url: URL(string: "\(API_URL)/uploads/\(path)")!))
+                    .aspectRatio(contentMode: .fill)
+                    .frame(height: UIScreen.main.bounds.width - 48)
+                    .onAppear(perform: {
+                        print("UIAVPlayerControllerRepresented play")
+                        player.play()
+                    })
+            }
+        }
+        .frame(height: UIScreen.main.bounds.width - 48)
+        .onAppear{
+            if !videoThumbnailViewModel.error {
+                videoThumbnailViewModel.createThumbnailFromVideo(url: URL(string: "\(API_URL)/uploads/\(path)")!)
+            }
+        }
+        .onTapGesture(perform: {
+            if videoThumbnailViewModel.load {
+                if self.playVideo == true {
+                    self.playVideo = false
+                } else {
+                    self.playVideo = true
+                }
+            }
+        })
+    }
+}
+
+struct PlayerControllerRepresented : UIViewControllerRepresentable {
+    var player : AVPlayer
+    
+    func makeUIViewController(context: Context) -> AVPlayerViewController {
+        let controller = AVPlayerViewController()
+        controller.player = player
+        controller.showsPlaybackControls = false
+        return controller
+    }
+    
+    func updateUIViewController(_ uiViewController: AVPlayerViewController, context: Context) {
+        
+    }
+}
+
+struct ShareUsersPost: View {
+    var body: some View {
+        HStack(spacing: 0) {
+            ZStack{
+                WebImage(url: URL(string: "https://picsum.photos/200/300?random=1")!)
+                    .resizable()
+                    .aspectRatio(contentMode: .fill)
+                    .frame(width: 18, height: 18)
+                    .background(Color(hex: "#F2F2F2"))
+                    .clipShape(Circle())
+                    .background(
+                        Circle()
+                            .fill(Color(hex: "#F2F2F2"))
+                            .frame(width: 20, height: 20)
+                    )
+                WebImage(url: URL(string: "https://picsum.photos/200/300?random=2")!)
+                    .resizable()
+                    .aspectRatio(contentMode: .fill)
+                    .frame(width: 18, height: 18)
+                    .background(Color(hex: "#F2F2F2"))
+                    .clipShape(Circle())
+                    .background(
+                        Circle()
+                            .fill(Color(hex: "#F2F2F2"))
+                            .frame(width: 20, height: 20)
+                    )
+                    .offset(x: 10)
+                WebImage(url: URL(string: "https://picsum.photos/200/300?random=3")!)
+                    .resizable()
+                    .aspectRatio(contentMode: .fill)
+                    .frame(width: 18, height: 18)
+                    .background(Color(hex: "#F2F2F2"))
+                    .clipShape(Circle())
+                    .background(
+                        Circle()
+                            .fill(Color(hex: "#F2F2F2"))
+                            .frame(width: 20, height: 20)
+                    )
+                    .offset(x: 20)
+            }
+            .padding(.trailing, 35)
+            Text("Привет друзья, как вы? Хочу поделиться новостями...")
+                .font(Font.custom(GothamBook, size: 11))
+                .padding(.trailing, 3)
+            Spacer(minLength: 0)
+            Button(action: {}){
+                Text("Далее")
+                    .font(Font.custom(GothamBook, size: 10))
+                    .foregroundColor(.black)
+                    .padding(.vertical, 10)
+                    .padding(.horizontal, 15)
+            }
+            .background(Color(hex: "#F0F0F0"))
+            .cornerRadius(50)
+        }
+        .padding(.top, 20)
+    }
+}
+
+struct SelectAlbum: View {
+    @Binding var isPresented: Bool
+    
+    var body: some View{
+        VStack{
+            HStack {
+                Button(action: {
+                    withAnimation{
+                        isPresented.toggle()
+                    }
+                }) {
+                    Image("circle_close")
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
+                        .frame(width: 24, height: 24)
+                }
+                Spacer(minLength: 0)
+                Text("Сохранить в")
+                    .font(.system(size: 20))
+                    .fontWeight(.bold)
+                    .textCase(.uppercase)
+                    .foregroundColor(Color(hex: "#1F2128"))
+                Spacer(minLength: 0)
+                Button(action: {
+                   
+                }) {
+                    
+                    Image("blue.circle.outline.plus")
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
+                        .frame(width: 24, height: 24)
+                }
+            }
+            .padding(.bottom)
+            .padding(.horizontal)
+            
+            Spacer(minLength: 0)
         }
     }
 }

@@ -12,6 +12,8 @@ struct SavedView: View {
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
     @EnvironmentObject var postViewModel: PostViewModel
     
+    @StateObject var savedPostsViewModel: SavedPostsViewModel = SavedPostsViewModel()
+    
     @State private var currentTab: String = "media"
     @Namespace var animation
     let savedItemSize: CGFloat = (screen_rect.width / 2) - 26 - 9
@@ -52,11 +54,29 @@ struct SavedView: View {
             }
             .padding(.horizontal)
             
-            VStack{
-               
+            ScrollView{
+                if currentTab == "media"{
+                    
+                }
+                if currentTab == "text"{
+                    if savedPostsViewModel.savedTextPostsLoad{
+                        ForEach(0..<savedPostsViewModel.savedTextPosts.count, id: \.self){index in
+                            PostView(post: $savedPostsViewModel.savedTextPosts[index])
+                                .environmentObject(postViewModel)
+                        }
+                    }
+                    else{
+                        ProgressView()
+                    }
+                }
+                Spacer(minLength: 0)
             }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            Spacer(minLength: 0)
+            .animation(.none, value: currentTab)
+            
+            
+        }
+        .onAppear {
+            savedPostsViewModel.getSavedTextPosts()
         }
     }
     

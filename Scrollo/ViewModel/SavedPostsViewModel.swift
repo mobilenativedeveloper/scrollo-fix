@@ -21,13 +21,13 @@ class SavedPostsViewModel: ObservableObject {
     let pageMediaSize = 100
     
     func getSavedTextPosts () {
-        guard let url = URL(string: "\(API_URL)\(API_SAVED_TEXT_POSTS)?page=\(pageSavedTextPosts)&pageSize=\(pageSize)") else { return }
+        guard let url = URL(string: "\(API_URL)\(API_SAVED_TEXT_POSTS)?page=0&pageSize=100") else { return }
         guard let request = Request(url: url, httpMethod: "GET", body: nil) else { return }
         
         URLSession.shared.dataTask(with: request) { data, response, _ in
             guard let response = response as? HTTPURLResponse else { return }
             guard let data = data else {return}
-            
+            print("getSavedTextPosts: \(response.statusCode)")
             if response.statusCode == 200 {
                 guard let responseJson = try? JSONDecoder().decode(PostResponse.self, from: data) else {return}
                 

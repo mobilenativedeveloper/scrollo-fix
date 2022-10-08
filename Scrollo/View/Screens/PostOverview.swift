@@ -15,7 +15,6 @@ struct PostOverview: View {
     @StateObject var commentsViewModel: CommentsViewModel = CommentsViewModel()
     
     @Binding var post: PostModel
-    @State var comment: String = ""
     
     @State var isPostSettings: Bool = false
     @State private var deletePost: Bool = false
@@ -28,7 +27,11 @@ struct PostOverview: View {
                 VStack(alignment: .leading){
                     HStack(spacing: 0) {
                         HStack(spacing: 0){
-                            Avatar()
+                            NavigationLink(destination: ProfileView(userId: post.creator.id)
+                                            .ignoreDefaultHeaderBar){
+                                Avatar()
+                            }
+                            
                             VStack(alignment: .leading, spacing: 0) {
                                 Text(post.creator.login)
                                     .font(.system(size: 14))
@@ -70,16 +73,98 @@ struct PostOverview: View {
                     .padding(.horizontal)
                     .padding(.top, UIApplication.shared.windows.first?.safeAreaInsets.top ?? 0)
                     .background(Color.white)
-//                    if post.type == "STANDART" {
-//                        if let files = post.files {
-//                            PostMediaCarousel(images: files)
-//                                .padding(.horizontal)
-//                            PostFooter(post: $post)
-//                                .padding(.top, 17)
-//                                .padding(.horizontal)
-//                                .environmentObject(bottomSheetViewModel)
-//                        }
-//                    }
+                    
+                    if post.type == "STANDART" {
+                        PostMediaCarouselView(images: post.files)
+                            .padding(.horizontal)
+                        
+                        HStack(spacing: 5) {
+                            SpringButton(
+                                image: post.liked ? "heart_active" : "heart_inactive",
+                                count: post.likesCount,
+                                ifDelivered: post.liked) {
+                                    if !post.disliked{
+                                        if post.liked {
+                                            postViewModel.removeLike(postId: post.id) {
+                                                post.liked.toggle()
+                                                post.likesCount = post.likesCount - 1
+                                            }
+                                        }
+                                        else{
+                                            postViewModel.addLike(postId: post.id) {
+                                                post.liked.toggle()
+                                                post.likesCount = post.likesCount + 1
+                                            }
+                                        }
+                                    }
+                                }
+                            SpringButton(
+                                image: post.disliked ? "dislike_active" : "dislike_inactive",
+                                count: post.dislikeCount,
+                                ifDelivered: post.disliked) {
+                                    if !post.liked{
+                                        if post.disliked {
+                                            postViewModel.removeDislike(postId: post.id) {
+                                                post.disliked.toggle()
+                                                post.dislikeCount = post.dislikeCount - 1
+                                            }
+                                        }
+                                        else{
+                                            postViewModel.addDislike(postId: post.id) {
+                                                post.disliked.toggle()
+                                                post.dislikeCount = post.dislikeCount + 1
+                                            }
+                                        }
+                                    }
+                            }
+                            NavigationLink(destination: CommentsOverview(post: $post)
+                                            .ignoreDefaultHeaderBar){
+                                HStack(spacing: 0) {
+                                    Image("comments")
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fit)
+                                        .frame(width: 21, height: 21)
+                                        .padding(.trailing, 6)
+                                    Text("\(post.commentsCount)")
+                                        .font(Font.custom(GothamBold, size: 12))
+                                        .foregroundColor(Color.black)
+                                }
+                                .frame(width: 61, height: 20)
+                            }
+                            Button(action: {
+                                self.isSharePresent.toggle()
+                            }) {
+                                Image("share")
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(width: 21, height: 21)
+                            }
+                            .frame(width: 61, height: 20)
+                            .bottomSheet(isPresented: $isSharePresent, detents: [.custom(440)]) {
+                                ShareBottomSheet(postId: post.id)
+                            }
+                            Spacer(minLength: 0)
+                            Button(action: {
+                                
+                            }) {
+                                if post.inSaved {
+                                    Image("bookmark_active")
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fit)
+                                        .frame(width: 21, height: 21)
+                                } else {
+                                    Image("bookmark_inactive")
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fit)
+                                        .frame(width: 21, height: 21)
+                                }
+
+                            }
+                        }
+                        .padding(.horizontal)
+                        .padding(.top, 17)
+                    }
+                    
                     Text(post.content)
                         .font(.system(size: 14))
                         .foregroundColor(.black)
@@ -177,7 +262,7 @@ struct PostOverview: View {
                     
                     HStack(spacing: 0) {
                         ZStack{
-                            Image("story1")
+                            WebImage(url: URL(string: "https://picsum.photos/200/300?random=1"))
                                 .resizable()
                                 .aspectRatio(contentMode: .fill)
                                 .frame(width: 18, height: 18)
@@ -188,7 +273,7 @@ struct PostOverview: View {
                                         .fill(Color(hex: "#F2F2F2"))
                                         .frame(width: 20, height: 20)
                                 )
-                            Image("story2")
+                            WebImage(url: URL(string: "https://picsum.photos/200/300?random=2"))
                                 .resizable()
                                 .aspectRatio(contentMode: .fill)
                                 .frame(width: 18, height: 18)
@@ -200,7 +285,7 @@ struct PostOverview: View {
                                         .frame(width: 20, height: 20)
                                 )
                                 .offset(x: 10)
-                            Image("story3")
+                            WebImage(url: URL(string: "https://picsum.photos/200/300?random=3"))
                                 .resizable()
                                 .aspectRatio(contentMode: .fill)
                                 .frame(width: 18, height: 18)
@@ -228,13 +313,30 @@ struct PostOverview: View {
                 .shadow(color: Color.black.opacity(0.1), radius: 10, x: 0, y: 20)
                 .padding(.bottom, 25)
                 if commentsViewModel.load {
-                    ForEach(0..<commentsViewModel.comments.count, id: \.self) {index in
-                        CommentCardView(comment: $commentsViewModel.comments[index], message: $commentsViewModel.content)
-                            .padding(.bottom, 19)
-                            .padding(.horizontal)
-                            .transition(.opacity)
-                            .environmentObject(commentsViewModel)
+                    if commentsViewModel.comments.count == 0{
+                        Spacer(minLength: 0)
+                        VStack(alignment: .center) {
+                            
+                            Text("Нет комментариев.")
+                                .fontWeight(.semibold)
+                                .foregroundColor(Color.black)
+                                .padding(.bottom, 5)
+                            Text("Начните переписку")
+                                .font(.system(size: 14))
+                                .foregroundColor(.gray)
+                                .padding(.horizontal, 40)
+                        }
                     }
+                    else{
+                        ForEach(0..<commentsViewModel.comments.count, id: \.self) {index in
+                            CommentCardView(comment: $commentsViewModel.comments[index], message: $commentsViewModel.content)
+                                .padding(.bottom, 19)
+                                .padding(.horizontal)
+                                .transition(.opacity)
+                                .environmentObject(commentsViewModel)
+                        }
+                    }
+                    
                 } else {
                     ProgressView()
                 }
@@ -262,12 +364,12 @@ struct PostOverview: View {
                     .transition(.opacity)
                 }
                 VStack(spacing: 0) {
-                    EmojiListView(comment: $comment)
+                    EmojiListView(comment: $commentsViewModel.content)
                         .padding(.vertical, 5)
                         .padding(.bottom)
                         .padding(.horizontal)
                     HStack {
-                        TextField("Добавьте комментарий...", text: $comment)
+                        TextField("Добавьте комментарий...", text: $commentsViewModel.content)
                         Button(action: {
                             if !commentsViewModel.content.isEmpty{
                                 if commentsViewModel.reply == nil{
@@ -291,7 +393,7 @@ struct PostOverview: View {
                                 .resizable()
                                 .frame(width: 24, height: 24)
                                 .aspectRatio(contentMode: .fill)
-                                .opacity(comment.isEmpty ? 0 : 1)
+                                .opacity(commentsViewModel.content.isEmpty ? 0 : 1)
                         }
                     }
                     .frame(height: 45)
