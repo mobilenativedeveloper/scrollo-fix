@@ -7,7 +7,7 @@
 
 import SwiftUI
 import SDWebImageSwiftUI
-import UIKit
+import PhotoSelectAndCrop
 
 struct EditUserProfile: View {
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
@@ -200,7 +200,7 @@ struct EditUserProfile: View {
             Spacer(minLength: 0)
         }
         .fullScreenCover(isPresented: $isGalleryPickerBackground, content: {
-            ImageGalleryPicker(isPresented: $isGalleryPickerBackground)
+            ImageGalleryPicker(isPresented: $isGalleryPickerBackground, originalImage: "https://picsum.photos/200/300?random=1")
         })
         .actionSheet(isPresented: $showingOptions) {
             if optionsMenu == .background {
@@ -434,206 +434,156 @@ private struct ImageGalleryPicker: View{
     
     @Binding var isPresented: Bool
     
-    @State var imageGalleryViewModel: ImageGalleryViewModel = ImageGalleryViewModel()
+    var originalImage: String?
     
-//    @State var offset: CGSize = CGSize.zero
-//    @State var previousOffset: CGSize = CGSize.zero
+    @State var inputImage: UIImage?
+    
+    @State var inputImageAspectRatio: CGFloat = 0.0
     
     @State var displayW: CGFloat = 0.0
     @State var displayH: CGFloat = 0.0
     
-    let inset: CGFloat = 15
-    
+    @State var currentAmount: CGFloat = 0
+    @State var zoomAmount: CGFloat = 1.0
     @State var currentPosition: CGSize = .zero
     @State var newPosition: CGSize = .zero
     @State var horizontalOffset: CGFloat = 0.0
     @State var verticalOffset: CGFloat = 0.0
     
-    @State var inputImageAspectRatio: CGFloat = 0.0
-    @State var currentAmount: CGFloat = 0
-    @State var zoomAmount: CGFloat = 1.0
+    let inset: CGFloat = 15
+    
     
     var body: some View{
         
-        VStack{
-            HStack {
-                Button(action: {
-                    isPresented.toggle()
-                }) {
-                    Image("circle.xmark.black")
-                        .resizable()
-                        .frame(width: 24, height: 24)
-                        .aspectRatio(contentMode: .fill)
-                }
-                Spacer(minLength: 0)
-                Text("Библиотека")
-                    .font(.system(size: 20))
-                    .fontWeight(.bold)
-                    .textCase(.uppercase)
-                    .foregroundColor(Color(hex: "#2E313C"))
-                Spacer(minLength: 0)
-                Button(action: {
-                    
-                }) {
-                    Image("circle.blue.checkmark")
-                        .resizable()
-                        .frame(width: 24, height: 24)
-                        .aspectRatio(contentMode: .fill)
-                    }
-            }
-            .padding(.horizontal)
+        ZStack{
             
-            ///
-            /// Image preview
-            ///
-            GeometryReader{proxy in
+            ZStack{
                 
-                ZStack{
+                Color.black.opacity(0.8)
+                if originalImage != nil {
+                    if inputImage != nil {
+                        Image(uiImage: inputImage!)
+                            .resizable()
+                            .scaleEffect(zoomAmount + currentAmount)
+                            .scaledToFill()
+                            .aspectRatio(contentMode: .fit)
+                            .offset(x: self.currentPosition.width, y: self.currentPosition.height)
+                            .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height)
+                            .clipped()
+                    }
+                    else{
+                        ProgressView()
+                    }
+                } else {
                     Image("story1")
                         .resizable()
-                        .scaleEffect(zoomAmount + currentAmount)
                         .scaledToFill()
                         .aspectRatio(contentMode: .fit)
-                        .offset(x: self.currentPosition.width, y: self.currentPosition.height)
-                    
+                        .foregroundColor(Color(.systemGray2))
                 }
-                .frame(width: proxy.size.width, height: proxy.size.width)
-                .clipped()
-                .overlay(
-                    GeometryReader{proxy in
-                        CircleMask(
-                            width: proxy.size.width,
-                            height: proxy.size.height,
-                            radius: proxy.size.width / 2
-                        )
-                    }
-                )
-                .gesture(
-                    MagnificationGesture()
-                        .onChanged { amount in
-                            self.currentAmount = amount - 1
-                        }
-                        .onEnded { amount in
-                            self.zoomAmount += self.currentAmount
-                            if zoomAmount > 4.0 {
-                                withAnimation {
-                                    zoomAmount = 4.0
-                                }
-                            }
-                            self.currentAmount = 0
-                            withAnimation {
-                                repositionImage()
-                            }
-                        }
-                )
-                .simultaneousGesture(
-                    DragGesture()
-                        .onChanged { value in
-                                            self.currentPosition = CGSize(width: value.translation.width + self.newPosition.width, height: value.translation.height + self.newPosition.height)
-                                        }
-                        .onEnded { value in
-                                            self.currentPosition = CGSize(width: value.translation.width + self.newPosition.width, height: value.translation.height + self.newPosition.height)
-                                            self.newPosition = self.currentPosition
-                                            withAnimation {
-                                                repositionImage()
-                                            }
-                                        }
-                )
-//                .gesture(
-//                    MagnificationGesture()
-//                        .onChanged({ value in
-//                            self.scale = value.magnitude
-//                        })
-//                )
-//                .highPriorityGesture(
-//                    DragGesture()
-//                        .onChanged({ value in
-//                            DispatchQueue.main.async {
-//
-//
-//
-//                                let minY = proxy.frame(in: .global).minY
-//
-//                                print("top: \(self.offsetY - minY), minY: \(minY)")
-//
-//                                let position = self.offsetY - minY
-//
-//                                ///
-//                                /// top bounce
-//                                ///
-//                                if position > 0{
-//
-//                                }
-//                                ///
-//                                /// bottom  bounce
-//                                ///
-////                                if (position + self.imageSize.height) < proxy.size.width{
-////                                    print("Bottom bounce")
-////                                }
-//
-//
-//                            }
-//
-//
-//                            let dragAmount = CGSize(
-//                                width: value.translation.width - self.previousOffset.width,
-//                                height: value.translation.height - self.previousOffset.height
-//                            )
-//
-//                            self.offset = CGSize(
-//                                width: self.offset.width + dragAmount.width,
-//                                height: self.offset.height + dragAmount.height
-//                            )
-//
-//                            self.previousOffset = value.translation
-//                        })
-//                        .onEnded({ value in
-////                            DispatchQueue.main.async {
-////
-////                                let minY = proxy.frame(in: .global).minY
-////
-////                                let position = (self.offsetY - minY) * self.scale
-////                                ///
-////                                /// top bounce
-////                                ///
-////                                if position > 0{
-////                                    withAnimation {
-////                                        self.offset = CGSize(
-////                                            width: self.offset.width,
-////                                            height: minY
-////                                        )
-////                                    }
-////                                }
-////                                ///
-////                                /// bottom  bounce
-////                                ///
-//////                                if (position + self.imageSize.height) < proxy.size.width{
-//////                                    withAnimation {
-//////                                        self.offset = CGSize(
-//////                                            width: self.offset.width,
-//////                                            height: (self.imageSize.height - (position + self.imageSize.height))
-//////                                        )
-//////                                    }
-//////                                }
-////                            }
-//                            previousOffset = CGSize.zero
-//                        })
-//                )
             }
-            Spacer(minLength: 0)
+            
+            Rectangle()
+                .fill(Color.black).opacity(0.55)
+                .mask(HoleShapeMask().fill(style: FillStyle(eoFill: true)))
+            
         }
+        .edgesIgnoringSafeArea(.all)
+        .onAppear(perform: imageDataToUIImage)
+        .gesture(
+            MagnificationGesture()
+                .onChanged { amount in
+                    self.currentAmount = amount - 1
+                }
+                .onEnded { amount in
+                    self.zoomAmount += self.currentAmount
+                    if zoomAmount > 4.0 {
+                        withAnimation {
+                            zoomAmount = 4.0
+                        }
+                    }
+                    self.currentAmount = 0
+                    withAnimation {
+                        repositionImage()
+                    }
+                }
+        )
+        .simultaneousGesture(
+            DragGesture()
+                .onChanged { value in
+                    self.currentPosition = CGSize(width: value.translation.width + self.newPosition.width, height: value.translation.height + self.newPosition.height)
+                }
+                .onEnded { value in
+                    self.currentPosition = CGSize(width: value.translation.width + self.newPosition.width, height: value.translation.height + self.newPosition.height)
+                    self.newPosition = self.currentPosition
+                    withAnimation {
+                        repositionImage()
+                    }
+                }
+        )
     }
     
+    func imageDataToUIImage(){
+        guard let originalImage = self.originalImage else { return }
+        guard let url = URL(string: originalImage) else { return }
+        let task = URLSession.shared.dataTask(with: url) { data, response, error in
+            guard let data = data else { return }
+            DispatchQueue.main.async {
+                
+                let image = UIImage(data: data)
+                
+                guard let currentImage = image else { return }
+                
+                let w = currentImage.size.width
+                let h = currentImage.size.height
+                inputImage = currentImage
+                inputImageAspectRatio = w / h
+                
+            }
+        }
+        task.resume()
+    }
+    
+    
+    func HoleShapeMask() -> Path {
+        let rect = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height)
+        let insetRect = CGRect(x: inset, y: inset, width: UIScreen.main.bounds.width - ( inset * 2 ), height: UIScreen.main.bounds.height - ( inset * 2 ))
+        var shape = Rectangle().path(in: rect)
+        shape.addPath(Circle().path(in: insetRect))
+        return shape
+    }
+
     private func getAspect() -> CGFloat {
         let screenAspectRatio = UIScreen.main.bounds.width / UIScreen.main.bounds.height
         return screenAspectRatio
     }
     
+    ///Positions the image selected to fit the screen.
+    func resetImageOriginAndScale() {
+        let screenAspect: CGFloat = getAspect()
+
+        withAnimation(.easeInOut){
+            if inputImageAspectRatio >= screenAspect {
+                displayW = UIScreen.main.bounds.width
+                displayH = displayW / inputImageAspectRatio
+            } else {
+                displayH = UIScreen.main.bounds.height
+                displayW = displayH * inputImageAspectRatio
+            }
+            currentAmount = 0
+            zoomAmount = 1
+            currentPosition = .zero
+            newPosition = .zero
+        }
+    }
+
     func repositionImage() {
-        
+
+        ///Setting the display width and height so the imputImage fits the screen
+        ///orientation.
         let screenAspect: CGFloat = getAspect()
         let diameter = min(UIScreen.main.bounds.width, UIScreen.main.bounds.height)
-            
+
         if screenAspect <= 1.0 {
             if inputImageAspectRatio > screenAspect {
                 displayW = diameter * zoomAmount
@@ -651,128 +601,72 @@ private struct ImageGalleryPicker: View{
                 displayH = displayW / inputImageAspectRatio
             }
         }
-            
+
         horizontalOffset = (displayW - diameter ) / 2
         verticalOffset = ( displayH - diameter) / 2
-        
+
+        ///Keep the user from zooming too far in. Adjust as required in your individual project.
         if zoomAmount > 4.0 {
                 zoomAmount = 4.0
         }
-        
+
+        ///If the view which presents the ImageMoveAndScaleSheet is embeded in a NavigationView then the vertical offset is off.
+        ///A value of 0.0 appears to work when the view is not embeded in a NAvigationView().
+
+        ///When it is embedded in a NvaigationView, a value of 4.0 seems to keep images displaying as expected.
+        ///This appears to be a SwiftUI bug. So, we "pad" the function with this "adjust". YMMV.
+
         let adjust: CGFloat = 0.0
-        
+
+        ///The following if statements keep the image filling the circle cutout in at least one dimension.
         if displayH >= diameter {
             if newPosition.height > verticalOffset {
                 print("1. newPosition.height > verticalOffset")
-                newPosition = CGSize(width: newPosition.width, height: verticalOffset - adjust + inset)
-                currentPosition = CGSize(width: newPosition.width, height: verticalOffset - adjust + inset)
+                    newPosition = CGSize(width: newPosition.width, height: verticalOffset - adjust + inset)
+                    currentPosition = CGSize(width: newPosition.width, height: verticalOffset - adjust + inset)
             }
-                
+
             if newPosition.height < ( verticalOffset * -1) {
                 print("2. newPosition.height < ( verticalOffset * -1)")
-                newPosition = CGSize(width: newPosition.width, height: ( verticalOffset * -1) - adjust - inset)
-                currentPosition = CGSize(width: newPosition.width, height: ( verticalOffset * -1) - adjust - inset)
+                    newPosition = CGSize(width: newPosition.width, height: ( verticalOffset * -1) - adjust - inset)
+                    currentPosition = CGSize(width: newPosition.width, height: ( verticalOffset * -1) - adjust - inset)
             }
-                
-            } else {
-                print("else: H")
+
+        } else {
+            print("else: H")
                 newPosition = CGSize(width: newPosition.width, height: 0)
                 currentPosition = CGSize(width: newPosition.width, height: 0)
-            }
-            
-            if displayW >= diameter {
-                if newPosition.width > horizontalOffset {
-                    print("3. newPosition.width > horizontalOffset")
+        }
+
+        if displayW >= diameter {
+            if newPosition.width > horizontalOffset {
+                print("3. newPosition.width > horizontalOffset")
                     newPosition = CGSize(width: horizontalOffset + inset, height: newPosition.height)
                     currentPosition = CGSize(width: horizontalOffset + inset, height: currentPosition.height)
-                }
-                
-                if newPosition.width < ( horizontalOffset * -1) {
-                    print("4. newPosition.width < ( horizontalOffset * -1)")
+            }
+
+            if newPosition.width < ( horizontalOffset * -1) {
+                print("4. newPosition.width < ( horizontalOffset * -1)")
                     newPosition = CGSize(width: ( horizontalOffset * -1) - inset, height: newPosition.height)
                     currentPosition = CGSize(width: ( horizontalOffset * -1) - inset, height: currentPosition.height)
 
-                }
-            } else {
-                print("else: W")
+            }
+
+        } else {
+            print("else: W")
                 newPosition = CGSize(width: 0, height: newPosition.height)
                 currentPosition = CGSize(width: 0, height: newPosition.height)
-            }
-
-        
-            if displayW < diameter - inset && displayH < diameter - inset {
-                resetImageOriginAndScale()
-            }
         }
-    
-    func resetImageOriginAndScale() {
-            print("reposition")
-            let screenAspect: CGFloat = getAspect()
 
-            withAnimation(.easeInOut){
-                if inputImageAspectRatio >= screenAspect {
-                    displayW = UIScreen.main.bounds.width
-                    displayH = displayW / inputImageAspectRatio
-                } else {
-                    displayH = UIScreen.main.bounds.height
-                    displayW = displayH * inputImageAspectRatio
-                }
-                currentAmount = 0
-                zoomAmount = 1
-                currentPosition = .zero
-                newPosition = .zero
-            }
+        ///This statement is needed in case of a screenshot.
+        ///That is, in case the user chooses a photo that is the exact size of the device screen.
+        ///Without this function, such an image can be shrunk to less than the
+        ///size of the cutrout circle and even go negative (inversed).
+        ///If "processImage()" is run in this state, there is a fatal error. of a nil UIImage.
+        ///
+        if displayW < diameter - inset && displayH < diameter - inset {
+            resetImageOriginAndScale()
         }
+    }
 }
 
-
-private struct CircleMask: UIViewRepresentable{
-    
-    var width: CGFloat
-    var height: CGFloat
-    var radius: CGFloat
-    
-    func makeUIView(context: Context) -> UIView {
-        
-        let overlay = createOverlay(
-            frame: CGRect(x: 0, y: 0, width: width, height: height),
-            xOffset: width / 2,
-            yOffset: height / 2,
-            radius: radius
-        )
-      
-        return overlay
-    }
-    
-    func updateUIView(_ uiView: UIView, context: Context) {
-        
-    }
-    
-    func createOverlay(frame: CGRect,
-                       xOffset: CGFloat,
-                       yOffset: CGFloat,
-                       radius: CGFloat) -> UIView {
-        
-        let overlayView = UIView(frame: frame)
-        overlayView.backgroundColor = UIColor.black.withAlphaComponent(0.3)
-        
-        let path = CGMutablePath()
-        path.addArc(center: CGPoint(x: xOffset, y: yOffset),
-                    radius: radius,
-                    startAngle: 0.0,
-                    endAngle: 2.0 * .pi,
-                    clockwise: false)
-        path.addRect(CGRect(origin: .zero, size: overlayView.frame.size))
-        
-        let maskLayer = CAShapeLayer()
-        maskLayer.backgroundColor = UIColor.black.cgColor
-        maskLayer.path = path
-        
-        maskLayer.fillRule = .evenOdd
-        
-        overlayView.layer.mask = maskLayer
-        overlayView.clipsToBounds = true
-
-        return overlayView
-    }
-}
