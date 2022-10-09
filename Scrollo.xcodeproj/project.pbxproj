@@ -54,6 +54,7 @@
 		ACA4F1D328F1AF0800F61983 /* VideoThumbnailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACA4F1D228F1AF0800F61983 /* VideoThumbnailViewModel.swift */; };
 		ACA4F1D528F1C7CE00F61983 /* CreateAlbumView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACA4F1D428F1C7CD00F61983 /* CreateAlbumView.swift */; };
 		ACA4F1D728F1DA4B00F61983 /* AlbumOverview.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACA4F1D628F1DA4B00F61983 /* AlbumOverview.swift */; };
+		ACB1591F28F2B146002F012C /* ImageGalleryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACB1591E28F2B146002F012C /* ImageGalleryViewModel.swift */; };
 		ACC4E5D628DCB4DE0081F2E5 /* ScrolloApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACC4E5D528DCB4DE0081F2E5 /* ScrolloApp.swift */; };
 		ACC4E5D828DCB4DE0081F2E5 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACC4E5D728DCB4DE0081F2E5 /* ContentView.swift */; };
 		ACC4E5DA28DCB4E60081F2E5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = ACC4E5D928DCB4E60081F2E5 /* Assets.xcassets */; };
@@ -125,6 +126,7 @@
 		ACA4F1D228F1AF0800F61983 /* VideoThumbnailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoThumbnailViewModel.swift; sourceTree = "<group>"; };
 		ACA4F1D428F1C7CD00F61983 /* CreateAlbumView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateAlbumView.swift; sourceTree = "<group>"; };
 		ACA4F1D628F1DA4B00F61983 /* AlbumOverview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlbumOverview.swift; sourceTree = "<group>"; };
+		ACB1591E28F2B146002F012C /* ImageGalleryViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageGalleryViewModel.swift; sourceTree = "<group>"; };
 		ACC4E5D228DCB4DE0081F2E5 /* Scrollo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Scrollo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		ACC4E5D528DCB4DE0081F2E5 /* ScrolloApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScrolloApp.swift; sourceTree = "<group>"; };
 		ACC4E5D728DCB4DE0081F2E5 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -280,6 +282,7 @@
 				AC18A24F28F0C10B005CDE7D /* SavedPostsViewModel.swift */,
 				AC18A25328F0C3E3005CDE7D /* AlbumsViewModel.swift */,
 				ACA4F1D228F1AF0800F61983 /* VideoThumbnailViewModel.swift */,
+				ACB1591E28F2B146002F012C /* ImageGalleryViewModel.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -492,6 +495,7 @@
 				AC3E356928EADF51002570AE /* TextFieldLogin.swift in Sources */,
 				ACC4E62228DDA01E0081F2E5 /* KeyboardHelper.swift in Sources */,
 				AC3E356F28EAE6A2002570AE /* SignUpViewModel.swift in Sources */,
+				ACB1591F28F2B146002F012C /* ImageGalleryViewModel.swift in Sources */,
 				AC9F302028EF224600444E08 /* ChatView.swift in Sources */,
 				ACC4E5D628DCB4DE0081F2E5 /* ScrolloApp.swift in Sources */,
 				AC90049128E053FA0043ED66 /* NotificationCenter.swift in Sources */,

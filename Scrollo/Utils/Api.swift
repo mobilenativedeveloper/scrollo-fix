@@ -57,6 +57,10 @@ let API_USER_POST = "/api/v1/post/user/"
 
 let API_POST_SAVE = "/api/v1/post/save"
 
+let API_UPDATE_USER_BACKGROUND = "/api/v1/user/background"
+
+let API_UPDATE_USER_AVATAR = "/api/v1/user/avatar"
+
 //let API_USER_FIND = "/api/v1/user/finding/"
 
 
@@ -67,9 +71,8 @@ let API_POST_SAVE = "/api/v1/post/save"
 //let API_LIKE_REMOVE_COMMENT = "/api/v1/post/comment/like/"
 
 
-//let API_EDIT_USER = "/api/v1/user/"
-//let API_UPDATE_USER_BACKGROUND = "/api/v1/user/background"
-//let API_UPDATE_USER_AVATAR = "/api/v1/user/avatar"
+
+
 //let API_USER_SWITCH_TYPE = "/api/v1/user/switch-type"
 //let API_CHANGE_PASSWORD = "/api/v1/user/password"
 //let API_COMPARE_OLD_PASSWORD = "/api/v1/user/compare-old-password"

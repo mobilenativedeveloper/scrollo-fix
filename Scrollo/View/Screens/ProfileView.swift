@@ -18,6 +18,8 @@ struct ProfileView: View {
     
     var userId: String
     
+    @State var editUserPresent: Bool = false
+    
     @State var selectedTab: String = "media"
     
     @State var isPublicationSheet: Bool = false
@@ -171,24 +173,25 @@ struct ProfileView: View {
                     .padding(.horizontal)
                     
                     if self.userId == UserDefaults.standard.string(forKey: "userId") {
-                        NavigationLink(destination: EditUserProfile()
-                                        ) {
-                            HStack {
-                                Text("Редактировать профиль")
-                                    .font(.system(size: 14))
-                                    .foregroundColor(Color(hex: "#2E313C"))
-                                    .padding(.vertical, 15)
-                            }
-                            .frame(maxWidth: .infinity)
-                            .background(
-                                RoundedRectangle(cornerRadius: 10)
-                                    .fill(Color(hex: "#F9F9F9"))
-                                    .modifier(RoundedEdge(width: 1, color: Color(hex: "#DDE8E8"), cornerRadius: 15))
-                            )
-                            .padding(.horizontal)
-                            .padding(.top, 12)
+                        HStack {
+                            Text("Редактировать профиль")
+                                .font(.system(size: 14))
+                                .foregroundColor(Color(hex: "#2E313C"))
+                                .padding(.vertical, 15)
                         }
-                        
+                        .frame(maxWidth: .infinity)
+                        .background(
+                            RoundedRectangle(cornerRadius: 10)
+                                .fill(Color(hex: "#F9F9F9"))
+                                .modifier(RoundedEdge(width: 1, color: Color(hex: "#DDE8E8"), cornerRadius: 15))
+                        )
+                        .padding(.horizontal)
+                        .padding(.top, 12)
+                        .onTapGesture {
+                            withAnimation {
+                                editUserPresent.toggle()
+                            }
+                        }
                     }
                     else{
                         
@@ -312,6 +315,9 @@ struct ProfileView: View {
             }
         )
         .ignoresSafeArea(.all, edges: .top)
+        .fullScreenCover(isPresented: $editUserPresent, content: {
+            EditUserProfile(user: $user)
+        })
         .onAppear {
             getProfile()
             postViewModel.getUserMediaPosts(userId: userId) { compositionPost in
