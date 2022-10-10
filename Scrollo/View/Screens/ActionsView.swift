@@ -115,17 +115,20 @@ private struct ActionView: View{
     
     var body: some View {
         HStack(alignment: .top, spacing: 0) {
-//            ActionAvatar(userId: action.creator.id, avatar: action.creator.avatar)
-            if let avatar = action.creator.avatar {
-                WebImage(url: URL(string: "\(API_URL)/uploads/\(avatar)")!)
-                    .resizable()
-                    .scaledToFill()
-                    .frame(width: 44, height: 44)
-                    .cornerRadius(10)
-            } else {
-                DefaultAvatar(width: 44, height: 44, cornerRadius: 10)
-                    .padding(.trailing, 16)
+            NavigationLink(destination: ProfileView(userId: action.creator.id)
+                            .ignoreDefaultHeaderBar){
+                if let avatar = action.creator.avatar {
+                    WebImage(url: URL(string: "\(API_URL)/uploads/\(avatar)")!)
+                        .resizable()
+                        .scaledToFill()
+                        .frame(width: 44, height: 44)
+                        .cornerRadius(10)
+                } else {
+                    DefaultAvatar(width: 44, height: 44, cornerRadius: 10)
+                        .padding(.trailing, 16)
+                }
             }
+                            .buttonStyle(FlatLinkStyle())
             Group {
                 Text("\(action.creator.login)").font(.custom(GothamBold, size: 14)) + Text(" ") + Text(getActionString()).font(.custom(GothamBook, size: 12)).foregroundColor(Color(hex: "#2E313C")) + Text(getActionSubStringUserLogin()).font(.custom(GothamBold, size: 12)).foregroundColor(Color(hex: "#7737FF")) + Text(getActionSubString()).font(.custom(GothamBook, size: 12)).foregroundColor(Color(hex: "#2E313C")) + Text(" ") + Text(self.howMuchTimeHasPassed()).font(.custom(GothamBold, size: 12)).foregroundColor(Color(hex: "#828796"))
             }

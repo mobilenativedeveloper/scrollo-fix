@@ -10,7 +10,7 @@ import Photos
 
 struct PublicationStoryView: View {
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
-    @StateObject var addStoryController: AddStoryViewModel = AddStoryViewModel()
+    @StateObject var galleryImagesViewModel: GalleryImagesViewModel = GalleryImagesViewModel()
     @State var mediaAlbum: Bool = false
     private let columns = 3
     private let size = (UIScreen.main.bounds.width / 3) - 12
@@ -22,7 +22,7 @@ struct PublicationStoryView: View {
                 Button(action: {
                     presentationMode.wrappedValue.dismiss()
                 }) {
-                    Image("circle_close_white")
+                    Image("circle.xmark.white")
                         .resizable()
                         .frame(width: 24, height: 24)
                         .aspectRatio(contentMode: .fill)
@@ -35,7 +35,7 @@ struct PublicationStoryView: View {
                 Button(action: {
                     presentationMode.wrappedValue.dismiss()
                 }) {
-                    Image("circle_right_arrow_white")
+                    Image("circle.right.arrow.white")
                         .resizable()
                         .frame(width: 24, height: 24)
                         .aspectRatio(contentMode: .fill)
@@ -44,10 +44,11 @@ struct PublicationStoryView: View {
             .padding(.horizontal, 23)
             .background(Color(hex: "#1F2128"))
             
-            PreviewStoryView(mediaAlbum: $mediaAlbum)
-                .environmentObject(addStoryController)
             
-            if addStoryController.loadAssets {
+            
+            if galleryImagesViewModel.loadAssets {
+                PreviewStoryView(mediaAlbum: $mediaAlbum)
+                    .environmentObject(galleryImagesViewModel)
                 ScrollView(showsIndicators: false) {
                     makeGrid()
                 }
@@ -58,10 +59,13 @@ struct PublicationStoryView: View {
                 Spacer()
             }
         }
+        .onAppear {
+            galleryImagesViewModel.loadMedia(onlyPhoto: false)
+        }
     }
     
     private func makeGrid() -> some View {
-        let count = addStoryController.assets.count
+        let count = galleryImagesViewModel.assets.count
         let rows = count / columns + (count % columns == 0 ? 0 : 1)
             
         return VStack(alignment: .leading, spacing: 9) {
@@ -70,8 +74,8 @@ struct PublicationStoryView: View {
                     ForEach(0..<self.columns) {column in
                         let index = row * self.columns + column
                         if index < count {
-                            GridThumbnailGallery(asset: addStoryController.assets[index], size: size)
-                                .environmentObject(addStoryController)
+                            GridThumbnailGallery(asset: galleryImagesViewModel.assets[index], size: size)
+                                .environmentObject(galleryImagesViewModel)
                         } else {
                             AnyView(EmptyView())
                                 .frame(width: size, height: 180)
@@ -85,7 +89,7 @@ struct PublicationStoryView: View {
 }
 
 private struct GridThumbnailGallery : View {
-    @EnvironmentObject var addStoryController: AddStoryViewModel
+    @EnvironmentObject var galleryImagesViewModel: GalleryImagesViewModel
     var asset: AssetModel
     var size: CGFloat
     var body : some View {
@@ -98,29 +102,19 @@ private struct GridThumbnailGallery : View {
                     .cornerRadius(8)
                     .clipped()
                 if asset.asset.mediaType == .video {
-                    Text(addStoryController.getVideoDuration(asset: asset))
+                    Text(galleryImagesViewModel.getVideoDuration(asset: asset))
                         .font(.system(size: 12))
                         .fontWeight(.semibold)
                         .foregroundColor(.white)
                         .offset(x: 6, y: -9)
                 }
             }
-//            Circle()
-//                .strokeBorder(Color.white,lineWidth: 1)
-//                .background(Circle().foregroundColor(Color.white.opacity(0.3)))
-//                .frame(width: 20, height: 20)
-//                .overlay(
-//                    Text("")
-//                        .font(.system(size: 12))
-//                        .foregroundColor(.white)
-//                )
-//                .offset(x: -6, y: 9)
         }
     }
 }
 
 private struct PreviewStoryView : View {
-    @EnvironmentObject var addStoryController: AddStoryViewModel
+    @EnvironmentObject var galleryImagesViewModel: GalleryImagesViewModel
     @Binding var mediaAlbum: Bool
     var body : some View {
         
@@ -130,7 +124,7 @@ private struct PreviewStoryView : View {
                 
                 Color(hex: "#1F2128")
                 
-                Image("add_story_placeholder")
+                Image("add.story.placeholder")
                     .resizable()
                     .aspectRatio(contentMode: .fill)
                     .frame(width: 188, height: 188)
@@ -143,7 +137,7 @@ private struct PreviewStoryView : View {
             HStack(spacing: 0) {
                 PreviewStoryAlbumPickerView()
                     .offset(x: 10, y: -10)
-                    .environmentObject(addStoryController)
+                    .environmentObject(galleryImagesViewModel)
                 Spacer()
                 HStack {
 
@@ -167,7 +161,7 @@ private struct PreviewStoryView : View {
 }
 
 private struct PreviewStoryAlbumPickerView : View {
-    @EnvironmentObject var addStoryController: AddStoryViewModel
+    @EnvironmentObject var galleryImagesViewModel: GalleryImagesViewModel
     @State var cameraPresentation: Bool = false
     
     var body : some View {
@@ -186,18 +180,18 @@ private struct PreviewStoryAlbumPickerView : View {
                     Image(systemName: "camera")
                 }
             }
-            ForEach(0..<addStoryController.albums.count, id: \.self) {index in
-                if let album = addStoryController.albums[index] {
+            ForEach(0..<galleryImagesViewModel.albums.count, id: \.self) {index in
+                if let album = galleryImagesViewModel.albums[index] {
                     Button(action: {
                         withAnimation(.none) {
-                            addStoryController.selectedAlbum = index
+                            galleryImagesViewModel.selectedAlbum = index
                         }
                     }) {
                         HStack {
-                            if addStoryController.selectedAlbum == index {
+                            if galleryImagesViewModel.selectedAlbum == index {
                                 Image(systemName: "checkmark")
                             }
-                            Text("\(self.getAlbumTitle(album: album))")
+                            Text("\(galleryImagesViewModel.getAlbumTitle(album: album))")
                                 .font(.system(size: 10))
                                 .foregroundColor(.white)
                                 .colorMultiply(.white)
@@ -208,14 +202,14 @@ private struct PreviewStoryAlbumPickerView : View {
                 }
             }
         } label: {
-            Text(self.getAlbumTitle(album: addStoryController.albums[addStoryController.selectedAlbum]))
+            Text(galleryImagesViewModel.getAlbumTitle(album: galleryImagesViewModel.albums[galleryImagesViewModel.selectedAlbum]))
                     .foregroundColor(Color.white)
             Image(systemName: "chevron.down")
                 .font(.system(size: 15))
                 .foregroundColor(.white)
         }
-        .onChange(of: addStoryController.selectedAlbum) { _ in
-            addStoryController.getThumbnailAssetsFromAlbum()
+        .onChange(of: galleryImagesViewModel.selectedAlbum) { _ in
+            galleryImagesViewModel.getThumbnailAssetsFromAlbum(onlyPhoto: false)
         }
         .fullScreenCover(isPresented: $cameraPresentation) {
             
@@ -224,14 +218,6 @@ private struct PreviewStoryAlbumPickerView : View {
         }
     }
     
-    func getAlbumTitle (album: PHAssetCollection) -> String {
-        switch album.localizedTitle?.lowercased() {
-            case "recents":
-                return "Недавние"
-            default:
-                return album.localizedTitle!
-        }
-    }
 }
 
 private struct StoryCamera : View {
@@ -258,7 +244,7 @@ private struct StoryCamera : View {
                         Button(action: {
                             presentationMode.wrappedValue.dismiss()
                         }) {
-                            Image("circle_close_white")
+                            Image("circle.xmark.white")
                                 .resizable()
                                 .frame(width: 24, height: 24)
                                 .aspectRatio(contentMode: .fill)
@@ -285,7 +271,7 @@ private struct StoryCamera : View {
                         Button(action: {
                             cameraController.flip()
                         }) {
-                            Image("flip_camera")
+                            Image("flip.camera")
                                 .resizable()
                                 .frame(width: 24, height: 24)
                         }

@@ -13,6 +13,9 @@ struct HomeView: View {
     @Binding var offset: CGFloat
     @Binding var isScrollEnabled: Bool
     
+    @State var publicationTextPostViewPresent: Bool = false
+    @State var publicationStoryViewPresent: Bool = false
+    
     var body: some View {
         NavigationView{
             
@@ -90,8 +93,20 @@ struct HomeView: View {
                 .padding(.vertical)
                 .padding(.bottom, edges?.bottom ?? 50)
                 .overlay(
-                    UploadView(show: self.$upload),
+                    UploadView(
+                        show: self.$upload,
+                        publicationTextPostViewPresent: $publicationTextPostViewPresent,
+                        publicationStoryViewPresent: $publicationStoryViewPresent
+                    ),
                     alignment: Alignment(horizontal: .center, vertical: .top)
+                )
+                .background(
+                    ZStack{
+                        NavigationLink(destination: PublicationTextPostView()
+                                        .ignoreDefaultHeaderBar, isActive: $publicationTextPostViewPresent){ EmptyView() }
+                        NavigationLink(destination: PublicationStoryView()
+                                        .ignoreDefaultHeaderBar, isActive: $publicationStoryViewPresent){ EmptyView() }
+                    }
                 )
             }
         }
@@ -182,10 +197,10 @@ private struct BlurView: UIViewRepresentable {
 private struct UploadView : View {
     @Binding var show: Bool
     
-    public init (show: Binding<Bool>) {
-        self._show = show
-    }
+    @Binding var publicationTextPostViewPresent: Bool
+    @Binding var publicationStoryViewPresent: Bool
     
+   
     var body : some View {
         if show {
             HStack {
@@ -197,14 +212,20 @@ private struct UploadView : View {
                     Spacer(minLength: 0)
                     HStack(spacing: 18) {
                         UploadButtonView(icon: "gallery_icon", title: "Фото")
-                        NavigationLink(destination: PublicationTextPostView()
-                                        .ignoreDefaultHeaderBar){
-                            UploadButtonView(icon: "message_icon", title: "Пост")
-                        }
-                        NavigationLink(destination: PublicationStoryView()
-                                        .ignoreDefaultHeaderBar){
-                            UploadButtonView(icon: "video_icon", title: "История")
-                        }
+                        UploadButtonView(icon: "message_icon", title: "Пост")
+                            .onTapGesture {
+                                withAnimation(.easeInOut(duration: 0.2)){
+                                    show = false
+                                }
+                                publicationTextPostViewPresent = true
+                            }
+                        UploadButtonView(icon: "video_icon", title: "История")
+                            .onTapGesture {
+                                withAnimation(.easeInOut(duration: 0.2)){
+                                    show = false
+                                }
+                                publicationStoryViewPresent = true
+                            }
                     }
                     .padding(.bottom, 34)
                 }
