@@ -61,7 +61,7 @@ struct StoriesUserListItem: View {
     
     var body: some View {
         VStack {
-            Image("Plus")
+            Image("plus")
                 .clipShape(RoundedRectangle(cornerRadius: 15))
                 .frame(width: 62, height: 62)
                 .background(
