@@ -20,7 +20,7 @@ struct ChangePassword: View {
                         presentationMode.wrappedValue.dismiss()
                     }
                 }) {
-                    Image("comments_back")
+                    Image("circle.left.arrow.black")
                         .resizable()
                         .aspectRatio(contentMode: .fill)
                         .frame(width: 24, height: 24)
@@ -40,7 +40,7 @@ struct ChangePassword: View {
                     if changePasswordViewModel.load {
                         ProgressView().frame(width: 24, height: 24)
                     } else {
-                        Image("circle_blue_checkmark")
+                        Image("circle.blue.checkmark")
                             .resizable()
                             .frame(width: 24, height: 24)
                             .aspectRatio(contentMode: .fill)
@@ -54,7 +54,7 @@ struct ChangePassword: View {
                 VStack(alignment: .leading, spacing: 0) {
                     Text("Пароль должен содержать не менее 6 символов, включая цифры, буквы и специальные символы (!$@%%)").font(.system(size: 13)).foregroundColor(.gray)
                         .padding()
-                    TextField("Текущий пароль", text: $changePasswordViewModel.oldPassword)
+                    SecureField("Текущий пароль", text: $changePasswordViewModel.oldPassword)
                         .padding()
                         .padding(.bottom, 10)
                         .overlay(
@@ -63,7 +63,7 @@ struct ChangePassword: View {
                                 .frame(height: 1).padding(),
                             alignment: .bottom
                         )
-                    TextField("Новый пароль", text: $changePasswordViewModel.newPassword)
+                    SecureField("Новый пароль", text: $changePasswordViewModel.newPassword)
                         .padding()
                         .padding(.bottom, 10)
                         .overlay(
@@ -72,7 +72,7 @@ struct ChangePassword: View {
                                 .frame(height: 1).padding(),
                             alignment: .bottom
                         )
-                    TextField("Введите новый пароль еще раз", text: $changePasswordViewModel.confirmNewPassword)
+                    SecureField("Введите новый пароль еще раз", text: $changePasswordViewModel.confirmNewPassword)
                         .padding()
                         .padding(.bottom, 10)
                         .overlay(
