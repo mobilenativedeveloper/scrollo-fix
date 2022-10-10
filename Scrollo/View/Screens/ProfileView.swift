@@ -247,7 +247,7 @@ struct ProfileView: View {
                             Spacer()
                         }
                         
-                        ProfileСompletionView()
+                        ProfileСompletionView(editUserPresent: $editUserPresent)
                     }
                     
                     if self.selectedTab == "text" {
@@ -787,6 +787,7 @@ private struct ProfileСompletion: Identifiable {
 }
 
 private struct ProfileСompletionView: View{
+    @Binding var editUserPresent: Bool
     let completions: [ProfileСompletion] = [
         ProfileСompletion(icon: "person.2", title: "Найдите людей для подписки", subtitle: "Подпишитесь на 5 или более аккаунтов.", buttonText: "Найти еще"),
         ProfileСompletion(icon: "person", title: "Укажите свое имя", subtitle: "Добавьте имя и фамилию, чтобы друзья знали, что это вы.", buttonText: "Редактировать имя"),
@@ -815,7 +816,7 @@ private struct ProfileСompletionView: View{
             
             SnapCarousel(spacing: 10, trailingSpace: 190, index: $currentIndex, items: completions) {completion in
                 GeometryReader{proxy in
-                    СompletionCard(completion: completion, proxy: proxy)
+                    СompletionCard(completion: completion, proxy: proxy, editUserPresent: $editUserPresent)
                 }
             }
             .padding(.top)
@@ -826,7 +827,7 @@ private struct ProfileСompletionView: View{
 private struct СompletionCard: View{
     var completion: ProfileСompletion
     var proxy: GeometryProxy
-    
+    @Binding var editUserPresent: Bool
     var body: some View{
         VStack{
             Image(systemName: completion.icon)
@@ -854,7 +855,11 @@ private struct СompletionCard: View{
                 .multilineTextAlignment(.center)
                 .fixedSize(horizontal: false, vertical: true)
             Spacer(minLength: 0)
-            NavigationLink(destination: Text("EditProfile")){
+            Button(action: {
+                withAnimation {
+                    editUserPresent.toggle()
+                }
+            }){
                 Text(completion.buttonText)
                     .font(.system(size: 12))
                     .foregroundColor(.black)
@@ -864,6 +869,8 @@ private struct СompletionCard: View{
                     .background(Color(hex: "#efefef").cornerRadius(5))
                     .padding(.bottom)
             }
+            
+            
         }
         .frame(width: proxy.size.width, height: 230)
         .background(Color(hex: "#F9F9F9").cornerRadius(10))
