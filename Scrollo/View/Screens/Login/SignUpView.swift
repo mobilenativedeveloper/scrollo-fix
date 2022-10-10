@@ -179,6 +179,7 @@ struct SignUpView: View{
         }
         .offset(y: -self.keyboardHelper.keyboardHeight)
         .ignoresSafeArea(.all)
+        .ignoreDefaultHeaderBar
         .onTapGesture {
             UIApplication.shared.endEditing()
         }

@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct HomeView: View {
-    @State var selectedTab = "home"
+    @Binding var selectedTab: String
     @State var upload: Bool = false
     @Binding var offset: CGFloat
     @Binding var isScrollEnabled: Bool

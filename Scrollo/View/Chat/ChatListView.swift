@@ -10,6 +10,8 @@ import SDWebImageSwiftUI
 
 struct ChatListView: View {
     @Binding var offset: CGFloat
+    @Binding var selectedTab: String
+    @Binding var isScrollEnabled: Bool
     @StateObject var chatViewModel : ChatViewModel = ChatViewModel()
     @State private var searchText : String = String()
     @State var isShowing: Bool = false
@@ -115,6 +117,14 @@ struct ChatListView: View {
                     }
                 }
             })
+            .onAppear(perform: {
+                if selectedTab == "home" {
+                    isScrollEnabled = true
+                }
+            })
+            .onDisappear {
+                isScrollEnabled = false
+            }
             .onAppear {
                 
                 chatViewModel.getChats{

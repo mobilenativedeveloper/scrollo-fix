@@ -42,15 +42,14 @@ class SignInViewModel: ObservableObject {
                 
                 guard let response = response as? HTTPURLResponse else {return}
                 
-                guard let debugJson = try? JSONSerialization.jsonObject(with: data!, options: []) else{return}
-                
                 if response.statusCode == 200 {
                     if let user = try? JSONDecoder().decode(UserModel.self, from: data!) {
                         DispatchQueue.main.async {
                             self.load = false
                             UserDefaults.standard.set(user.token, forKey: "token")
                             UserDefaults.standard.set(user.user.id, forKey: "userId")
-                            sendNotification(name: "userId", userInfo: [:])
+                            
+                            NotificationCenter.default.post(name: NSNotification.Name("userId"), object: nil, userInfo: nil)
                         }
                     }
                 } else {

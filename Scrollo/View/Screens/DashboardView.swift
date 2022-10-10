@@ -10,6 +10,7 @@ import SwiftUI
 struct DashboardView: View {
     @State var offset: CGFloat = 0
     @State var isScrollEnabled: Bool = false
+    @State var selectedTab = "home"
     var body: some View {
         GeometryReader{reader in
             
@@ -17,9 +18,10 @@ struct DashboardView: View {
             
             ScrollableTabBar(tabs: ["",""], rect: frame, offset: $offset, isScrollEnabled: isScrollEnabled){
                 
-                HomeView(offset: $offset, isScrollEnabled: $isScrollEnabled)
+                HomeView(selectedTab: $selectedTab, offset: $offset, isScrollEnabled: $isScrollEnabled)
                 
-                ChatListView(offset: $offset)
+                ChatListView(offset: $offset, selectedTab: $selectedTab, isScrollEnabled: $isScrollEnabled)
+                    
                     
                 
             }

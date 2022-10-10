@@ -203,7 +203,6 @@
 		ACC4E60128DCBAC50081F2E5 /* gotham_bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = gotham_bold.ttf; sourceTree = "<group>"; };
 		ACC4E60228DCBAC50081F2E5 /* gotham_thin_italic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = gotham_thin_italic.ttf; sourceTree = "<group>"; };
 		ACC4E60328DCBAC50081F2E5 /* gotham_black.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = gotham_black.ttf; sourceTree = "<group>"; };
-		ACC4E60428DCBAE60081F2E5 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		ACC4E60628DCC2FD0081F2E5 /* StoriesListItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoriesListItem.swift; sourceTree = "<group>"; };
 		ACC4E60828DCC3E10081F2E5 /* Post.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Post.swift; sourceTree = "<group>"; };
 		ACC4E60D28DD8D6F0081F2E5 /* TextWithHashtags.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextWithHashtags.swift; sourceTree = "<group>"; };
@@ -305,7 +304,6 @@
 		ACC4E5D428DCB4DE0081F2E5 /* Scrollo */ = {
 			isa = PBXGroup;
 			children = (
-				ACC4E60428DCBAE60081F2E5 /* Info.plist */,
 				ACC4E5FB28DCBAB00081F2E5 /* Fonts */,
 				ACC4E5EE28DCB60C0081F2E5 /* Utils */,
 				ACC4E5E528DCB5250081F2E5 /* ViewModel */,
@@ -766,11 +764,14 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 24;
 				DEVELOPMENT_ASSET_PATHS = "\"Scrollo/Preview Content\"";
 				DEVELOPMENT_TEAM = 2R48RT3S99;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Scrollo/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Scrollo;
+				INFOPLIST_KEY_NSCameraUsageDescription = "Разрешите доступ к камере";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Разрешите доступ к микрофону";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Разрешите доступ к галереи";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -779,6 +780,7 @@
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -802,11 +804,14 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 24;
 				DEVELOPMENT_ASSET_PATHS = "\"Scrollo/Preview Content\"";
-				DEVELOPMENT_TEAM = 3GBWH35VG2;
+				DEVELOPMENT_TEAM = 2R48RT3S99;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Scrollo/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Scrollo;
+				INFOPLIST_KEY_NSCameraUsageDescription = "Разрешите доступ к камере";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Разрешите доступ к микрофону";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Разрешите доступ к галереи";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -815,6 +820,7 @@
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

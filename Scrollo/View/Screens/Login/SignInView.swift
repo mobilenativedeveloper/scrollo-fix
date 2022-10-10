@@ -36,9 +36,9 @@ struct SignInView: View{
                             .foregroundColor(.white)
                             .padding(.bottom, 34)
                         
-                        TextFieldLogin(value: self.$signInViewModel.email, placeholder: "E-mail")
+                        TextFieldLogin(value: $signInViewModel.email, placeholder: "E-mail")
                             .padding(.bottom, 14)
-                        TextFieldLogin(value: self.$signInViewModel.password, placeholder: "Пароль", secure: true)
+                        TextFieldLogin(value: $signInViewModel.password, placeholder: "Пароль", secure: true)
                             .padding(.bottom, 10)
                         
                         Button(action: {
@@ -82,8 +82,8 @@ struct SignInView: View{
                 )
         }
         .offset(y: -self.keyboardHelper.keyboardHeight)
-        .animation(.spring())
         .ignoresSafeArea(.all)
+        .ignoreDefaultHeaderBar
         .onTapGesture {
             UIApplication.shared.endEditing()
         }

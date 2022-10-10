@@ -17,22 +17,26 @@ struct ContentView: View {
     }
     
     var body: some View {
-        if self.userId.isEmpty {
-            NavigationView{
-                AuthView()
+        
+        ZStack{
+            if self.userId.isEmpty {
+                NavigationView{
+                    AuthView()
+                        .ignoreDefaultHeaderBar
+                }
+            } else {
+                DashboardView()
                     .ignoreDefaultHeaderBar
             }
-        } else {
-            DashboardView()
-                .ignoreDefaultHeaderBar
-                .notificationCenter(name: "userId", completion: { userInfo in
-                    self.userId = UserDefaults.standard.value(forKey: "userId") as? String ?? String()
-                })
-                .notificationCenter(name: "logout", completion: { userInfo in
-                    self.userId = String()
-                })
         }
-        
+        .onAppear(perform: {
+            NotificationCenter.default.addObserver(forName: NSNotification.Name("userId"), object: nil, queue: .main) { (payload) in
+                self.userId = UserDefaults.standard.value(forKey: "userId") as? String ?? String()
+            }
+            NotificationCenter.default.addObserver(forName: NSNotification.Name("logout"), object: nil, queue: .main) { (payload) in
+                self.userId = String()
+            }
+        })
     }
 }
 

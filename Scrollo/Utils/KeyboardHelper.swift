@@ -7,6 +7,7 @@
 
 import UIKit
 import Foundation
+import SwiftUI
 
 class KeyboardHelper : ObservableObject {
     @Published var keyboardHeight: CGFloat = 0
@@ -23,13 +24,17 @@ class KeyboardHelper : ObservableObject {
                                                     let keyboardRect = userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect else { return }
                                                 
             
-            self.keyboardHeight = keyboardRect.height
+            withAnimation(.easeInOut){
+                self.keyboardHeight = keyboardRect.height
+            }
         }
         
         NotificationCenter.default.addObserver(forName: UIResponder.keyboardWillHideNotification,
                                                object: nil,
                                                queue: .main) { (notification) in
-                                                self.keyboardHeight = 0
+            withAnimation(.easeInOut){
+                self.keyboardHeight = 0
+            }
         }
     }
 }
