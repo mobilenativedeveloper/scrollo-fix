@@ -31,6 +31,7 @@ struct ProfileView: View {
     
     @State var yourActivityPresent: Bool = false
     @State var interestingPeoplePresent: Bool = false
+    @State var settingsPresent: Bool = false
     
     @StateObject var postViewModel: PostViewModel = PostViewModel()
     
@@ -296,7 +297,8 @@ struct ProfileView: View {
                             yourActivityPresent: self.$yourActivityPresent,
                             savedPresent: self.$savedPresent,
                             interestingPeoplePresent: self.$interestingPeoplePresent,
-                            editUserPresent: self.$editUserPresent
+                            editUserPresent: self.$editUserPresent,
+                            settingsPresent: self.$settingsPresent
                         )
                     }
             }
@@ -323,6 +325,11 @@ struct ProfileView: View {
                                 .ignoreDefaultHeaderBar, isActive: self.$isPresentActualStoryView, label: {
                                     EmptyView()
                                 })
+                NavigationLink(destination: SettingsView()
+                                .ignoreDefaultHeaderBar, isActive: self.$settingsPresent, label: {
+                                    EmptyView()
+                                })
+                
                 
             }
         )
@@ -643,6 +650,7 @@ private struct SettingsSheet: View {
     @Binding var savedPresent: Bool
     @Binding var interestingPeoplePresent: Bool
     @Binding var editUserPresent: Bool
+    @Binding var settingsPresent: Bool
     
     let time: CGFloat = 0.2
     
@@ -747,10 +755,10 @@ private struct SettingsSheet: View {
             }
             Spacer(minLength: 0)
             Button(action: {
-//                presentationMode.wrappedValue.dismiss()
-//                DispatchQueue.main.asyncAfter(deadline: .now() + time) {
-//                    isPresentSettingsView.toggle()
-//                }
+                presentationMode.wrappedValue.dismiss()
+                DispatchQueue.main.asyncAfter(deadline: .now() + time) {
+                    settingsPresent.toggle()
+                }
             }) {
                 VStack(spacing: 0) {
                     Rectangle()

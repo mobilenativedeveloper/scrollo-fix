@@ -73,17 +73,26 @@ let API_GET_USER_FOLLOWERS = "/api/v1/follow/followers/me"
 
 let API_REMOVE_FOLLOWER = "/api/v1/follow/following/"
 
+let API_USER_SWITCH_TYPE = "/api/v1/user/switch-type"
+
+let API_CHANGE_PASSWORD = "/api/v1/user/password"
+
+let API_COMPARE_OLD_PASSWORD = "/api/v1/user/compare-old-password"
+
+let API_CONFIDENTIALITY = "/api/v1/user/confidentiality"
+
+let API_NOTIFY_SETTINGS = "/api/v1/user/notification-settings"
 
 //let API_LIKE_REMOVE_COMMENT = "/api/v1/post/comment/like/"
 
 
 
 
-//let API_USER_SWITCH_TYPE = "/api/v1/user/switch-type"
-//let API_CHANGE_PASSWORD = "/api/v1/user/password"
-//let API_COMPARE_OLD_PASSWORD = "/api/v1/user/compare-old-password"
-//let API_NOTIFY_SETTINGS = "/api/v1/user/notification-settings"
-//let API_CONFIDENTIALITY = "/api/v1/user/confidentiality"
+
+
+
+
+
 
 
 //let API_SAVE_POST = "/api/v1/post/save"
