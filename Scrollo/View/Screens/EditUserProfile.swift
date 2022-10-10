@@ -686,10 +686,15 @@ private struct ImageGalleryPicker: View{
                                         showListAlubms.toggle()
                                     }
                                 }){
-                                    Text("\(galleryImagesViewModel.getAlbumTitle(album: galleryImagesViewModel.albums[galleryImagesViewModel.selectedAlbum]))")
-                                        .font(.system(size: 15))
-                                        .fontWeight(.bold)
-                                        .foregroundColor(.black)
+                                    HStack{
+                                        Text("\(galleryImagesViewModel.getAlbumTitle(album: galleryImagesViewModel.albums[galleryImagesViewModel.selectedAlbum]))")
+                                            .font(.system(size: 15))
+                                            .fontWeight(.bold)
+                                            .foregroundColor(.black)
+                                        Image(systemName: "chevron.down")
+                                            .font(.system(size: 15))
+                                            .foregroundColor(.black)
+                                    }
                                 }
                                 
                                 Spacer()

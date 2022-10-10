@@ -13,6 +13,7 @@ struct HomeView: View {
     @Binding var offset: CGFloat
     @Binding var isScrollEnabled: Bool
     
+    @State var publicationMediaPostViewPresent: Bool = false
     @State var publicationTextPostViewPresent: Bool = false
     @State var publicationStoryViewPresent: Bool = false
     
@@ -96,7 +97,8 @@ struct HomeView: View {
                     UploadView(
                         show: self.$upload,
                         publicationTextPostViewPresent: $publicationTextPostViewPresent,
-                        publicationStoryViewPresent: $publicationStoryViewPresent
+                        publicationStoryViewPresent: $publicationStoryViewPresent,
+                        publicationMediaPostViewPresent: $publicationMediaPostViewPresent
                     ),
                     alignment: Alignment(horizontal: .center, vertical: .top)
                 )
@@ -106,6 +108,8 @@ struct HomeView: View {
                                         .ignoreDefaultHeaderBar, isActive: $publicationTextPostViewPresent){ EmptyView() }
                         NavigationLink(destination: PublicationStoryView()
                                         .ignoreDefaultHeaderBar, isActive: $publicationStoryViewPresent){ EmptyView() }
+                        NavigationLink(destination: PublicationMediaPostView()
+                                        .ignoreDefaultHeaderBar, isActive: $publicationMediaPostViewPresent){ EmptyView() }
                     }
                 )
             }
@@ -199,8 +203,8 @@ private struct UploadView : View {
     
     @Binding var publicationTextPostViewPresent: Bool
     @Binding var publicationStoryViewPresent: Bool
+    @Binding var publicationMediaPostViewPresent: Bool
     
-   
     var body : some View {
         if show {
             HStack {
@@ -212,6 +216,12 @@ private struct UploadView : View {
                     Spacer(minLength: 0)
                     HStack(spacing: 18) {
                         UploadButtonView(icon: "gallery_icon", title: "Фото")
+                        onTapGesture {
+                            withAnimation(.easeInOut(duration: 0.2)){
+                                show = false
+                            }
+                            publicationMediaPostViewPresent = true
+                        }
                         UploadButtonView(icon: "message_icon", title: "Пост")
                             .onTapGesture {
                                 withAnimation(.easeInOut(duration: 0.2)){
