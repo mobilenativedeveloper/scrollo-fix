@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		AC074BE728F47907004D43D1 /* StoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC074BE628F47907004D43D1 /* StoryView.swift */; };
 		AC18A24728F09BF0005CDE7D /* FollowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC18A24628F09BEF005CDE7D /* FollowView.swift */; };
 		AC18A24928F0BC21005CDE7D /* YourActivityView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC18A24828F0BC21005CDE7D /* YourActivityView.swift */; };
 		AC18A24C28F0BCC5005CDE7D /* SwiftUICharts in Frameworks */ = {isa = PBXBuildFile; productRef = AC18A24B28F0BCC5005CDE7D /* SwiftUICharts */; };
@@ -110,6 +111,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		AC074BE628F47907004D43D1 /* StoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoryView.swift; sourceTree = "<group>"; };
 		AC18A24628F09BEF005CDE7D /* FollowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FollowView.swift; sourceTree = "<group>"; };
 		AC18A24828F0BC21005CDE7D /* YourActivityView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YourActivityView.swift; sourceTree = "<group>"; };
 		AC18A24D28F0BFFB005CDE7D /* SavedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavedView.swift; sourceTree = "<group>"; };
@@ -404,6 +406,7 @@
 				ACA4F1D428F1C7CD00F61983 /* CreateAlbumView.swift */,
 				ACA4F1D628F1DA4B00F61983 /* AlbumOverview.swift */,
 				AC79DCCC28F41D0400898FA9 /* ActionsView.swift */,
+				AC074BE628F47907004D43D1 /* StoryView.swift */,
 			);
 			path = Screens;
 			sourceTree = "<group>";
@@ -610,6 +613,7 @@
 				AC79DCF228F4208100898FA9 /* MessageActivityIndicatorView.swift in Sources */,
 				AC9F301428ED9F9B00444E08 /* EmojiListView.swift in Sources */,
 				AC3E359828ECAD5B002570AE /* CameraController.swift in Sources */,
+				AC074BE728F47907004D43D1 /* StoryView.swift in Sources */,
 				ACA4F1D528F1C7CE00F61983 /* CreateAlbumView.swift in Sources */,
 				AC79DCF628F4208100898FA9 /* CreateNewChatView.swift in Sources */,
 				AC3E359428ECAB09002570AE /* AddStoryViewModel.swift in Sources */,

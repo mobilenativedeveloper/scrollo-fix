@@ -53,12 +53,18 @@ struct FeedView: View {
                 ScrollView(.horizontal, showsIndicators: false){
                     HStack(spacing: 0) {
                         StoriesUserListItem()
+                            .environmentObject(storyData)
                             .padding(.leading)
                         
                         ForEach(0..<storyData.stories.count){index in
                             StoriesListItem(story: storyData.stories[index])
+                                .environmentObject(storyData)
                                 .padding(.leading, 10)
                         }
+                    }
+                    .fullScreenCover(isPresented: $storyData.showStory) {
+                        StoryView()
+                            .environmentObject(storyData)
                     }
                 }
                 if self.loadPosts{
