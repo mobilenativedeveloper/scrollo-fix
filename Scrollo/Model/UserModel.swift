@@ -81,3 +81,9 @@ struct UserModel: Decodable {
         }
     }
 }
+
+struct UserSearchResponse: Decodable {
+    var data: [UserModel.User]
+    var page: Int
+    var totalPages: Int
+}

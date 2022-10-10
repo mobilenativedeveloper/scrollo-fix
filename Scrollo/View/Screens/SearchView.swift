@@ -10,7 +10,8 @@ import SDWebImageSwiftUI
 
 struct SearchView: View {
     @StateObject var searchViewModel : SearchViewModel = SearchViewModel()
-    @FocusState private var isSearch : Bool
+    @State var isFocused: Bool = false
+    @State var isRevealed: Bool = false
     @State private var searchTextFieldOnLongPressColor : Color = Color.primary.opacity(0.06)
     
     @State var refreshing: Bool = false
@@ -22,20 +23,8 @@ struct SearchView: View {
                 VStack (spacing: 0) {
                     HStack(spacing: 0) {
                         HStack {
-                            TextField("Поиск", text: self.$searchViewModel.searchText)
-                                .focused(self.$isSearch)
-                                .onSubmit {
-//                                    if self.searchViewModel.searchText.count > 0 {
-//                                        self.searchHistoryViewModel.saveUserSearchedHistory(user: self.searchViewModel.searchText)
-//                                    }
-                                }
-                                .onChange(of: self.isSearch) { newValue in
-//                                    if !self.searchHistoryViewModel.isSearch && newValue {
-//                                        withAnimation(.default) {
-//                                            self.searchHistoryViewModel.isSearch = true
-//                                        }
-//                                    }
-                                }
+                            MyTextField(text: self.$searchViewModel.searchText,  isRevealed: $isRevealed, isFocused: $isFocused, placeholder: "Поиск")
+                                .frame(height: 29)
                             if self.searchViewModel.searchText.count > 0 {
                                 Button(action: {
                                     self.searchViewModel.searchText = ""
@@ -55,9 +44,11 @@ struct SearchView: View {
                         .padding(.horizontal)
                         .background(self.searchTextFieldOnLongPressColor)
                         .cornerRadius(10)
-                        .padding(self.isSearch ? .leading : .horizontal)
+                        .padding(self.isFocused ? .leading : .horizontal)
                         .onTapGesture(perform: {
-                            self.isSearch = true
+                            withAnimation(.easeInOut){
+                                isFocused = true
+                            }
                         })
                         .onLongPressGesture(minimumDuration: 0.5, maximumDistance: 100, pressing: {
                                                     pressing in
@@ -69,12 +60,12 @@ struct SearchView: View {
                             }
                         }, perform: {})
 
-                        if self.isSearch {
+                        if self.isFocused {
                             Button(action: {
                                 withAnimation(.default) {
-                                    self.isSearch = false
-//                                    self.searchViewModel.searchText = String()
-//                                    UIApplication.shared.endEditing()
+                                    self.isFocused = false
+                                    self.searchViewModel.searchText = String()
+                                    UIApplication.shared.endEditing()
                                 }
                             }) {
                                 Text("Отмена")
@@ -92,8 +83,8 @@ struct SearchView: View {
                         .padding(.horizontal)
                     }
                     .padding(.vertical, 18)
-                    .frame(height: self.isSearch ? 0 : nil)
-                    .opacity(self.isSearch ? 0 : 1)
+                    .frame(height: self.isFocused ? 0 : nil)
+                    .opacity(self.isFocused ? 0 : 1)
                 }
             }
             .background(Color.white)
@@ -114,7 +105,6 @@ struct SearchView: View {
                             }
                         }
                         .padding(.horizontal)
-                        .padding(.top, 23)
                         .padding(.bottom, 200)
                         .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
                         .listRowBackground(Color.clear)
@@ -135,9 +125,80 @@ struct SearchView: View {
                         done()
                     }
                 }
+                
+                VStack{
+                    Text("Search result")
+                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+                .background(Color.white)
+                .opacity((self.isFocused || searchViewModel.searchText.count > 0) ? 1 : 0)
+                .transition(.opacity)
             }
         }
         .background(Color.white.edgesIgnoringSafeArea(.all))
+    }
+}
+
+struct MyTextField: UIViewRepresentable {
+
+    @State var isEnabled: Bool = true
+    @Binding var text: String
+    @Binding var isRevealed: Bool
+    @Binding var isFocused: Bool
+    var placeholder: String
+     // 2
+    func makeUIView(context: UIViewRepresentableContext<MyTextField>) -> UITextField {
+        let tf = UITextField(frame: .zero)
+        tf.placeholder = placeholder
+        tf.isUserInteractionEnabled = true
+        tf.delegate = context.coordinator
+        return tf
+    }
+
+    func makeCoordinator() -> MyTextField.Coordinator {
+        return Coordinator(text: $text, isEnabled: $isEnabled,  isFocused: $isFocused)
+    }
+
+    // 3
+    func updateUIView(_ uiView: UITextField, context: Context) {
+        uiView.text = text
+        uiView.isSecureTextEntry = isRevealed
+    }
+
+    // 4
+    class Coordinator: NSObject, UITextFieldDelegate {
+        @Binding var text: String
+        @Binding var isFocused: Bool
+
+        init(text: Binding<String>, isEnabled: Binding<Bool>, isFocused: Binding<Bool>) {
+            _text = text
+            _isFocused = isFocused
+        }
+
+        func textFieldDidChangeSelection(_ textField: UITextField) {
+            text = textField.text ?? ""
+        }
+
+        func textFieldDidBeginEditing(_ textField: UITextField) {
+            DispatchQueue.main.async {
+                withAnimation(.easeInOut){
+                    self.isFocused = true
+                }
+            }
+        }
+
+        func textFieldDidEndEditing(_ textField: UITextField) {
+            DispatchQueue.main.async {
+                withAnimation(.easeInOut){
+                    self.isFocused = false
+                }
+            }
+        }
+
+        func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+            textField.resignFirstResponder()
+            return false
+        }
     }
 }
 

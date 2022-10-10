@@ -50,22 +50,26 @@ class SearchViewModel : ObservableObject {
     }
     
     func search(searchText: String) -> Void {
-//        let url = URL(string: "\(API_URL)\(API_USER_FIND)\(searchText)?page=0&pageSize=100")!
-//        if let request = Request(url: url, httpMethod: "GET", body: nil) {
-//            URLSession.shared.dataTask(with: request) {data, response, error in
-//                if let _ = error { return }
-//                
-//                guard let response = response as? HTTPURLResponse else { return }
-//                
-//                if response.statusCode == 200 {
-//                    if let json = try? JSONDecoder().decode(UserSearchResponse.self, from: data!) {
-//                        DispatchQueue.main.async {
-//                            self.users = json.data
-//                        }
-//                    }
-//                }
-//            }.resume()
-//        }
+        guard let url = URL(string: "\(API_URL)\(API_USER_FIND)\(searchText)?page=0&pageSize=100") else {
+            self.users = []
+            return
+        }
+        if let request = Request(url: url, httpMethod: "GET", body: nil) {
+            URLSession.shared.dataTask(with: request) {data, response, error in
+                if let _ = error { return }
+                
+                guard let response = response as? HTTPURLResponse else { return }
+                
+                if response.statusCode == 200 {
+                    if let json = try? JSONDecoder().decode(UserSearchResponse.self, from: data!) {
+                        DispatchQueue.main.async {
+                            print(json.data)
+                            self.users = json.data
+                        }
+                    }
+                }
+            }.resume()
+        }
     }
     
     func updateImages () {

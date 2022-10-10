@@ -67,7 +67,7 @@ let API_CHECK_FOLLOW_ON_USER = "/api/v1/follow/followed-on-him/"
 
 let API_FOLLOW_ON_USER = "/api/v1/follow/"
 
-//let API_USER_FIND = "/api/v1/user/finding/"
+let API_USER_FIND = "/api/v1/user/finding/"
 
 
 
