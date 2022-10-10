@@ -34,6 +34,7 @@
 		AC3E359428ECAB09002570AE /* AddStoryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC3E359328ECAB09002570AE /* AddStoryViewModel.swift */; };
 		AC3E359628ECAB1A002570AE /* AssetModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC3E359528ECAB1A002570AE /* AssetModel.swift */; };
 		AC3E359828ECAD5B002570AE /* CameraController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC3E359728ECAD5B002570AE /* CameraController.swift */; };
+		AC6AA7BB28F30072002A6657 /* GalleryImagesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC6AA7BA28F30072002A6657 /* GalleryImagesViewModel.swift */; };
 		AC90049128E053FA0043ED66 /* NotificationCenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC90049028E053FA0043ED66 /* NotificationCenter.swift */; };
 		AC9F301028ED88D300444E08 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC9F300F28ED88D300444E08 /* HomeView.swift */; };
 		AC9F301228ED9DCD00444E08 /* PostOverview.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC9F301128ED9DCD00444E08 /* PostOverview.swift */; };
@@ -106,6 +107,7 @@
 		AC3E359328ECAB09002570AE /* AddStoryViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddStoryViewModel.swift; sourceTree = "<group>"; };
 		AC3E359528ECAB1A002570AE /* AssetModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssetModel.swift; sourceTree = "<group>"; };
 		AC3E359728ECAD5B002570AE /* CameraController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraController.swift; sourceTree = "<group>"; };
+		AC6AA7BA28F30072002A6657 /* GalleryImagesViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryImagesViewModel.swift; sourceTree = "<group>"; };
 		AC90049028E053FA0043ED66 /* NotificationCenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationCenter.swift; sourceTree = "<group>"; };
 		AC9F300F28ED88D300444E08 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		AC9F301128ED9DCD00444E08 /* PostOverview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostOverview.swift; sourceTree = "<group>"; };
@@ -283,6 +285,7 @@
 				AC18A25328F0C3E3005CDE7D /* AlbumsViewModel.swift */,
 				ACA4F1D228F1AF0800F61983 /* VideoThumbnailViewModel.swift */,
 				ACB1591E28F2B146002F012C /* ImageGalleryViewModel.swift */,
+				AC6AA7BA28F30072002A6657 /* GalleryImagesViewModel.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -454,6 +457,7 @@
 				ACC4E5ED28DCB5E90081F2E5 /* BottomSheet.swift in Sources */,
 				ACC4E5F628DCB7BD0081F2E5 /* StoryModel.swift in Sources */,
 				ACC4E62028DD9F330081F2E5 /* DashboardView.swift in Sources */,
+				AC6AA7BB28F30072002A6657 /* GalleryImagesViewModel.swift in Sources */,
 				AC9F301D28EE07B400444E08 /* CommentsOverview.swift in Sources */,
 				ACA4F1D728F1DA4B00F61983 /* AlbumOverview.swift in Sources */,
 				AC3E359628ECAB1A002570AE /* AssetModel.swift in Sources */,
@@ -641,6 +645,7 @@
 				DEVELOPMENT_TEAM = 2R48RT3S99;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Разрешите доступ к галереи";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -672,6 +677,7 @@
 				DEVELOPMENT_TEAM = 3GBWH35VG2;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Разрешите доступ к галереи";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;

@@ -9,7 +9,7 @@ import SwiftUI
 import Photos
 
 struct AssetModel: Identifiable {
-    var id: String = UUID().uuidString
+    var id = UUID().uuidString
     var asset: PHAsset
     var thumbnail: UIImage
 }

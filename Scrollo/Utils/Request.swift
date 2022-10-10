@@ -50,51 +50,51 @@ func MultipartRequest (url: URL, httpMethod: String, parameters: [String: Any]?)
     
     return request
 }
-//
-//struct Media {
-//    let key: String
-//    let filename: String
-//    let data: Data
-//    let mimeType: String
-//    init?(withImage image: UIImage, forKey key: String) {
-//        self.key = key
-//        self.mimeType = "image/jpeg"
-//        self.filename = "imagefile.jpg"
-//        guard let data = image.jpegData(compressionQuality: 0.7) else { return nil }
-//        self.data = data
-//    }
-//}
-//
-//struct MultipartMedia {
-//    var key: String
-//    var filename: String
-//    var data: Data
-//    var mimeType: String
-//}
-//
-//func createDataBody(withParameters params: [String: String]?, media: [MultipartMedia]?, boundary: String) -> Data {
-//   let lineBreak = "\r\n"
-//   var body = Data()
-//   if let parameters = params {
-//      for (key, value) in parameters {
-//         body.append("--\(boundary + lineBreak)")
-//         body.append("Content-Disposition: form-data; name=\"\(key)\"\(lineBreak + lineBreak)")
-//         body.append("\(value as! String + lineBreak)")
-//      }
-//   }
-//   if let media = media {
-//      for photo in media {
-//         body.append("--\(boundary + lineBreak)")
-//         body.append("Content-Disposition: form-data; name=\"\(photo.key)\"; filename=\"\(photo.filename)\"\(lineBreak)")
-//         body.append("Content-Type: \(photo.mimeType + lineBreak + lineBreak)")
-//         body.append(photo.data)
-//         body.append(lineBreak)
-//      }
-//   }
-//   body.append("--\(boundary)--\(lineBreak)")
-//   return body
-//}
-//
-//func generateBoundary() -> String {
-//   return "Boundary-\(NSUUID().uuidString)"
-//}
+
+struct Media {
+    let key: String
+    let filename: String
+    let data: Data
+    let mimeType: String
+    init?(withImage image: UIImage, forKey key: String) {
+        self.key = key
+        self.mimeType = "image/jpeg"
+        self.filename = "imagefile.jpg"
+        guard let data = image.jpegData(compressionQuality: 0.7) else { return nil }
+        self.data = data
+    }
+}
+
+struct MultipartMedia {
+    var key: String
+    var filename: String
+    var data: Data
+    var mimeType: String
+}
+
+func createDataBody(withParameters params: [String: String]?, media: [MultipartMedia]?, boundary: String) -> Data {
+   let lineBreak = "\r\n"
+   var body = Data()
+   if let parameters = params {
+      for (key, value) in parameters {
+         body.append("--\(boundary + lineBreak)")
+         body.append("Content-Disposition: form-data; name=\"\(key)\"\(lineBreak + lineBreak)")
+         body.append("\(value as! String + lineBreak)")
+      }
+   }
+   if let media = media {
+      for photo in media {
+         body.append("--\(boundary + lineBreak)")
+         body.append("Content-Disposition: form-data; name=\"\(photo.key)\"; filename=\"\(photo.filename)\"\(lineBreak)")
+         body.append("Content-Type: \(photo.mimeType + lineBreak + lineBreak)")
+         body.append(photo.data)
+         body.append(lineBreak)
+      }
+   }
+   body.append("--\(boundary)--\(lineBreak)")
+   return body
+}
+
+func generateBoundary() -> String {
+   return "Boundary-\(NSUUID().uuidString)"
+}

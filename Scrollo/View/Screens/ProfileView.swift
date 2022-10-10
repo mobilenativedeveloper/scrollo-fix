@@ -18,6 +18,7 @@ struct ProfileView: View {
     
     var userId: String
     
+    
     @State var editUserPresent: Bool = false
     
     @State var selectedTab: String = "media"
@@ -316,10 +317,14 @@ struct ProfileView: View {
         )
         .ignoresSafeArea(.all, edges: .top)
         .fullScreenCover(isPresented: $editUserPresent, content: {
-            EditUserProfile(user: $user)
+            EditUserProfile(user: $user, onUpdateProfile: {
+                getProfile(completion: {
+                    
+                })
+            })
         })
         .onAppear {
-            getProfile()
+            getProfile(completion:{})
             postViewModel.getUserMediaPosts(userId: userId) { compositionPost in
                 self.mediaPost = compositionPost
                 self.loadMdeiaPost = true
@@ -331,7 +336,7 @@ struct ProfileView: View {
         }
     }
     
-    func getProfile () -> Void {
+    func getProfile (completion: @escaping()->Void) -> Void {
         
         let url = URL(string: "\(API_URL)\(API_USER)\(userId)")!
         
@@ -345,6 +350,7 @@ struct ProfileView: View {
                 guard let json = try? JSONDecoder().decode(UserModel.User.self, from: data) else {return}
                 DispatchQueue.main.async {
                     self.user = json
+                    completion()
                 }
             }
         }.resume()

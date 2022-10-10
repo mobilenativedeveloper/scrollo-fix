@@ -7,15 +7,21 @@
 
 import SwiftUI
 import SDWebImageSwiftUI
-import PhotoSelectAndCrop
+import Photos
+import UIKit
 
 struct EditUserProfile: View {
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
     
     @Binding var user: UserModel.User?
     
+    var onUpdateProfile: ()->()
+    
+    @State var load: Bool = false
+    
     @State var showingOptions: Bool = false
     @State var optionsMenu: EditUserTumbs = .avatar
+    @State var isGalleryPickerAvatar: Bool = false
     @State var isGalleryPickerBackground: Bool = false
     
     @State var selectedBackground: UIImage = UIImage()
@@ -62,6 +68,7 @@ struct EditUserProfile: View {
                     Spacer(minLength: 0)
                     Button(action: {
                         updateUserProfile()
+                        presentationMode.wrappedValue.dismiss()
                     }) {
                         Image("circle.blue.checkmark")
                             .resizable()
@@ -83,17 +90,28 @@ struct EditUserProfile: View {
                         
                         HStack(spacing: 0) {
                             ZStack(alignment: Alignment(horizontal: .trailing, vertical: .bottom)) {
-                                if let avatar = user!.avatar {
-                                    WebImage(url: URL(string: "\(API_URL)/uploads/\(avatar)")!)
+                                if selectedAvatar == UIImage() {
+                                    if let avatar = user!.avatar {
+                                        WebImage(url: URL(string: "\(API_URL)/uploads/\(avatar)")!)
+                                            .resizable()
+                                            .scaledToFill()
+                                            .frame(width: 87, height: 87)
+                                            .clipped()
+                                            .background(Color(hex: "#f7f7f7"))
+                                            .cornerRadius(22)
+                                    } else {
+                                        DefaultAvatar(width: 87, height: 87, cornerRadius: 22)
+                                            .clipped()
+                                    }
+                                }
+                                else{
+                                    Image(uiImage: selectedAvatar)
                                         .resizable()
                                         .scaledToFill()
                                         .frame(width: 87, height: 87)
                                         .clipped()
                                         .background(Color(hex: "#f7f7f7"))
                                         .cornerRadius(22)
-                                } else {
-                                    DefaultAvatar(width: 87, height: 87, cornerRadius: 22)
-                                        .clipped()
                                 }
                                 Image("edit.user.photo")
                                     .resizable()
@@ -135,7 +153,7 @@ struct EditUserProfile: View {
                                     .fill(Color(hex: "#828796"))
                                     .frame(width: (screen_rect.width - 44) / 1.8, height: 87)
                             )
-                            .background(UserBackgroundView(background: user!.background))
+                            .background(UserBackgroundView(background: user!.background, selectedBackground: selectedBackground))
                             .frame(width: (screen_rect.width - 44) / 1.8, height: 87)
                             .onTapGesture {
                                 self.optionsMenu = .background
@@ -199,8 +217,26 @@ struct EditUserProfile: View {
             
             Spacer(minLength: 0)
         }
-        .fullScreenCover(isPresented: $isGalleryPickerBackground, content: {
-            ImageGalleryPicker(isPresented: $isGalleryPickerBackground, originalImage: "https://picsum.photos/200/300?random=1")
+        .fullScreenCover(isPresented: $isGalleryPickerAvatar, content: {
+            ImageGalleryPicker(isPresented: $isGalleryPickerAvatar, selectedImage: $selectedAvatar, updateImage: {
+                
+                updateUserAvatar(avatar: selectedAvatar) {
+                    isGalleryPickerAvatar.toggle()
+                    
+                    onUpdateProfile()
+                    
+                }
+            })
+        })
+        .fullScreenCover(isPresented: self.$isGalleryPickerBackground, content: {
+            ImagePickerCameraView(selectedImage: self.$selectedBackground, sourceType: UIImagePickerController.SourceType.photoLibrary) {
+                if self.selectedBackground != UIImage() {
+                    updateUserBackground(background: self.selectedBackground) {
+                        onUpdateProfile()
+                        
+                    }
+                }
+            }.edgesIgnoringSafeArea(.all)
         })
         .actionSheet(isPresented: $showingOptions) {
             if optionsMenu == .background {
@@ -210,7 +246,6 @@ struct EditUserProfile: View {
 //                        self.isGalleryPickerBackground.toggle()
                     },
                     .default(Text("Выбрать из галереи")) {
-//                        self.sourceTypeBackground = .photoLibrary
                         self.isGalleryPickerBackground.toggle()
                     },
                     .cancel(Text("Отмена"))
@@ -223,7 +258,7 @@ struct EditUserProfile: View {
                     },
                     .default(Text("Выбрать из галереи")) {
 //                        self.sourceTypeAvatar = .photoLibrary
-//                        self.isGalleryPickerAvatar.toggle()
+                        self.isGalleryPickerAvatar.toggle()
                     },
                     .cancel(Text("Отмена"))
                 ])
@@ -245,6 +280,69 @@ struct EditUserProfile: View {
             } else {
                 self.genderSelection = "Мужской"
             }
+        }
+    }
+    
+    func updateUserAvatar (avatar: UIImage, onSuccess: @escaping() -> Void) -> Void {
+        let url = URL(string: "\(API_URL)\(API_UPDATE_USER_AVATAR)")!
+        let token = UserDefaults.standard.string(forKey: "token")
+        if let token = token {
+            let boundary = generateBoundary()
+            var request = URLRequest(url: url)
+            request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+            request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
+            request.httpMethod = "PATCH"
+            
+            guard let image = avatar.jpegData(compressionQuality: 0.7) else {return}
+            let mediaImage = MultipartMedia(key: "avatar", filename: "imagefile.jpg", data: image, mimeType: "image/jpeg")
+            
+            let dataBody = createDataBody(withParameters: nil, media: [mediaImage], boundary: boundary)
+            request.httpBody = dataBody
+            let session = URLSession.shared
+              session.dataTask(with: request) { (_, response, _) in
+                  
+                  guard let response = response as? HTTPURLResponse else {return}
+                  print("updateUserAvatar: \(response.statusCode)")
+                  if response.statusCode == 200 {
+                      DispatchQueue.main.async {
+                          onSuccess()
+                      }
+                  }
+              }.resume()
+            
+            
+        }
+    }
+    
+    func updateUserBackground (background: UIImage, onSuccess: @escaping() -> Void) -> Void {
+        let url = URL(string: "\(API_URL)\(API_UPDATE_USER_BACKGROUND)")!
+        let token = UserDefaults.standard.string(forKey: "token")
+        if let token = token {
+            let boundary = generateBoundary()
+            var request = URLRequest(url: url)
+            request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+            request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
+            request.httpMethod = "PATCH"
+            guard let image = background.jpegData(compressionQuality: 0.7) else {return}
+            let mediaImage = MultipartMedia(key: "background", filename: "imagefile.jpg", data: image, mimeType: "image/jpeg")
+            let dataBody = createDataBody(withParameters: nil, media: [mediaImage], boundary: boundary)
+            request.httpBody = dataBody
+            let session = URLSession.shared
+              session.dataTask(with: request) { (data, response, error) in
+                  if let _ = error {
+                      return
+                  }
+                  
+                  guard let response = response as? HTTPURLResponse else {return}
+                  
+                  if response.statusCode == 200 {
+                      DispatchQueue.main.async {
+                          onSuccess()
+                      }
+                  }
+              }.resume()
+            
+            
         }
     }
     
@@ -314,16 +412,25 @@ struct EditUserProfile: View {
 
 private struct UserBackgroundView: View{
     var background: String?
-    
+    var selectedBackground: UIImage
     var body: some View{
-        if let background = self.background {
-            WebImage(url: URL(string: "\(API_URL)/uploads/\(background)")!)
+        if selectedBackground == UIImage(){
+            if let background = self.background {
+                WebImage(url: URL(string: "\(API_URL)/uploads/\(background)")!)
+                    .resizable()
+                    .aspectRatio(contentMode: .fill)
+                    .frame(width: (screen_rect.width - 44) / 1.8, height: 87)
+                    .cornerRadius(15)
+            } else {
+                Color.clear
+            }
+        }
+        else{
+            Image(uiImage: selectedBackground)
                 .resizable()
                 .aspectRatio(contentMode: .fill)
                 .frame(width: (screen_rect.width - 44) / 1.8, height: 87)
                 .cornerRadius(15)
-        } else {
-            Color.clear
         }
     }
 }
@@ -434,7 +541,16 @@ private struct ImageGalleryPicker: View{
     
     @Binding var isPresented: Bool
     
-    var originalImage: String?
+    @Binding var selectedImage: UIImage
+    
+    var updateImage: ()->()
+    
+    @State var showListAlubms: Bool = false
+    
+    @StateObject var galleryImagesViewModel: GalleryImagesViewModel = GalleryImagesViewModel()
+    
+    private let columns = 3
+    private let size = (UIScreen.main.bounds.width / 3) - 12
     
     @State var inputImage: UIImage?
     
@@ -458,7 +574,15 @@ private struct ImageGalleryPicker: View{
             
             HStack {
                 Button(action: {
-                    isPresented.toggle()
+                    if showListAlubms{
+                        withAnimation(.easeInOut(duration: 0.2)){
+                            showListAlubms.toggle()
+                        }
+                    }
+                    else{
+                        isPresented.toggle()
+                    }
+                    
                 }) {
                     Image("circle.xmark.black")
                         .resizable()
@@ -473,19 +597,25 @@ private struct ImageGalleryPicker: View{
                     .foregroundColor(Color(hex: "#2E313C"))
                 Spacer(minLength: 0)
                 Button(action: {
+                    if inputImage != nil && !showListAlubms{
+                        selectedImage = croppedImage(from: inputImage!, croppedTo: CGRect(x: inset, y: inset, width: screen_rect.width - ( inset * 2 ), height: screen_rect.width - ( inset * 2 )))
+                        updateImage()
+                    }
                     
                 }) {
                     Image("circle.blue.checkmark")
                         .resizable()
                         .frame(width: 24, height: 24)
                         .aspectRatio(contentMode: .fill)
-                    }
+                        .opacity(showListAlubms ? 0 : 1)
+                }
+                
             }
             .padding(.horizontal)
             
-            GeometryReader{proxy in
-                ZStack{
-                    if originalImage != nil {
+            VStack{
+                GeometryReader{proxy in
+                    ZStack{
                         if inputImage != nil {
                             Image(uiImage: inputImage!)
                                 .resizable()
@@ -499,71 +629,184 @@ private struct ImageGalleryPicker: View{
                         else{
                             ProgressView()
                         }
+                        
+                        Rectangle()
+                            .fill(Color.black).opacity(0.55)
+                            .mask(HoleShapeMask(width: proxy.size.width, height: proxy.size.width).fill(style: FillStyle(eoFill: true)))
                     }
-                    
-                    Rectangle()
-                        .fill(Color.black).opacity(0.55)
-                        .mask(HoleShapeMask(width: proxy.size.width, height: proxy.size.width).fill(style: FillStyle(eoFill: true)))
+                    .frame(width: proxy.size.width, height: proxy.size.width)
                 }
-                .frame(width: proxy.size.width, height: proxy.size.width)
-            }
-            .onAppear(perform: imageDataToUIImage)
-            .gesture(
-                MagnificationGesture()
-                    .onChanged { amount in
-                        self.currentAmount = amount - 1
-                    }
-                    .onEnded { amount in
-                        self.zoomAmount += self.currentAmount
-                        if zoomAmount > 4.0 {
+                .gesture(
+                    MagnificationGesture()
+                        .onChanged { amount in
+                            self.currentAmount = amount - 1
+                        }
+                        .onEnded { amount in
+                            self.zoomAmount += self.currentAmount
+                            if zoomAmount > 4.0 {
+                                withAnimation {
+                                    zoomAmount = 4.0
+                                }
+                            }
+                            self.currentAmount = 0
                             withAnimation {
-                                zoomAmount = 4.0
+                                repositionImage()
                             }
                         }
-                        self.currentAmount = 0
-                        withAnimation {
-                            repositionImage()
+                )
+                .simultaneousGesture(
+                    DragGesture()
+                        .onChanged { value in
+                            self.currentPosition = CGSize(width: value.translation.width + self.newPosition.width, height: value.translation.height + self.newPosition.height)
+                        }
+                        .onEnded { value in
+                            self.currentPosition = CGSize(width: value.translation.width + self.newPosition.width, height: value.translation.height + self.newPosition.height)
+                            self.newPosition = self.currentPosition
+                            withAnimation {
+                                repositionImage()
+                            }
+                        }
+                )
+                
+                
+                ZStack{
+                    //MARK: Photos
+                    if galleryImagesViewModel.loadAssets {
+                        VStack(spacing: 0){
+                            HStack{
+                                Button(action: {
+                                    withAnimation(.easeInOut(duration: 0.2)){
+                                        showListAlubms.toggle()
+                                    }
+                                }){
+                                    Text("\(galleryImagesViewModel.getAlbumTitle(album: galleryImagesViewModel.albums[galleryImagesViewModel.selectedAlbum]))")
+                                        .font(.system(size: 15))
+                                        .fontWeight(.bold)
+                                        .foregroundColor(.black)
+                                }
+                                
+                                Spacer()
+                            }
+                            .padding(.vertical, 15)
+                            .padding(.horizontal)
+                            ScrollView {
+                                makeGrid()
+                            }
+                        }
+                        .padding(.top)
+                        .onChange(of: galleryImagesViewModel.selectedAlbum) { _ in
+                            galleryImagesViewModel.getThumbnailAssetsFromAlbum(onlyPhoto: true)
                         }
                     }
-            )
-            .simultaneousGesture(
-                DragGesture()
-                    .onChanged { value in
-                        self.currentPosition = CGSize(width: value.translation.width + self.newPosition.width, height: value.translation.height + self.newPosition.height)
-                    }
-                    .onEnded { value in
-                        self.currentPosition = CGSize(width: value.translation.width + self.newPosition.width, height: value.translation.height + self.newPosition.height)
-                        self.newPosition = self.currentPosition
-                        withAnimation {
-                            repositionImage()
+                    
+                    
+                }
+                
+                Spacer(minLength: 0)
+            }
+            .overlay{
+                if showListAlubms {
+                    VStack(alignment: .leading){
+                        ScrollView{
+                            VStack{
+                                ForEach(0..<galleryImagesViewModel.albums.count, id: \.self) {index in
+                                    if let album = galleryImagesViewModel.albums[index] {
+                                        AlbumsListItemView(album: album, index: index, showListAlubms: $showListAlubms)
+                                            .environmentObject(galleryImagesViewModel)
+                                    }
+                                }
+                            }
                         }
                     }
-            )
-            
-            Spacer(minLength: 0)
-            
+                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+                    .background(Color(hex: "#f6f7f9").ignoresSafeArea())
+                    .transition(.move(edge: .bottom))
+                }
+            }
+        }
+        
+        .onChange(of: galleryImagesViewModel.loadAssets, perform: { newValue in
+            if newValue {
+                if galleryImagesViewModel.assets.count > 0{
+                    setUpImage(image: galleryImagesViewModel.assets[0].thumbnail)
+                }
+            }
+        })
+        .onAppear {
+            galleryImagesViewModel.loadMedia(onlyPhoto: true)
         }
     }
     
-    func imageDataToUIImage(){
-        guard let originalImage = self.originalImage else { return }
-        guard let url = URL(string: originalImage) else { return }
-        let task = URLSession.shared.dataTask(with: url) { data, response, error in
-            guard let data = data else { return }
-            DispatchQueue.main.async {
-                
-                let image = UIImage(data: data)
-                
-                guard let currentImage = image else { return }
-                
-                let w = currentImage.size.width
-                let h = currentImage.size.height
-                inputImage = currentImage
-                inputImageAspectRatio = w / h
-                
+    func makeGrid() -> some View {
+        let count = galleryImagesViewModel.assets.count
+        let rows = count / columns + (count % columns == 0 ? 0 : 1)
+
+        return VStack(alignment: .leading, spacing: 9) {
+            ForEach(0..<rows) { row in
+                HStack(spacing: 9) {
+                    ForEach(0..<self.columns) {column in
+                        let index = row * self.columns + column
+                        if index < count {
+                            Thumbnail(asset: galleryImagesViewModel.assets[index], size: size)
+                                .environmentObject(galleryImagesViewModel)
+                                .onTapGesture {
+                                    setUpImage(image: galleryImagesViewModel.assets[index].thumbnail)
+                                }
+                        } else {
+                            AnyView(EmptyView())
+                                .frame(width: size, height: 180)
+                        }
+                    }
+                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
             }
         }
-        task.resume()
+        .padding(.horizontal, 9)
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+        .padding(.top, 10)
+    }
+    
+    
+    func croppedImage(from image: UIImage, croppedTo rect: CGRect) -> UIImage {
+
+        UIGraphicsBeginImageContext(rect.size)
+        let context = UIGraphicsGetCurrentContext()
+
+        let drawRect = CGRect(x: -rect.origin.x, y: -rect.origin.y, width: image.size.width, height: image.size.height)
+
+        context?.clip(to: CGRect(x: 0, y: 0, width: rect.size.width, height: rect.size.height))
+
+        image.draw(in: drawRect)
+
+        let subImage = UIGraphicsGetImageFromCurrentImageContext()
+
+        UIGraphicsEndImageContext()
+        return subImage!
+    }
+//
+//    func imageDataToUIImage(){
+//        guard let originalImage = self.originalImage else { return }
+//        guard let url = URL(string: originalImage) else { return }
+//        let task = URLSession.shared.dataTask(with: url) { data, response, error in
+//            guard let data = data else { return }
+//            DispatchQueue.main.async {
+//
+//                let image = UIImage(data: data)
+//
+//                setUpImage(image: image)
+//
+//            }
+//        }
+//        task.resume()
+//    }
+    
+    func setUpImage(image: UIImage?){
+        guard let currentImage = image else { return }
+        
+        let w = currentImage.size.width
+        let h = currentImage.size.height
+        inputImage = currentImage
+        inputImageAspectRatio = w / h
     }
     
     
@@ -691,243 +934,110 @@ private struct ImageGalleryPicker: View{
         }
     }
 }
+private struct Thumbnail : View {
+    var asset: AssetModel
+    var size: CGFloat
+    var body : some View {
+        Image(uiImage: asset.thumbnail)
+            .resizable()
+            .scaledToFill()
+            .frame(width: size, height: 180)
+            .cornerRadius(8)
+            .clipped()
+    }
+}
 
-//private struct ImageGalleryPicker: View{
-//
-//    @Binding var isPresented: Bool
-//
-//    var originalImage: String?
-//
-//    @State var inputImage: UIImage?
-//
-//    @State var inputImageAspectRatio: CGFloat = 0.0
-//
-//    @State var displayW: CGFloat = 0.0
-//    @State var displayH: CGFloat = 0.0
-//
-//    @State var currentAmount: CGFloat = 0
-//    @State var zoomAmount: CGFloat = 1.0
-//    @State var currentPosition: CGSize = .zero
-//    @State var newPosition: CGSize = .zero
-//    @State var horizontalOffset: CGFloat = 0.0
-//    @State var verticalOffset: CGFloat = 0.0
-//
-//    let inset: CGFloat = 15
-//
-//    var body: some View{
-//
-//        ZStack{
-//
-//            ZStack{
-//
-//                Color.black.opacity(0.8)
-//                if originalImage != nil {
-//                    if inputImage != nil {
-//                        Image(uiImage: inputImage!)
-//                            .resizable()
-//                            .scaleEffect(zoomAmount + currentAmount)
-//                            .scaledToFill()
-//                            .aspectRatio(contentMode: .fit)
-//                            .offset(x: self.currentPosition.width, y: self.currentPosition.height)
-//                            .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height)
-//                            .clipped()
-//                    }
-//                    else{
-//                        ProgressView()
-//                    }
-//                } else {
-//                    Image("story1")
-//                        .resizable()
-//                        .scaledToFill()
-//                        .aspectRatio(contentMode: .fit)
-//                        .foregroundColor(Color(.systemGray2))
-//                }
-//            }
-//
-//            Rectangle()
-//                .fill(Color.black).opacity(0.55)
-//                .mask(HoleShapeMask().fill(style: FillStyle(eoFill: true)))
-//
-//        }
-//        .edgesIgnoringSafeArea(.all)
-//        .onAppear(perform: imageDataToUIImage)
-//        .gesture(
-//            MagnificationGesture()
-//                .onChanged { amount in
-//                    self.currentAmount = amount - 1
-//                }
-//                .onEnded { amount in
-//                    self.zoomAmount += self.currentAmount
-//                    if zoomAmount > 4.0 {
-//                        withAnimation {
-//                            zoomAmount = 4.0
-//                        }
-//                    }
-//                    self.currentAmount = 0
-//                    withAnimation {
-//                        repositionImage()
-//                    }
-//                }
-//        )
-//        .simultaneousGesture(
-//            DragGesture()
-//                .onChanged { value in
-//                    self.currentPosition = CGSize(width: value.translation.width + self.newPosition.width, height: value.translation.height + self.newPosition.height)
-//                }
-//                .onEnded { value in
-//                    self.currentPosition = CGSize(width: value.translation.width + self.newPosition.width, height: value.translation.height + self.newPosition.height)
-//                    self.newPosition = self.currentPosition
-//                    withAnimation {
-//                        repositionImage()
-//                    }
-//                }
-//        )
-//    }
-//
-//    func imageDataToUIImage(){
-//        guard let originalImage = self.originalImage else { return }
-//        guard let url = URL(string: originalImage) else { return }
-//        let task = URLSession.shared.dataTask(with: url) { data, response, error in
-//            guard let data = data else { return }
-//            DispatchQueue.main.async {
-//
-//                let image = UIImage(data: data)
-//
-//                guard let currentImage = image else { return }
-//
-//                let w = currentImage.size.width
-//                let h = currentImage.size.height
-//                inputImage = currentImage
-//                inputImageAspectRatio = w / h
-//
-//            }
-//        }
-//        task.resume()
-//    }
-//
-//
-//    func HoleShapeMask() -> Path {
-//        let rect = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height)
-//        let insetRect = CGRect(x: inset, y: inset, width: UIScreen.main.bounds.width - ( inset * 2 ), height: UIScreen.main.bounds.height - ( inset * 2 ))
-//        var shape = Rectangle().path(in: rect)
-//        shape.addPath(Circle().path(in: insetRect))
-//        return shape
-//    }
-//
-//    private func getAspect() -> CGFloat {
-//        let screenAspectRatio = UIScreen.main.bounds.width / UIScreen.main.bounds.height
-//        return screenAspectRatio
-//    }
-//
-//    ///Positions the image selected to fit the screen.
-//    func resetImageOriginAndScale() {
-//        let screenAspect: CGFloat = getAspect()
-//
-//        withAnimation(.easeInOut){
-//            if inputImageAspectRatio >= screenAspect {
-//                displayW = UIScreen.main.bounds.width
-//                displayH = displayW / inputImageAspectRatio
-//            } else {
-//                displayH = UIScreen.main.bounds.height
-//                displayW = displayH * inputImageAspectRatio
-//            }
-//            currentAmount = 0
-//            zoomAmount = 1
-//            currentPosition = .zero
-//            newPosition = .zero
-//        }
-//    }
-//
-//    func repositionImage() {
-//
-//        ///Setting the display width and height so the imputImage fits the screen
-//        ///orientation.
-//        let screenAspect: CGFloat = getAspect()
-//        let diameter = min(UIScreen.main.bounds.width, UIScreen.main.bounds.height)
-//
-//        if screenAspect <= 1.0 {
-//            if inputImageAspectRatio > screenAspect {
-//                displayW = diameter * zoomAmount
-//                displayH = displayW / inputImageAspectRatio
-//            } else {
-//                displayH = UIScreen.main.bounds.height * zoomAmount
-//                displayW = displayH * inputImageAspectRatio
-//            }
-//        } else {
-//            if inputImageAspectRatio < screenAspect {
-//                displayH = diameter * zoomAmount
-//                displayW = displayH * inputImageAspectRatio
-//            } else {
-//                displayW = UIScreen.main.bounds.width * zoomAmount
-//                displayH = displayW / inputImageAspectRatio
-//            }
-//        }
-//
-//        horizontalOffset = (displayW - diameter ) / 2
-//        verticalOffset = ( displayH - diameter) / 2
-//
-//        ///Keep the user from zooming too far in. Adjust as required in your individual project.
-//        if zoomAmount > 4.0 {
-//                zoomAmount = 4.0
-//        }
-//
-//        ///If the view which presents the ImageMoveAndScaleSheet is embeded in a NavigationView then the vertical offset is off.
-//        ///A value of 0.0 appears to work when the view is not embeded in a NAvigationView().
-//
-//        ///When it is embedded in a NvaigationView, a value of 4.0 seems to keep images displaying as expected.
-//        ///This appears to be a SwiftUI bug. So, we "pad" the function with this "adjust". YMMV.
-//
-//        let adjust: CGFloat = 0.0
-//
-//        ///The following if statements keep the image filling the circle cutout in at least one dimension.
-//        if displayH >= diameter {
-//            if newPosition.height > verticalOffset {
-//                print("1. newPosition.height > verticalOffset")
-//                    newPosition = CGSize(width: newPosition.width, height: verticalOffset - adjust + inset)
-//                    currentPosition = CGSize(width: newPosition.width, height: verticalOffset - adjust + inset)
-//            }
-//
-//            if newPosition.height < ( verticalOffset * -1) {
-//                print("2. newPosition.height < ( verticalOffset * -1)")
-//                    newPosition = CGSize(width: newPosition.width, height: ( verticalOffset * -1) - adjust - inset)
-//                    currentPosition = CGSize(width: newPosition.width, height: ( verticalOffset * -1) - adjust - inset)
-//            }
-//
-//        } else {
-//            print("else: H")
-//                newPosition = CGSize(width: newPosition.width, height: 0)
-//                currentPosition = CGSize(width: newPosition.width, height: 0)
-//        }
-//
-//        if displayW >= diameter {
-//            if newPosition.width > horizontalOffset {
-//                print("3. newPosition.width > horizontalOffset")
-//                    newPosition = CGSize(width: horizontalOffset + inset, height: newPosition.height)
-//                    currentPosition = CGSize(width: horizontalOffset + inset, height: currentPosition.height)
-//            }
-//
-//            if newPosition.width < ( horizontalOffset * -1) {
-//                print("4. newPosition.width < ( horizontalOffset * -1)")
-//                    newPosition = CGSize(width: ( horizontalOffset * -1) - inset, height: newPosition.height)
-//                    currentPosition = CGSize(width: ( horizontalOffset * -1) - inset, height: currentPosition.height)
-//
-//            }
-//
-//        } else {
-//            print("else: W")
-//                newPosition = CGSize(width: 0, height: newPosition.height)
-//                currentPosition = CGSize(width: 0, height: newPosition.height)
-//        }
-//
-//        ///This statement is needed in case of a screenshot.
-//        ///That is, in case the user chooses a photo that is the exact size of the device screen.
-//        ///Without this function, such an image can be shrunk to less than the
-//        ///size of the cutrout circle and even go negative (inversed).
-//        ///If "processImage()" is run in this state, there is a fatal error. of a nil UIImage.
-//        ///
-//        if displayW < diameter - inset && displayH < diameter - inset {
-//            resetImageOriginAndScale()
-//        }
-//    }
-//}
+private struct AlbumsListItemView: View{
+    @EnvironmentObject var galleryImagesViewModel: GalleryImagesViewModel
+    @State var thumbnail: UIImage?
+    var album: PHAssetCollection
+    var index: Int
+    @Binding var showListAlubms: Bool
+    var body: some View{
+        Button(action: {
+            galleryImagesViewModel.selectedAlbum = index
+            withAnimation(.easeInOut(duration: 0.2)){
+                showListAlubms.toggle()
+            }
+        }) {
+            HStack{
+                if let thumbnail = self.thumbnail{
+                    Image(uiImage: thumbnail)
+                        .resizable()
+                        .frame(width: 40, height: 40)
+                } else {
+                    Rectangle()
+                        .fill(Color.gray.opacity(0.2))
+                        .frame(width: 40, height: 40)
+                }
+                Text("\(galleryImagesViewModel.getAlbumTitle(album: album))")
+                    .font(.system(size: 13))
+                    .foregroundColor(.black)
+                Spacer()
+                Text("\(galleryImagesViewModel.getCountMediaInAlbum(album: album))")
+                    .font(.system(size: 13))
+                    .foregroundColor(.black)
+            }
+            .padding()
+        }
+        .onAppear{
+            getFirstMediaInAlbum()
+        }
+    }
+    
+    func getFirstMediaInAlbum () {
+        let fetchOptions = PHFetchOptions()
+        
+        let assetsAlbum = PHAsset.fetchAssets(in: album, options: fetchOptions)
+        
+        assetsAlbum.enumerateObjects { asset, index, stop in
+            galleryImagesViewModel.PHAssetToUIImage(asset: asset) { thumbnail in
+                self.thumbnail = thumbnail
+                
+            }
+            stop.pointee = true
+        }
+    }
+}
 
+class CoordinatorImagePickerCameraView: NSObject, UINavigationControllerDelegate, UIImagePickerControllerDelegate {
+    var picker: ImagePickerCameraView
+    var complited: () -> Void
+    
+    init(picker: ImagePickerCameraView, complited: @escaping () -> Void) {
+        self.picker = picker
+        self.complited = complited
+    }
+    
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        guard let selectedImage = info[.originalImage] as? UIImage else { return }
+        self.picker.selectedImage = selectedImage
+        self.picker.isPresented.wrappedValue.dismiss()
+        self.complited()
+    }
+    
+}
+
+struct ImagePickerCameraView: UIViewControllerRepresentable {
+    
+    @Binding var selectedImage: UIImage
+    @Environment(\.presentationMode) var isPresented
+    var sourceType: UIImagePickerController.SourceType
+    var complited: () -> Void
+        
+    func makeUIViewController(context: Context) -> UIImagePickerController {
+        let imagePicker = UIImagePickerController()
+        imagePicker.sourceType = self.sourceType
+        imagePicker.delegate = context.coordinator // confirming the delegate
+        return imagePicker
+    }
+
+    func updateUIViewController(_ uiViewController: UIImagePickerController, context: Context) {
+
+    }
+
+    // Connecting the Coordinator class with this struct
+    func makeCoordinator() -> CoordinatorImagePickerCameraView {
+        return CoordinatorImagePickerCameraView(picker: self, complited: self.complited)
+    }
+}
