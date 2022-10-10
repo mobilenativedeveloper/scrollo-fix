@@ -24,7 +24,8 @@ struct EditUserProfile: View {
     @State var isGalleryPickerAvatar: Bool = false
     @State var isGalleryPickerBackground: Bool = false
     
-    @State var cameraPresent: Bool = false
+    @State var cameraAvatarPresent: Bool = false
+    @State var cameraBackgroundPresent: Bool = false
     
     @State var selectedBackground: UIImage = UIImage()
     @State var selectedAvatar: UIImage = UIImage()
@@ -240,16 +241,17 @@ struct EditUserProfile: View {
                 }
             }.edgesIgnoringSafeArea(.all)
         })
-        .fullScreenCover(isPresented: self.$cameraPresent, content: {
+        .fullScreenCover(isPresented: self.$cameraAvatarPresent, content: {
             EditProfileThumbsCameraView()
         })
-        
+        .fullScreenCover(isPresented: self.$cameraBackgroundPresent, content: {
+            EditProfileThumbsCameraView()
+        })
         .actionSheet(isPresented: $showingOptions) {
             if optionsMenu == .background {
                 return ActionSheet(title: Text("Добавить Фон профиля"), buttons: [
                     .default(Text("Сделать фото")) {
-//                        self.sourceTypeBackground = .camera
-//                        self.isGalleryPickerBackground.toggle()
+                        self.cameraBackgroundPresent.toggle()
                     },
                     .default(Text("Выбрать из галереи")) {
                         self.isGalleryPickerBackground.toggle()
@@ -259,7 +261,7 @@ struct EditUserProfile: View {
             } else {
                 return ActionSheet(title: Text("Добавить фото профиля"), buttons: [
                     .default(Text("Сделать фото")) {
-                        self.cameraPresent.toggle()
+                        self.cameraAvatarPresent.toggle()
                     },
                     .default(Text("Выбрать из галереи")) {
 //                        self.sourceTypeAvatar = .photoLibrary
