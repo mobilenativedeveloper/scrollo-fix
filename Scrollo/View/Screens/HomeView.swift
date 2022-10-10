@@ -30,7 +30,7 @@ struct HomeView: View {
                             .onDisappear {
                                 isScrollEnabled = false
                             }
-                        Text("SearchView")
+                        SearchView()
                             .opacity(selectedTab == "search" ? 1 : 0)
                         ActionsView()
                             .opacity(selectedTab == "activities" ? 1 : 0)
