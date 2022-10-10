@@ -35,6 +35,9 @@
 		AC3E359628ECAB1A002570AE /* AssetModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC3E359528ECAB1A002570AE /* AssetModel.swift */; };
 		AC3E359828ECAD5B002570AE /* CameraController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC3E359728ECAD5B002570AE /* CameraController.swift */; };
 		AC6AA7BB28F30072002A6657 /* GalleryImagesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC6AA7BA28F30072002A6657 /* GalleryImagesViewModel.swift */; };
+		AC79DCCD28F41D0400898FA9 /* ActionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC79DCCC28F41D0400898FA9 /* ActionsView.swift */; };
+		AC79DCCF28F41D1F00898FA9 /* ActionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC79DCCE28F41D1F00898FA9 /* ActionViewModel.swift */; };
+		AC79DCD128F41D5100898FA9 /* ActionModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC79DCD028F41D5100898FA9 /* ActionModel.swift */; };
 		AC90049128E053FA0043ED66 /* NotificationCenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC90049028E053FA0043ED66 /* NotificationCenter.swift */; };
 		AC9F301028ED88D300444E08 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC9F300F28ED88D300444E08 /* HomeView.swift */; };
 		AC9F301228ED9DCD00444E08 /* PostOverview.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC9F301128ED9DCD00444E08 /* PostOverview.swift */; };
@@ -108,6 +111,9 @@
 		AC3E359528ECAB1A002570AE /* AssetModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssetModel.swift; sourceTree = "<group>"; };
 		AC3E359728ECAD5B002570AE /* CameraController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraController.swift; sourceTree = "<group>"; };
 		AC6AA7BA28F30072002A6657 /* GalleryImagesViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryImagesViewModel.swift; sourceTree = "<group>"; };
+		AC79DCCC28F41D0400898FA9 /* ActionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionsView.swift; sourceTree = "<group>"; };
+		AC79DCCE28F41D1F00898FA9 /* ActionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionViewModel.swift; sourceTree = "<group>"; };
+		AC79DCD028F41D5100898FA9 /* ActionModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionModel.swift; sourceTree = "<group>"; };
 		AC90049028E053FA0043ED66 /* NotificationCenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationCenter.swift; sourceTree = "<group>"; };
 		AC9F300F28ED88D300444E08 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		AC9F301128ED9DCD00444E08 /* PostOverview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostOverview.swift; sourceTree = "<group>"; };
@@ -263,6 +269,7 @@
 				AC9F302728EF373800444E08 /* FollowModel.swift */,
 				AC9F302928EF3F5500444E08 /* ModalView.swift */,
 				AC18A25528F0C3FA005CDE7D /* AlbumModel.swift */,
+				AC79DCD028F41D5100898FA9 /* ActionModel.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -286,6 +293,7 @@
 				ACA4F1D228F1AF0800F61983 /* VideoThumbnailViewModel.swift */,
 				ACB1591E28F2B146002F012C /* ImageGalleryViewModel.swift */,
 				AC6AA7BA28F30072002A6657 /* GalleryImagesViewModel.swift */,
+				AC79DCCE28F41D1F00898FA9 /* ActionViewModel.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -309,6 +317,7 @@
 				ACA4F1D028F18CB000F61983 /* InterestingPeopleView.swift */,
 				ACA4F1D428F1C7CD00F61983 /* CreateAlbumView.swift */,
 				ACA4F1D628F1DA4B00F61983 /* AlbumOverview.swift */,
+				AC79DCCC28F41D0400898FA9 /* ActionsView.swift */,
 			);
 			path = Screens;
 			sourceTree = "<group>";
@@ -448,6 +457,7 @@
 				AC9F302828EF373800444E08 /* FollowModel.swift in Sources */,
 				AC3E357328EAF741002570AE /* PostModel.swift in Sources */,
 				AC18A25228F0C1DB005CDE7D /* TabButton.swift in Sources */,
+				AC79DCCF28F41D1F00898FA9 /* ActionViewModel.swift in Sources */,
 				AC18A24728F09BF0005CDE7D /* FollowView.swift in Sources */,
 				ACC4E61828DD9DB70081F2E5 /* Api.swift in Sources */,
 				ACA4F1D128F18CB000F61983 /* InterestingPeopleView.swift in Sources */,
@@ -460,11 +470,13 @@
 				AC6AA7BB28F30072002A6657 /* GalleryImagesViewModel.swift in Sources */,
 				AC9F301D28EE07B400444E08 /* CommentsOverview.swift in Sources */,
 				ACA4F1D728F1DA4B00F61983 /* AlbumOverview.swift in Sources */,
+				AC79DCCD28F41D0400898FA9 /* ActionsView.swift in Sources */,
 				AC3E359628ECAB1A002570AE /* AssetModel.swift in Sources */,
 				AC9F302428EF237500444E08 /* ChatModel.swift in Sources */,
 				AC9F302228EF232200444E08 /* ChatViewModel.swift in Sources */,
 				ACC4E5F228DCB6D80081F2E5 /* Extension.swift in Sources */,
 				AC9F302C28F01F0400444E08 /* SnapCarousel.swift in Sources */,
+				AC79DCD128F41D5100898FA9 /* ActionModel.swift in Sources */,
 				ACC4E61228DD9D0B0081F2E5 /* OTPViewModel.swift in Sources */,
 				AC3E356728EADF37002570AE /* SignUpView.swift in Sources */,
 				ACC4E5EB28DCB5BF0081F2E5 /* FeedView.swift in Sources */,

@@ -32,7 +32,7 @@ struct HomeView: View {
                             }
                         Text("SearchView")
                             .opacity(selectedTab == "search" ? 1 : 0)
-                        Text("ActionsView")
+                        ActionsView()
                             .opacity(selectedTab == "activities" ? 1 : 0)
                         ProfileView(userId: UserDefaults.standard.string(forKey: "userId")!)
                             .ignoresSafeArea(SafeAreaRegions.container, edges: .bottom)
