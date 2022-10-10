@@ -18,7 +18,7 @@ struct ConfidentialityView: View {
                 Button(action: {
                     presentationMode.wrappedValue.dismiss()
                 }) {
-                    Image("comments_back")
+                    Image("circle.left.arrow.black")
                         .resizable()
                         .aspectRatio(contentMode: .fill)
                         .frame(width: 24, height: 24)
