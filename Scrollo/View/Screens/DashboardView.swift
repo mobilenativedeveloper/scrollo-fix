@@ -19,7 +19,7 @@ struct DashboardView: View {
                 
                 HomeView(offset: $offset, isScrollEnabled: $isScrollEnabled)
                 
-                ChatView(offset: $offset)
+                ChatListView(offset: $offset)
                     
                 
             }

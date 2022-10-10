@@ -2,6 +2,15 @@
   "object": {
     "pins": [
       {
+        "package": "DSWaveformImage",
+        "repositoryURL": "https://github.com/dmrschmidt/DSWaveformImage",
+        "state": {
+          "branch": null,
+          "revision": "9eb57769aab17006d9035828dafb9159c3cf6ce9",
+          "version": "10.1.2"
+        }
+      },
+      {
         "package": "SDWebImage",
         "repositoryURL": "https://github.com/SDWebImage/SDWebImage.git",
         "state": {
