@@ -25,6 +25,8 @@ struct ProfileView: View {
     
     @State var isPublicationSheet: Bool = false
     
+    @State var isPresentActualStoryView: Bool = false
+    
     @State var isSettingsSheet: Bool = false
     
     @State var yourActivityPresent: Bool = false
@@ -39,6 +41,7 @@ struct ProfileView: View {
     
     @State var mediaPost: [[[PostModel]]] = []
     @State var loadMdeiaPost: Bool = false
+    
     
     var body: some View {
         ScrollView(.vertical, showsIndicators: false){
@@ -278,7 +281,9 @@ struct ProfileView: View {
                     Image("profile.plus.white")
                 })
                     .bottomSheet(isPresented: $isPublicationSheet, detents: [.custom(350)]) {
-                        AddPublicationSheet()
+                        AddPublicationSheet(
+                            isPresentActualStoryView: $isPresentActualStoryView
+                        )
                     }
                 Spacer(minLength: 0)
                 Button(action: {
@@ -290,7 +295,8 @@ struct ProfileView: View {
                         SettingsSheet(
                             yourActivityPresent: self.$yourActivityPresent,
                             savedPresent: self.$savedPresent,
-                            interestingPeoplePresent: self.$interestingPeoplePresent
+                            interestingPeoplePresent: self.$interestingPeoplePresent,
+                            editUserPresent: self.$editUserPresent
                         )
                     }
             }
@@ -313,6 +319,11 @@ struct ProfileView: View {
                                 .ignoreDefaultHeaderBar, isActive: self.$interestingPeoplePresent, label: {
                                     EmptyView()
                                 })
+                NavigationLink(destination: ActualStoryView()
+                                .ignoreDefaultHeaderBar, isActive: self.$isPresentActualStoryView, label: {
+                                    EmptyView()
+                                })
+                
             }
         )
         .ignoresSafeArea(.all, edges: .top)
@@ -528,7 +539,7 @@ private struct ActualStoryList: View{
 
 private struct AddPublicationSheet: View {
     @Environment(\.presentationMode) var presentation: Binding<PresentationMode>
-//    @Binding var isPresentActualStoryView: Bool
+    @Binding var isPresentActualStoryView: Bool
 //    @Binding var isPresentCreateTextPost: Bool
 //    @Binding var isPresentCreateMediaPost: Bool
 //    @Binding var isPresentCreateStory: Bool
@@ -580,9 +591,8 @@ private struct AddPublicationSheet: View {
                     }
                     Sepparator()
                     Button(action: {
-//                        presentation.wrappedValue.dismiss()
-//
-//                        self.isPresentActualStoryView.toggle()
+                        presentation.wrappedValue.dismiss()
+                        self.isPresentActualStoryView.toggle()
                     }) {
                         AddPublicationItem(icon: "actual.story", title: "актуальное из истории")
                     }
@@ -632,6 +642,7 @@ private struct SettingsSheet: View {
     @Binding var yourActivityPresent: Bool
     @Binding var savedPresent: Bool
     @Binding var interestingPeoplePresent: Bool
+    @Binding var editUserPresent: Bool
     
     let time: CGFloat = 0.2
     
@@ -714,10 +725,12 @@ private struct SettingsSheet: View {
                 .padding()
             }
             Button(action: {
-//                presentationMode.wrappedValue.dismiss()
-//                DispatchQueue.main.asyncAfter(deadline: .now() + time) {
-//                    isPresentEditProfileView.toggle()
-//                }
+                presentationMode.wrappedValue.dismiss()
+                DispatchQueue.main.asyncAfter(deadline: .now() + time) {
+                    withAnimation {
+                        editUserPresent.toggle()
+                    }
+                }
             }) {
                 HStack {
                     Image("edit.profile")
