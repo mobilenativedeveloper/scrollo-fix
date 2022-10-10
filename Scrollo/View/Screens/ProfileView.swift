@@ -116,7 +116,7 @@ struct ProfileView: View {
                         
                         
                         HStack{
-                            NavigationLink(destination: FollowView()
+                            NavigationLink(destination: FollowView(firstOpen: "followers")
                                             .ignoreDefaultHeaderBar){
                                 VStack {
                                     Text("\(user?.followersCount ?? 0)")
@@ -129,7 +129,7 @@ struct ProfileView: View {
                                 }
                             }
                             Spacer()
-                            NavigationLink(destination: FollowView()
+                            NavigationLink(destination: FollowView(firstOpen: "following")
                                             .ignoreDefaultHeaderBar){
                                 VStack {
                                     Text("\(user?.followingCount ?? 0)")
