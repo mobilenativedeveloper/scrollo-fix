@@ -27,7 +27,9 @@ struct SearchView: View {
                                 .frame(height: 29)
                             if self.searchViewModel.searchText.count > 0 {
                                 Button(action: {
-                                    self.searchViewModel.searchText = ""
+                                    withAnimation(.easeInOut){
+                                        self.searchViewModel.searchText = ""
+                                    }
                                 }) {
                                     Image(systemName: "multiply.circle.fill")
                                         .font(.title3)
@@ -83,8 +85,8 @@ struct SearchView: View {
                         .padding(.horizontal)
                     }
                     .padding(.vertical, 18)
-                    .frame(height: self.isFocused ? 0 : nil)
-                    .opacity(self.isFocused ? 0 : 1)
+                    .frame(height: (self.isFocused || searchViewModel.searchText.count > 0) ? 0 : nil)
+                    .opacity((self.isFocused || searchViewModel.searchText.count > 0) ? 0 : 1)
                 }
             }
             .background(Color.white)
@@ -127,8 +129,11 @@ struct SearchView: View {
                 }
                 
                 VStack{
-                    Text("Search result")
+                    ForEach(0..<searchViewModel.users.count, id: \.self){index in
+                        SearchUserItem(user: searchViewModel.users[index])
+                    }
                 }
+                .padding(.top)
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
                 .background(Color.white)
                 .opacity((self.isFocused || searchViewModel.searchText.count > 0) ? 1 : 0)
@@ -136,6 +141,51 @@ struct SearchView: View {
             }
         }
         .background(Color.white.edgesIgnoringSafeArea(.all))
+    }
+}
+
+private struct SearchUserItem: View {
+    let user: UserModel.User
+
+    
+    var body: some View {
+        NavigationLink(destination: ProfileView(userId: user.id)
+                        .ignoreDefaultHeaderBar){
+            HStack(alignment: .center, spacing: 0) {
+                    if let avatar = self.user.avatar {
+                        WebImage(url: URL(string: "\(API_URL)/uploads/\(avatar)")!)
+                            .resizable()
+                            .aspectRatio(contentMode: .fill)
+                            .frame(width: 44, height: 44)
+                            .cornerRadius(10)
+                            .padding(.trailing, 13)
+                    } else {
+                        DefaultAvatar(width: 44, height: 44, cornerRadius: 10)
+                            .padding(.trailing, 13)
+                    }
+                
+                VStack(alignment: .leading) {
+                    Text(self.user.login ?? "")
+                        .font(.system(size: 14))
+                        .foregroundColor(Color(hex: "#2E313C"))
+                    Text(self.user.career ?? "")
+                        .font(.system(size: 12))
+                        .foregroundColor(Color(hex: "#828796"))
+                }
+                Spacer(minLength: 0)
+                Button(action: {
+                    
+                }) {
+                    Image("circle.xmark.black")
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: 16, height: 16)
+                }
+            }
+            .padding(.horizontal, 15)
+            .padding(.bottom, 28)
+        }
+        .buttonStyle(FlatLinkStyle())
     }
 }
 
