@@ -489,26 +489,35 @@ private struct ActualStoryList: View{
             .padding(.horizontal)
             ScrollView(.horizontal, showsIndicators: false){
                 HStack(spacing: 20){
-                    VStack{
-                        Circle()
-                            .stroke(Color.gray.opacity(0.2), lineWidth: 1)
-                            .frame(width: 60, height: 60)
-                            .overlay(
-                                Image(systemName: "plus")
-                            )
-                        Text("Добавить")
-                            .font(.system(size: 12))
-                            .foregroundColor(.black)
-                    }
-                    ForEach(0..<5, id: \.self){_ in
+                    NavigationLink(destination: ActualStoryView()
+                                    .ignoreDefaultHeaderBar){
                         VStack{
                             Circle()
-                                .fill(Color.gray.opacity(0.2))
+                                .stroke(Color.gray.opacity(0.2), lineWidth: 1)
                                 .frame(width: 60, height: 60)
-                            Text("")
+                                .overlay(
+                                    Image(systemName: "plus")
+                                        .foregroundColor(.black)
+                                )
+                            Text("Добавить")
                                 .font(.system(size: 12))
                                 .foregroundColor(.black)
                         }
+                    }
+                    .buttonStyle(FlatLinkStyle())
+                    ForEach(0..<5, id: \.self){_ in
+                        NavigationLink(destination: ActualStoryView()
+                                        .ignoreDefaultHeaderBar){
+                            VStack{
+                                Circle()
+                                    .fill(Color.gray.opacity(0.2))
+                                    .frame(width: 60, height: 60)
+                                Text("")
+                                    .font(.system(size: 12))
+                                    .foregroundColor(.black)
+                            }
+                        }
+                        .buttonStyle(FlatLinkStyle())
                     }
                 }
                 .padding(.horizontal)
