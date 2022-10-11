@@ -80,6 +80,7 @@ struct EditUserProfile: View {
                         }
                 }
                 .padding(.horizontal)
+                
                 Rectangle()
                     .fill(Color(hex: "#F2F2F2"))
                     .frame(height: 1)
@@ -619,7 +620,8 @@ private struct ImageGalleryPicker: View{
                 
             }
             .padding(.horizontal)
-            
+            .background(Color.white)
+            .zIndex(10)
             VStack{
                 GeometryReader{proxy in
                     ZStack{
