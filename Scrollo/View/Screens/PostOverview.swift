@@ -26,6 +26,8 @@ struct PostOverview: View {
     
     @State var profilePresent: Bool? = false
     
+    @State var mediaPostSaveAlbumPresent: Bool = false
+    
     var body: some View {
         VStack(alignment: .leading){
             ScrollView{
@@ -246,7 +248,29 @@ struct PostOverview: View {
                             }
                             Spacer(minLength: 0)
                             Button(action: {
-                                
+                                if post.type == "TEXT"{
+                                    if post.inSaved {
+                                        postViewModel.unSavePost(postId: post.id) {
+                                            post.inSaved = false
+                                        }
+                                    }
+                                    else{
+                                        postViewModel.savePost(postId: post.id, albumId: nil) {
+                                            post.inSaved = true
+                                        }
+                                    }
+                                }
+                                if post.type == "STANDART"{
+                                    if post.inSaved {
+                                        postViewModel.unSavePost(postId: post.id) {
+                                            post.inSaved = false
+                                        }
+                                    }
+                                    else{
+                                        mediaPostSaveAlbumPresent.toggle()
+                                    }
+                                    
+                                }
                             }) {
                                 if post.inSaved {
                                     Image("bookmark_active")
@@ -260,6 +284,23 @@ struct PostOverview: View {
                                         .frame(width: 21, height: 21)
                                 }
 
+                            }
+                            }) {
+                                if post.inSaved {
+                                    Image("bookmark_active")
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fit)
+                                        .frame(width: 21, height: 21)
+                                } else {
+                                    Image("bookmark_inactive")
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fit)
+                                        .frame(width: 21, height: 21)
+                                }
+
+                            }
+                            .fullScreenCover(isPresented: $mediaPostSaveAlbumPresent) {
+                                SelectAlbum(isPresented: $mediaPostSaveAlbumPresent, post: $post)
                             }
                         }
                         .padding(.horizontal)
