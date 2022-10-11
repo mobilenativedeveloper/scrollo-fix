@@ -106,7 +106,7 @@ struct SavedView: View {
             
             
         }
-        .navigationView(isPresent: $albumOverviewPresent, content: {
+        .fullScreenCover(isPresented: $albumOverviewPresent, content: {
             AlbumOverview(isPresent: $albumOverviewPresent, album: $selectedAlbum, onRemove:{
                 albumsViewModel.getAlbums(composition: true)
                 withAnimation {

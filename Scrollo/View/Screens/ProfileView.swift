@@ -918,7 +918,9 @@ struct PostCompositionView: View {
                     .environmentObject(postViewModel)
             }
         }
+        .padding(.horizontal, 8)
         .frame(maxWidth: .infinity, alignment: .leading)
+        
     }
 }
 
@@ -928,11 +930,22 @@ struct CompositionStack: View {
     
     var body: some View {
         HStack(alignment: .top, spacing: 8) {
+            
+            if stack.count == 3{
+                Spacer(minLength: 0)
+            }
+            
             ForEach(0..<stack.count, id: \.self) {index in
                 CompositionColumn(posts: $stack[index], columnIndex: index)
                     .environmentObject(postViewModel)
+               
             }
+            if stack.count <= 3{
+                Spacer(minLength: 0)
+            }
+            
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
     }
 }
 
@@ -948,8 +961,6 @@ struct CompositionColumn: View {
                     .environmentObject(postViewModel)
             }
         }
-        .padding(.horizontal)
-        .frame(maxWidth: .infinity, alignment: .leading)
     }
 }
 

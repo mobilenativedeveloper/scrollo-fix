@@ -42,10 +42,9 @@ struct AlbumOverview: View {
                 Button(action: {
                     deleteAlbum.toggle()
                 }) {
-                    Image(systemName: "ellipsis")
+                    Image(systemName: "trash")
                         .font(.system(size: 18))
-                        .foregroundColor(Color(hex: "#4F4F4F"))
-                        .rotationEffect(Angle(degrees: 90))
+                        .foregroundColor(Color(hex: "#f25b6e"))
                 }
             }
             .padding(.top)
@@ -57,6 +56,7 @@ struct AlbumOverview: View {
                     VStack(alignment: .leading, spacing: 0) {
                         PostCompositionView(posts: $savedPostsViewModel.savedMediaPosts)
                     }
+                    .frame(maxWidth: .infinity, alignment: .leading)
                 }
             }
             else{
@@ -66,7 +66,7 @@ struct AlbumOverview: View {
            
             Spacer(minLength: 0)
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
         .alert(isPresented: self.$deleteAlbum) {
             Alert(title: Text("Вы действительно хотите удалить альбом?"), message: nil, primaryButton: .destructive(Text("Удалить")){
                 

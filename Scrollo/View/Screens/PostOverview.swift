@@ -73,7 +73,7 @@ struct PostOverview: View {
                         .cornerRadius(50)
                         .offset(x: 14)
                         .bottomSheet(isPresented: $isPostSettings, detents: [.custom(360)]) {
-                            PostActionsSheet(postId: post.id, deletePost: $deletePost)
+                            PostActionsSheet(postId: post.id, userId: post.creator.id, deletePost: $deletePost)
                         }
                     }
                     .padding(.horizontal)

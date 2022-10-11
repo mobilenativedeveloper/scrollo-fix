@@ -76,7 +76,7 @@ struct PostView: View{
                 .cornerRadius(50)
                 .offset(x: 14)
                 .bottomSheet(isPresented: $isPostSettings, detents: [.custom(360)]) {
-                    PostActionsSheet(postId: post.id, deletePost: $deletePost)
+                    PostActionsSheet(postId: post.id, userId: post.creator.id, deletePost: $deletePost)
                 }
             }
             .padding(.bottom, 13)
@@ -328,7 +328,7 @@ struct TruncateTextView: View {
 struct PostActionsSheet: View {
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
    let postId: String?
-    
+    let userId: String
     @Binding var deletePost: Bool
 
    var body: some View {
@@ -377,8 +377,11 @@ struct PostActionsSheet: View {
                }
                .padding(.bottom, 13)
                Button(action: {
-                   presentationMode.wrappedValue.dismiss()
-                   deletePost.toggle()
+                   if UserDefaults.standard.string(forKey: "userId") == userId{
+                       presentationMode.wrappedValue.dismiss()
+                       deletePost.toggle()
+                   }
+                   
                }){
                    VStack(spacing: 0) {
                        Text("Удалить")
@@ -387,6 +390,7 @@ struct PostActionsSheet: View {
                            .padding(.bottom, 15)
                    }
                }
+               .opacity(UserDefaults.standard.string(forKey: "userId") == userId ? 1 : 0)
                Spacer(minLength: 0)
            }
            .frame(width: (UIScreen.main.bounds.width - 42))
@@ -826,7 +830,7 @@ struct SelectAlbum: View {
         .onAppear(perform: {
             albumsViewModel.getAlbums(composition: true)
         })
-        .navigationView(isPresent: $createAlbumPresent, content: {
+        .fullScreenCover(isPresented: $createAlbumPresent, content: {
             CreateAlbumView(isPresent: $createAlbumPresent)
                 .environmentObject(albumsViewModel)
         })
