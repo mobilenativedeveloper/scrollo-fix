@@ -17,6 +17,8 @@ struct EditProfileThumbsCameraView: View {
     
     @State var didTapCapture: Bool = false
     
+    @State var image: UIImage?
+    
     var body: some View {
         VStack(spacing: 0){
             
@@ -107,15 +109,17 @@ struct CustomCameraRepresentable: UIViewControllerRepresentable {
     @Environment(\.presentationMode) var presentationMode
     @Binding var image: UIImage?
     @Binding var didTapCapture: Bool
+    var size: CGSize
     
     func makeUIViewController(context: Context) -> CustomCameraController {
         let controller = CustomCameraController()
         controller.delegate = context.coordinator
+       
         return controller
     }
     
     func updateUIViewController(_ cameraViewController: CustomCameraController, context: Context) {
-        
+        cameraViewController.view.frame = CGRect(x: 0, y: 0, width: size.width, height: size.height)
         if(self.didTapCapture) {
             cameraViewController.didTapRecord()
         }
@@ -154,10 +158,11 @@ class CustomCameraController: UIViewController {
     var photoOutput: AVCapturePhotoOutput?
     var cameraPreviewLayer: AVCaptureVideoPreviewLayer?
     
-    var size: CGSize
+    
     
     //DELEGATE
     var delegate: AVCapturePhotoCaptureDelegate?
+    
     
     func didTapRecord() {
         
@@ -167,6 +172,7 @@ class CustomCameraController: UIViewController {
     }
     
     override func viewDidLoad() {
+        
         super.viewDidLoad()
         setup()
     }
@@ -221,7 +227,7 @@ class CustomCameraController: UIViewController {
       
         self.cameraPreviewLayer?.videoGravity = AVLayerVideoGravity.resizeAspectFill
         self.cameraPreviewLayer?.connection?.videoOrientation = AVCaptureVideoOrientation.portrait
-        self.cameraPreviewLayer?.frame = size
+//        self.cameraPreviewLayer?.frame = self.size
         self.view.layer.insertSublayer(cameraPreviewLayer!, at: 0)
         
     }

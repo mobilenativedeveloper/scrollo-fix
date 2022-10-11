@@ -90,12 +90,7 @@ private struct CoverCollectionView: View {
             )
             .transition(AnyTransition.slide)
             .animation(.default)
-            .fullScreenCover(isPresented: self.$presentationSelectFromAlboum, content: {
-                ImagePickerView(sourceType: .savedPhotosAlbum) { image in
-                    
-                }
-                .edgesIgnoringSafeArea(.all)
-            })
+            
             ForEach(0..<covers.count, id: \.self) { index in
                 WebImage(url: URL(string: covers[index].url)!)
                     .resizable()
@@ -114,6 +109,12 @@ private struct CoverCollectionView: View {
                 .frame(width: (UIScreen.main.bounds.width - (widthOfHiddenCards*2) - (spacing*2)) / 2, height: (UIScreen.main.bounds.width - (widthOfHiddenCards*2) - (spacing*2)) / 2)
             ,alignment: .center
         )
+        .fullScreenCover(isPresented: self.$presentationSelectFromAlboum, content: {
+            ImagePickerView(sourceType: .savedPhotosAlbum) { image in
+                
+            }
+            .edgesIgnoringSafeArea(.all)
+        })
         .environmentObject(UIState)
     }
 }
