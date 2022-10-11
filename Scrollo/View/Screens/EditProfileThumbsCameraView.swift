@@ -17,8 +17,6 @@ struct EditProfileThumbsCameraView: View {
     
     @State var didTapCapture: Bool = false
     
-    @State var image: UIImage?
-    
     var body: some View {
         VStack(spacing: 0){
             
@@ -50,7 +48,8 @@ struct EditProfileThumbsCameraView: View {
             GeometryReader {proxy in
                 
                 let size = proxy.size
-                CustomCameraRepresentable(image: self.$image, didTapCapture: $didTapCapture)
+                CustomCameraRepresentable(image: self.$image, didTapCapture: $didTapCapture, size: size)
+                
             }
             .frame(height: screen_rect.height / 2)
             .background(Color.black)
@@ -83,7 +82,7 @@ struct EditProfileThumbsCameraView: View {
             Spacer(minLength: 0)
             
             Button(action: {
-                didTapCapture = true
+                
             }){
                 Circle()
                     .fill(Color(hex: "#cdcdcd"))
@@ -155,6 +154,8 @@ class CustomCameraController: UIViewController {
     var photoOutput: AVCapturePhotoOutput?
     var cameraPreviewLayer: AVCaptureVideoPreviewLayer?
     
+    var size: CGSize
+    
     //DELEGATE
     var delegate: AVCapturePhotoCaptureDelegate?
     
@@ -217,9 +218,10 @@ class CustomCameraController: UIViewController {
     func setupPreviewLayer()
     {
         self.cameraPreviewLayer = AVCaptureVideoPreviewLayer(session: captureSession)
+      
         self.cameraPreviewLayer?.videoGravity = AVLayerVideoGravity.resizeAspectFill
         self.cameraPreviewLayer?.connection?.videoOrientation = AVCaptureVideoOrientation.portrait
-        self.cameraPreviewLayer?.frame = self.view.frame
+        self.cameraPreviewLayer?.frame = size
         self.view.layer.insertSublayer(cameraPreviewLayer!, at: 0)
         
     }

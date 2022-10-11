@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct DashboardView: View {
+    @State var show: Bool = false
     @State var offset: CGFloat = 0
     @State var isScrollEnabled: Bool = false
     @State var selectedTab = "home"
@@ -16,19 +17,27 @@ struct DashboardView: View {
             
             let frame = reader.frame(in: .global)
             
-            ScrollableTabBar(tabs: ["",""], rect: frame, offset: $offset, isScrollEnabled: isScrollEnabled){
-                
-                HomeView(selectedTab: $selectedTab, offset: $offset, isScrollEnabled: $isScrollEnabled)
-                
-                ChatListView(offset: $offset, selectedTab: $selectedTab, isScrollEnabled: $isScrollEnabled)
+            if show{
+                ScrollableTabBar(tabs: ["",""], rect: frame, offset: $offset, isScrollEnabled: isScrollEnabled){
                     
+                    HomeView(selectedTab: $selectedTab, offset: $offset, isScrollEnabled: $isScrollEnabled)
                     
-                
+                    ChatListView(offset: $offset, selectedTab: $selectedTab, isScrollEnabled: $isScrollEnabled)
+                        
+                        
+                    
+                }
+                .ignoresSafeArea()
             }
-            .ignoresSafeArea()
+            
         }
         .ignoresSafeArea()
         .ignoreDefaultHeaderBar
+        .onAppear {
+            withAnimation {
+                show = true
+            }
+        }
     }
 }
 

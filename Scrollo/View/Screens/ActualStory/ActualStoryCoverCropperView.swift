@@ -76,6 +76,7 @@ private struct CoverCollectionView: View {
            
             Button(action: {
                 presentationSelectFromAlboum.toggle()
+                print("presentationSelectFromAlboum")
             }) {
                 Image(systemName: "photo")
                     .resizable()
