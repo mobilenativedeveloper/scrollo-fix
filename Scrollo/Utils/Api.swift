@@ -83,6 +83,10 @@ let API_CONFIDENTIALITY = "/api/v1/user/confidentiality"
 
 let API_NOTIFY_SETTINGS = "/api/v1/user/notification-settings"
 
+let API_POST_CREATION_START = "/api/v1/post-creation/start"
+
+let API_POST_CREATION_LOAD_PART = "/api/v1/post-creation/load-part"
+
 //let API_LIKE_REMOVE_COMMENT = "/api/v1/post/comment/like/"
 
 
@@ -99,8 +103,7 @@ let API_NOTIFY_SETTINGS = "/api/v1/user/notification-settings"
 
 
 
-//let API_POST_CREATION_START = "/api/v1/post-creation/start"
-//let API_POST_CREATION_LOAD_PART = "/api/v1/post-creation/load-part"
+
 
 
 //

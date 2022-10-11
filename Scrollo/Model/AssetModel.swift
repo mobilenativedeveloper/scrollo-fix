@@ -13,3 +13,11 @@ struct AssetModel: Identifiable {
     var asset: PHAsset
     var thumbnail: UIImage
 }
+
+struct Asset: Identifiable {
+    var id = UUID().uuidString
+    var asset: PHAsset
+    var image: UIImage
+    var withUIImage: Bool = false
+    var withAVCamera: URL? = nil
+}
