@@ -13,6 +13,9 @@ import SDWebImageSwiftUI
 
 struct ChatMessagesView: View {
     @StateObject var messageViewModel: MessageViewModel = MessageViewModel()
+    
+    @ObservedObject var keyboardHelper : KeyboardHelper = KeyboardHelper()
+    
     @ObservedObject var player: AudioPlayer = AudioPlayer()
     
     @State var isPresentSelectAttachments: Bool = false
@@ -40,121 +43,125 @@ struct ChatMessagesView: View {
         VStack(spacing: 0) {
             
             HeaderBar(user: user, profilePresent: $profilePresent)
-            
-            ScrollView(showsIndicators: false) {
-                ScrollViewReader{scrollReader in
-                    VStack(spacing: 16) {
-                        DetailUserView(user: user, profilePresent: $profilePresent)
-                            .padding(.bottom, messageViewModel.messages.count == 0 ? 300 : 0)
-                        Spacer()
-                        .frame(minWidth: 0, maxWidth: .infinity, minHeight:0, maxHeight: .infinity, alignment: Alignment.topLeading)
-                        ForEach(0..<messageViewModel.messages.count, id: \.self){index in
-                            if messageViewModel.messages[index].content != nil {
-                                TextMessageView(message: $messageViewModel.messages[index])
-                            }
-                            else if messageViewModel.messages[index].audio != nil {
-                                AudioMessageView(message: $messageViewModel.messages[index])
-                                    .environmentObject(player)
-                            }
-                            else if messageViewModel.messages[index].image != nil || messageViewModel.messages[index].asset?.asset.mediaType == .image {
-                                ImageMessageView(message: $messageViewModel.messages[index], animation: animation, isExpanded: $isExpanded, expandedMedia: $expandedMedia)
-                            }
-                            else if messageViewModel.messages[index].video != nil || messageViewModel.messages[index].asset?.asset.mediaType == .video {
-                                VideoMessageView(message: $messageViewModel.messages[index], showVideo: $showVideo, selectedVideo: $selectedVideo)
-                            }
-                        }
-                        .onChange(of: messageViewModel.messages) { (value) in
-                            scrollReader.scrollTo(value.last?.id)
-                        }
-                    }
-                    .padding()
-                    .rotationEffect(Angle(degrees: 180))
-                }
-            }
-            .rotationEffect(Angle(degrees: 180))
-            
-            Spacer(minLength: 0)
-            
-            VStack(spacing: 0) {
+                .zIndex(1)
                 
-                HStack(spacing: 0) {
-                    
-                    TextField("Написать сообщение...", text: $messageViewModel.message)
-                    
-                    Button(action: {
-                        permission()
-                    }) {
-                        Image("microphone")
-                            .resizable()
-                            .frame(width: 20, height: 20)
-                    }
-                    .padding(.trailing, 8)
-                    
-                    Button(action: {
-                        UIApplication.shared.endEditing()
-                        isPresentSelectAttachments.toggle()
-                    }) {
-                        Image("image")
-                            .resizable()
-                            .frame(width: 20, height: 20)
-                    }
-                    .padding(.trailing, 8)
-                    
-
-                    Button(action: {
-                        if !messageViewModel.message.isEmpty{
-                            withAnimation(.easeInOut){
-                                messageViewModel.sendMessage(message: MessageModel(type: "STARTER", content: messageViewModel.message))
-                                
-                            }
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-                                withAnimation(.easeInOut){
-                                    messageViewModel.sendMessage(message: MessageModel(type: "RECIVER", content: "MatreshkaVPN безотказный и простой в использовании анонимайзер позволяющий вам посещать любые сайты и приложения, на которые наложены ограничения провайдером, оставаясь полностью анонимным. Matreshka не просто подменяет локацию вашего устройства, но и передает все ваши запросы в зашифрованном виде, переводя устройство в режим “невидимки”. Высокая скорость соединения, неограниченный трафик и различное расположение сервером обеспечат вам комфортное использование любых сайтов и приложений. MatreshkaVPN не мешает работе остальных приложений и не снижает скорость вашего интернета."))
-                                
-                                    messageViewModel.sendMessage(message: MessageModel(type: "RECIVER", audio: URL(string: "https://zvukogram.com/index.php?r=site/download&id=43127")))
-                                    
-                                    messageViewModel.sendMessage(message: MessageModel(type: "RECIVER", audio: URL(string: "https://zvukogram.com/index.php?r=site/download&id=43101")))
-                                    
-                                    messageViewModel.sendMessage(message: MessageModel(type: "RECIVER", audio: URL(string: "https://zvukogram.com/index.php?r=site/download&id=43103")))
-                                    
-                                    messageViewModel.sendMessage(message: MessageModel(type: "RECIVER", audio: URL(string: "https://zvukogram.com/index.php?r=site/download&id=78804")))
-                                    
-                                    messageViewModel.sendMessage(message: MessageModel(type: "RECIVER", image: "story1"))
-                                
+            VStack(spacing: 0){
+                ScrollView(showsIndicators: false) {
+                    ScrollViewReader{scrollReader in
+                        VStack(spacing: 16) {
+                            DetailUserView(user: user, profilePresent: $profilePresent)
+                                .padding(.bottom, messageViewModel.messages.count == 0 ? 300 : 0)
+                            Spacer()
+                            .frame(minWidth: 0, maxWidth: .infinity, minHeight:0, maxHeight: .infinity, alignment: Alignment.topLeading)
+                            ForEach(0..<messageViewModel.messages.count, id: \.self){index in
+                                if messageViewModel.messages[index].content != nil {
+                                    TextMessageView(message: $messageViewModel.messages[index])
+                                }
+                                else if messageViewModel.messages[index].audio != nil {
+                                    AudioMessageView(message: $messageViewModel.messages[index])
+                                        .environmentObject(player)
+                                }
+                                else if messageViewModel.messages[index].image != nil || messageViewModel.messages[index].asset?.asset.mediaType == .image {
+                                    ImageMessageView(message: $messageViewModel.messages[index], animation: animation, isExpanded: $isExpanded, expandedMedia: $expandedMedia)
+                                }
+                                else if messageViewModel.messages[index].video != nil || messageViewModel.messages[index].asset?.asset.mediaType == .video {
+                                    VideoMessageView(message: $messageViewModel.messages[index], showVideo: $showVideo, selectedVideo: $selectedVideo)
                                 }
                             }
-                            messageViewModel.message = String()
+                            .onChange(of: messageViewModel.messages) { (value) in
+                                scrollReader.scrollTo(value.last?.id)
+                            }
                         }
-                    }) {
-                        Image("send")
-                            .resizable()
-                            .frame(width: 20, height: 20)
+                        .padding()
+                        .rotationEffect(Angle(degrees: 180))
                     }
                 }
-                .padding(.horizontal)
-                .frame(height: 42)
+                .rotationEffect(Angle(degrees: 180))
+                
+                Spacer(minLength: 0)
+                
+                VStack(spacing: 0) {
+                    
+                    HStack(spacing: 0) {
+                        
+                        TextField("Написать сообщение...", text: $messageViewModel.message)
+                        
+                        Button(action: {
+                            permission()
+                        }) {
+                            Image("microphone")
+                                .resizable()
+                                .frame(width: 20, height: 20)
+                        }
+                        .padding(.trailing, 8)
+                        
+                        Button(action: {
+                            UIApplication.shared.endEditing()
+                            isPresentSelectAttachments.toggle()
+                        }) {
+                            Image("image")
+                                .resizable()
+                                .frame(width: 20, height: 20)
+                        }
+                        .padding(.trailing, 8)
+                        
+
+                        Button(action: {
+                            if !messageViewModel.message.isEmpty{
+                                withAnimation(.easeInOut){
+                                    messageViewModel.sendMessage(message: MessageModel(type: "STARTER", content: messageViewModel.message))
+                                    
+                                }
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                                    withAnimation(.easeInOut){
+                                        messageViewModel.sendMessage(message: MessageModel(type: "RECIVER", content: "MatreshkaVPN безотказный и простой в использовании анонимайзер позволяющий вам посещать любые сайты и приложения, на которые наложены ограничения провайдером, оставаясь полностью анонимным. Matreshka не просто подменяет локацию вашего устройства, но и передает все ваши запросы в зашифрованном виде, переводя устройство в режим “невидимки”. Высокая скорость соединения, неограниченный трафик и различное расположение сервером обеспечат вам комфортное использование любых сайтов и приложений. MatreshkaVPN не мешает работе остальных приложений и не снижает скорость вашего интернета."))
+                                    
+                                        messageViewModel.sendMessage(message: MessageModel(type: "RECIVER", audio: URL(string: "https://zvukogram.com/index.php?r=site/download&id=43127")))
+                                        
+                                        messageViewModel.sendMessage(message: MessageModel(type: "RECIVER", audio: URL(string: "https://zvukogram.com/index.php?r=site/download&id=43101")))
+                                        
+                                        messageViewModel.sendMessage(message: MessageModel(type: "RECIVER", audio: URL(string: "https://zvukogram.com/index.php?r=site/download&id=43103")))
+                                        
+                                        messageViewModel.sendMessage(message: MessageModel(type: "RECIVER", audio: URL(string: "https://zvukogram.com/index.php?r=site/download&id=78804")))
+                                        
+                                        messageViewModel.sendMessage(message: MessageModel(type: "RECIVER", image: "story1"))
+                                    
+                                    }
+                                }
+                                messageViewModel.message = String()
+                            }
+                        }) {
+                            Image("send")
+                                .resizable()
+                                .frame(width: 20, height: 20)
+                        }
+                    }
+                    .padding(.horizontal)
+                    .frame(height: 42)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 10)
+                            .stroke(Color(hex: "#DDE8E8"), lineWidth: 1)
+                    )
+                    // MARK: This bug when opened screen muted sound
+                    .overlay{
+                        if isVoiceRecord{
+                            VoiceRecorderView(isVoiceRecord: $isVoiceRecord, onSendAudio: {audio in
+                                messageViewModel.sendMessage(message: MessageModel(type: "STARTER", audio: audio))
+                                isVoiceRecord.toggle()
+                            })
+                        }
+                    }
+                }
+                .padding()
+                .background(Color.white)
                 .overlay(
-                    RoundedRectangle(cornerRadius: 10)
-                        .stroke(Color(hex: "#DDE8E8"), lineWidth: 1)
+                    Color(hex: "#F2F2F2")
+                        .frame(height: 1)
+                    ,alignment: .top
                 )
-                // MARK: This bug when opened screen muted sound
-                .overlay{
-                    if isVoiceRecord{
-                        VoiceRecorderView(isVoiceRecord: $isVoiceRecord, onSendAudio: {audio in
-                            messageViewModel.sendMessage(message: MessageModel(type: "STARTER", audio: audio))
-                            isVoiceRecord.toggle()
-                        })
-                    }
-                }
+                .shadow(color: Color(hex: "#1e5385").opacity(0.03), radius: 10, x: 0, y: -12)
             }
-            .padding()
-            .background(Color.white)
-            .overlay(
-                Color(hex: "#F2F2F2")
-                    .frame(height: 1)
-                ,alignment: .top
-            )
-            .shadow(color: Color(hex: "#1e5385").opacity(0.03), radius: 10, x: 0, y: -12)
+            .offset(y: -self.keyboardHelper.keyboardHeight)
         }
         .background(Color.white.edgesIgnoringSafeArea(.all))
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
@@ -295,6 +302,7 @@ private struct HeaderBar: View{
         }
         .padding(.horizontal)
         .padding(.bottom)
+        .background(Color.white)
     }
 }
 
