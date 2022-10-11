@@ -13,6 +13,7 @@ struct FollowView: View {
     
     @StateObject var followViewModel: FollowViewModel = FollowViewModel()
     var firstOpen: String
+    var userId: String
     @State var currentTab: String = "followers"
     @Namespace var animation
     
@@ -48,8 +49,8 @@ struct FollowView: View {
             .padding(.horizontal)
             
             HStack(spacing: 0) {
-                TabButton(title: "0 Подписчики", currentTab: $currentTab, animation: animation, id: "followers")
-                TabButton(title: "0 Подписки", currentTab: $currentTab, animation: animation, id: "following")
+                TabButton(title: "\(followViewModel.followers.count) Подписчики", currentTab: $currentTab, animation: animation, id: "followers")
+                TabButton(title: "\(followViewModel.following.count) Подписки", currentTab: $currentTab, animation: animation, id: "following")
             }
             .padding(.horizontal)
             

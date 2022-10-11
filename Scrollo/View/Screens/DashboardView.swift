@@ -28,6 +28,7 @@ struct DashboardView: View {
             .ignoresSafeArea()
         }
         .ignoresSafeArea()
+        .ignoreDefaultHeaderBar
     }
 }
 

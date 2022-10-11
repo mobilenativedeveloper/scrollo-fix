@@ -57,5 +57,6 @@ struct AuthView: View {
                 .padding(.bottom)
             }
         }
+        .ignoreDefaultHeaderBar
     }
 }

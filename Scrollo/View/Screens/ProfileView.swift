@@ -122,8 +122,35 @@ struct ProfileView: View {
                         
                         
                         HStack{
-                            NavigationLink(destination: FollowView(firstOpen: "followers")
-                                            .ignoreDefaultHeaderBar){
+                            if self.userId == UserDefaults.standard.string(forKey: "userId") {
+                                NavigationLink(destination: FollowView(firstOpen: "followers", userId: userId)
+                                                .ignoreDefaultHeaderBar){
+                                    VStack {
+                                        Text("\(user?.followersCount ?? 0)")
+                                            .font(.system(size: 21))
+                                            .fontWeight(.bold)
+                                            .foregroundColor(Color(hex: "#1F2128"))
+                                        Text("подписчики")
+                                            .font(.system(size: 11))
+                                            .foregroundColor(Color(hex: "#828796"))
+                                    }
+                                }
+                                Spacer()
+                                
+                                NavigationLink(destination: FollowView(firstOpen: "following", userId: userId)
+                                                .ignoreDefaultHeaderBar){
+                                    VStack {
+                                        Text("\(user?.followingCount ?? 0)")
+                                            .font(.system(size: 21))
+                                            .fontWeight(.bold)
+                                            .foregroundColor(Color(hex: "#1F2128"))
+                                        Text("подписки")
+                                            .font(.system(size: 11))
+                                            .foregroundColor(Color(hex: "#828796"))
+                                    }
+                                }
+                            }
+                            else{
                                 VStack {
                                     Text("\(user?.followersCount ?? 0)")
                                         .font(.system(size: 21))
@@ -133,10 +160,8 @@ struct ProfileView: View {
                                         .font(.system(size: 11))
                                         .foregroundColor(Color(hex: "#828796"))
                                 }
-                            }
-                            Spacer()
-                            NavigationLink(destination: FollowView(firstOpen: "following")
-                                            .ignoreDefaultHeaderBar){
+                                Spacer()
+                                
                                 VStack {
                                     Text("\(user?.followingCount ?? 0)")
                                         .font(.system(size: 21))

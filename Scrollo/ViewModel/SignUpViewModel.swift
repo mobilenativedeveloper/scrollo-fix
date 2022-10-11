@@ -39,15 +39,17 @@ class SignUpViewModel: ObservableObject{
             if response.statusCode == 200 {
                 guard let user = try? JSONDecoder().decode(UserModel.self, from: data) else { return }
                 DispatchQueue.main.async {
-                    UserDefaults.standard.set(user.token, forKey: "token")
-                    UserDefaults.standard.set(user.user.id, forKey: "userId")
-                    NotificationCenter.default.post(name: NSNotification.Name("userId"), object: nil)
+                    
                     self.login = ""
                     self.email = ""
                     self.password = ""
                     self.confirmationId = ""
                     self.stepSingUp = .enterLogin
                     self.load = false
+                    
+                    UserDefaults.standard.set(user.token, forKey: "token")
+                    UserDefaults.standard.set(user.user.id, forKey: "userId")
+                    NotificationCenter.default.post(name: NSNotification.Name("userId"), object: nil)
                 }
             }
         }.resume()

@@ -22,11 +22,10 @@ struct ContentView: View {
             if self.userId.isEmpty {
                 NavigationView{
                     AuthView()
-                        .ignoreDefaultHeaderBar
                 }
             } else {
                 DashboardView()
-                    .ignoreDefaultHeaderBar
+                    
             }
         }
         .onAppear(perform: {
