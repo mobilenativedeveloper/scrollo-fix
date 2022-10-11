@@ -309,7 +309,7 @@ private struct GridThumbnailGallery : View {
 private struct AlbumsList: View{
     @EnvironmentObject var photos: AttachmentsViewModel
     var body: some View{
-        VStack{
+        VStack(alignment: .leading){
             ScrollView{
                 VStack{
                     ForEach(0..<photos.albums.count, id: \.self) {index in
@@ -321,7 +321,7 @@ private struct AlbumsList: View{
                 }
             }
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
         .background(Color.white)
         .transition(.move(edge: .bottom))
     }
