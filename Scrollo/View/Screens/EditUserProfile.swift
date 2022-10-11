@@ -333,6 +333,7 @@ struct EditUserProfile: View {
                   print("updateUserAvatar: \(response.statusCode)")
                   if response.statusCode == 200 {
                       DispatchQueue.main.async {
+                          
                           onSuccess()
                       }
                   }
@@ -423,6 +424,8 @@ struct EditUserProfile: View {
             print("updateUserProfile: \(response.statusCode)")
             if response.statusCode == 200 {
                 DispatchQueue.main.async {
+                    UserDefaults.standard.set(self.login, forKey: "login")
+                    UserDefaults.standard.set(self.career, forKey: "career")
                     user!.personal?.name = self.name
                     user!.login = self.login
                     user!.career = self.career

@@ -64,6 +64,9 @@ private struct CoverCollectionView: View {
     let cardHeight: CGFloat = 50
     let covers: [ActualStoryModel]
     
+    
+    @State var presentationSelectFromAlboum: Bool = false
+    
     var body: some View {
         CollectionView(
             numberOfItems: CGFloat(covers.count) + 1,
@@ -71,7 +74,9 @@ private struct CoverCollectionView: View {
             widthOfHiddenCards: widthOfHiddenCards
         ) {
            
-            Button(action: {}) {
+            Button(action: {
+                presentationSelectFromAlboum.toggle()
+            }) {
                 Image(systemName: "photo")
                     .resizable()
                     .frame(width: 20, height: 18)
@@ -84,6 +89,12 @@ private struct CoverCollectionView: View {
             )
             .transition(AnyTransition.slide)
             .animation(.default)
+            .fullScreenCover(isPresented: self.$presentationSelectFromAlboum, content: {
+                ImagePickerView(sourceType: .savedPhotosAlbum) { image in
+                    
+                }
+                .edgesIgnoringSafeArea(.all)
+            })
             ForEach(0..<covers.count, id: \.self) { index in
                 WebImage(url: URL(string: covers[index].url)!)
                     .resizable()

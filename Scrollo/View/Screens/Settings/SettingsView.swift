@@ -94,7 +94,8 @@ struct SettingsView: View {
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
             UserDefaults.standard.removeObject(forKey: "token")
             UserDefaults.standard.removeObject(forKey: "userId")
-            
+            UserDefaults.standard.removeObject(forKey: "login")
+            UserDefaults.standard.removeObject(forKey: "career")
             NotificationCenter.default.post(name: NSNotification.Name("logout"), object: nil)
         }
         

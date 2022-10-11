@@ -283,10 +283,10 @@ private struct HeaderBar: View{
                     isPresentChatSettings.toggle()
                 }){
                     VStack(alignment: .leading, spacing: 4) {
-                        Text("Max Jacobson")
+                        Text(user.login)
                             .font(.custom(GothamBold, size: 14))
                             .foregroundColor(Color(hex: "#444A5E"))
-                        Text("jacobs_max")
+                        Text(user.name ?? "")
                             .font(.custom(GothamBook, size: 12))
                             .foregroundColor(Color(hex: "#828796"))
                     }

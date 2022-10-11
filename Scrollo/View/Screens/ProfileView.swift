@@ -197,7 +197,7 @@ struct ProfileView: View {
                                 .padding(.top, 2)
                         }
                         if let website = user?.personal?.website {
-                            Text(website)
+                            Link(website, destination: URL(string: website)!)
                                 .font(.system(size: 12))
                                 .foregroundColor(Color.blue)
                                 .padding(.top, 1)
@@ -974,7 +974,7 @@ private struct ProfileСompletionView: View{
         ProfileСompletion(icon: "person.2", title: "Найдите людей для подписки", subtitle: "Подпишитесь на 5 или более аккаунтов.", buttonText: "Найти еще"),
         ProfileСompletion(icon: "person", title: "Укажите свое имя", subtitle: "Добавьте имя и фамилию, чтобы друзья знали, что это вы.", buttonText: "Редактировать имя"),
         ProfileСompletion(icon: "person.circle", title: "Добавьте фото профиля", subtitle: "Выберите фото для своего профиля Scrollo", buttonText: "Изменить фото"),
-        ProfileСompletion(icon: "text.word.spacing", title: "Добавьте биографию", subtitle: "Расскажите своим подписчикам немного о себе.", buttonText: "Редактировать биографию"),
+        ProfileСompletion(icon: "text.alignleft", title: "Добавьте биографию", subtitle: "Расскажите своим подписчикам немного о себе.", buttonText: "Редактировать биографию"),
         
     ]
     

@@ -151,7 +151,8 @@ private struct HeaderBar: View {
             }
             Spacer(minLength: 0)
             VStack(spacing: 4) {
-                Text("lana_smith")
+                
+                Text(UserDefaults.standard.string(forKey: "login") ?? "")
                     .font(.system(size: 12))
                     .foregroundColor(Color(hex: "#828796"))
                 Text("Сообщения")

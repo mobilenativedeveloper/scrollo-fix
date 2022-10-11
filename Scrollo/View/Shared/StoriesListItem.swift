@@ -32,6 +32,7 @@ struct StoriesListItem: View {
                 .fixedSize()
         }
         .frame(width: 70, height: 96)
+        .background(Color(hex: "#F9F9F9"))
         .onTapGesture {
             withAnimation {
                 storyData.currentStory = story.id

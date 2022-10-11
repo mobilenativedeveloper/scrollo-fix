@@ -48,7 +48,8 @@ class SignInViewModel: ObservableObject {
                             self.load = false
                             UserDefaults.standard.set(user.token, forKey: "token")
                             UserDefaults.standard.set(user.user.id, forKey: "userId")
-                            
+                            UserDefaults.standard.set(user.user.login!, forKey: "login")
+                            UserDefaults.standard.set(user.user.career, forKey: "career")
                             NotificationCenter.default.post(name: NSNotification.Name("userId"), object: nil, userInfo: nil)
                         }
                     }
