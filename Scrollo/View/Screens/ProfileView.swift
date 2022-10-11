@@ -26,6 +26,9 @@ struct ProfileView: View {
     @State var isPublicationSheet: Bool = false
     
     @State var isPresentActualStoryView: Bool = false
+    @State var isPresentCreateTextPost: Bool = false
+    @State var isPresentCreateMediaPost: Bool = false
+    @State var isPresentCreateStory: Bool = false
     
     @State var isSettingsSheet: Bool = false
     
@@ -283,7 +286,10 @@ struct ProfileView: View {
                 })
                     .bottomSheet(isPresented: $isPublicationSheet, detents: [.custom(350)]) {
                         AddPublicationSheet(
-                            isPresentActualStoryView: $isPresentActualStoryView
+                            isPresentActualStoryView: $isPresentActualStoryView,
+                            isPresentCreateTextPost: $isPresentCreateTextPost,
+                            isPresentCreateMediaPost: $isPresentCreateMediaPost,
+                            isPresentCreateStory: $isPresentCreateStory
                         )
                     }
                 Spacer(minLength: 0)
@@ -329,7 +335,18 @@ struct ProfileView: View {
                                 .ignoreDefaultHeaderBar, isActive: self.$settingsPresent, label: {
                                     EmptyView()
                                 })
-                
+                NavigationLink(destination: PublicationTextPostView()
+                                .ignoreDefaultHeaderBar, isActive: self.$isPresentCreateTextPost, label: {
+                                    EmptyView()
+                                })
+                NavigationLink(destination: PublicationMediaPostView()
+                                .ignoreDefaultHeaderBar, isActive: self.$isPresentCreateMediaPost, label: {
+                                    EmptyView()
+                                })
+                NavigationLink(destination: PublicationStoryView()
+                                .ignoreDefaultHeaderBar, isActive: self.$isPresentCreateStory, label: {
+                                    EmptyView()
+                                })
                 
             }
         )
@@ -547,9 +564,9 @@ private struct ActualStoryList: View{
 private struct AddPublicationSheet: View {
     @Environment(\.presentationMode) var presentation: Binding<PresentationMode>
     @Binding var isPresentActualStoryView: Bool
-//    @Binding var isPresentCreateTextPost: Bool
-//    @Binding var isPresentCreateMediaPost: Bool
-//    @Binding var isPresentCreateStory: Bool
+    @Binding var isPresentCreateTextPost: Bool
+    @Binding var isPresentCreateMediaPost: Bool
+    @Binding var isPresentCreateStory: Bool
     
     var body: some View {
         ZStack(alignment: .top) {
@@ -577,22 +594,22 @@ private struct AddPublicationSheet: View {
                     .padding(.bottom, 34)
                     Sepparator()
                     Button(action: {
-//                        presentation.wrappedValue.dismiss()
-//                        self.isPresentCreateMediaPost.toggle()
+                        presentation.wrappedValue.dismiss()
+                        self.isPresentCreateMediaPost.toggle()
                     }) {
                         AddPublicationItem(icon: "publication", title: "публикацию")
                     }
                     Sepparator()
                     Button(action: {
-//                        presentation.wrappedValue.dismiss()
-//                        self.isPresentCreateTextPost.toggle()
+                        presentation.wrappedValue.dismiss()
+                        self.isPresentCreateTextPost.toggle()
                     }) {
                         AddPublicationItem(icon: "post", title: "пост")
                     }
                     Sepparator()
                     Button(action: {
-//                        presentation.wrappedValue.dismiss()
-//                        self.isPresentCreateStory.toggle()
+                        presentation.wrappedValue.dismiss()
+                        self.isPresentCreateStory.toggle()
                     }) {
                         AddPublicationItem(icon: "story", title: "историю")
                     }
