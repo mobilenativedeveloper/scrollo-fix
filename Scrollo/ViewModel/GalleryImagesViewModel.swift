@@ -91,16 +91,21 @@ class GalleryImagesViewModel: ObservableObject{
         self.loadAssets = false
         self.assets = []
         let fetchOptions = PHFetchOptions()
-        fetchOptions.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: true)]
+        fetchOptions.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: false)]
+        
         let assetsAlbum = PHAsset.fetchAssets(in: self.albums[self.selectedAlbum], options: fetchOptions)
-
+        
         assetsAlbum.enumerateObjects { asset, index, _ in
             self.PHAssetToUIImage(asset: asset) { thumbnail in
                 
                 self.assets.append(AssetModel(asset: asset, thumbnail: thumbnail))
-                
+                print("append: \(asset.creationDate!)")
                 if index == assetsAlbum.count - 1 {
+                    var sortArray: [AssetModel] = self.assets
+                    sortArray.sort(by: {$0.asset.creationDate! < $1.asset.creationDate!})
+                    self.assets = sortArray
                     self.loadAssets = true
+                    
                 }
             }
         }
