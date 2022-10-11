@@ -18,7 +18,7 @@ struct ChatListView: View {
     
     @State var refreshing: Bool = false
     
-    @State var presentNewChat: Bool = false
+    @State var presentNewChat: Bool? = false
     @State var pushOnNewChat: Bool = false
     @State var receiver: ChatListModel.ChatModel.ChatUser = ChatListModel.ChatModel.ChatUser(id: "", login: "", name: nil, avatar: nil)
     
@@ -109,7 +109,7 @@ struct ChatListView: View {
                 CreateNewChatView(presentNewChat: $presentNewChat) { newChat in
                     chatViewModel.chats.append(newChat)
                     withAnimation{
-                        presentNewChat.toggle()
+                        presentNewChat!.toggle()
                     }
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
                         receiver = newChat.receiver
@@ -138,7 +138,7 @@ struct ChatListView: View {
 
 private struct HeaderBar: View {
     @Binding var offset: CGFloat
-    @Binding var presentNewChat: Bool
+    @Binding var presentNewChat: Bool?
     var body: some View{
         HStack {
             Button(action: {
@@ -163,7 +163,7 @@ private struct HeaderBar: View {
             Spacer(minLength: 0)
             Button(action: {
                 withAnimation{
-                    presentNewChat.toggle()
+                    presentNewChat!.toggle()
                 }
             }) {
                 Image("new.message")

@@ -31,10 +31,12 @@ struct PostView: View{
     
     @State var mediaPostSaveAlbumPresent: Bool = false
     
+    @State var isPresentedProfile: Bool? = nil
+    
     var body: some View{
         VStack(alignment: .leading, spacing: 0) {
             HStack(spacing: 0) {
-                NavigationLink(destination: ProfileView(userId: post.creator.id)
+                NavigationLink(destination: ProfileView(userId: post.creator.id, isPresented: $isPresentedProfile)
                                 .ignoreDefaultHeaderBar){
                     HStack(spacing: 0){
                         

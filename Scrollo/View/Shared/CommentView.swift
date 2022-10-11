@@ -12,7 +12,7 @@ struct CommentCardView : View {
     @EnvironmentObject var commentsViewModel: CommentsViewModel
     @Binding var comment : PostModel.CommentsModel
     @Binding var message : String
-    @Binding var profilePresent: Bool
+    @Binding var profilePresent: Bool?
     var body : some View {
 
         VStack(spacing: 0) {
@@ -85,7 +85,7 @@ struct CommentCardView : View {
 }
 
 private struct CommentView: View{
-    @Binding var profilePresent: Bool
+    @Binding var profilePresent: Bool?
     var comment : PostModel.CommentsModel
     var onPressLike: ()->()
     var onPressReply: () -> ()
@@ -138,7 +138,7 @@ private struct CommentView: View{
                 }
                 .onTapGesture {
                     withAnimation(.easeInOut){
-                        profilePresent.toggle()
+                        profilePresent!.toggle()
                     }
                 }
                 HStack(spacing: 0) {
@@ -237,7 +237,7 @@ private struct CommentView: View{
 }
 
 private struct SubCommentView: View{
-    @Binding var profilePresent: Bool
+    @Binding var profilePresent: Bool?
     var comment : PostModel.LastSubComments
     var onPressLike: ()->()
     var onPressReply: () -> ()
@@ -287,7 +287,7 @@ private struct SubCommentView: View{
                 }
                 .onTapGesture {
                     withAnimation(.easeInOut){
-                        profilePresent.toggle()
+                        profilePresent!.toggle()
                     }
                 }
                 HStack(spacing: 0) {

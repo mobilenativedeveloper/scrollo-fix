@@ -11,12 +11,14 @@ import SDWebImageSwiftUI
 
 
 struct ProfileView: View {
-    
+    @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
     @State var offset: CGFloat = 0
     
     @State var user: UserModel.User?
     
     var userId: String
+    
+    @Binding var isPresented: Bool?
     
     
     @State var editUserPresent: Bool = false
@@ -202,10 +204,10 @@ struct ProfileView: View {
                         }
                     }
                     else{
-                        
+                        FollowUserControll(userId: userId)
                     }
                     
-                    ActualStoryList()
+                    ActualStoryList(userId: userId)
                         .padding(.top)
                     
                     HStack(spacing: 0) {
@@ -251,7 +253,9 @@ struct ProfileView: View {
                             Spacer()
                         }
                         
-                        ProfileСompletionView(editUserPresent: $editUserPresent)
+                        if self.userId == UserDefaults.standard.string(forKey: "userId") {
+                            ProfileСompletionView(editUserPresent: $editUserPresent)
+                        }
                     }
                     
                     if self.selectedTab == "text" {
@@ -278,35 +282,62 @@ struct ProfileView: View {
         }
         .background(Color(hex: "#F9F9F9"))
         .overlay(
+            
             HStack {
-                Button(action: {
-                    self.isPublicationSheet.toggle()
-                }, label: {
-                    Image("profile.plus.white")
-                })
-                    .bottomSheet(isPresented: $isPublicationSheet, detents: [.custom(350)]) {
-                        AddPublicationSheet(
-                            isPresentActualStoryView: $isPresentActualStoryView,
-                            isPresentCreateTextPost: $isPresentCreateTextPost,
-                            isPresentCreateMediaPost: $isPresentCreateMediaPost,
-                            isPresentCreateStory: $isPresentCreateStory
-                        )
+                if self.userId == UserDefaults.standard.string(forKey: "userId") {
+                    Button(action: {
+                        self.isPublicationSheet.toggle()
+                    }, label: {
+                        Image("profile.plus.white")
+                    })
+                        .bottomSheet(isPresented: $isPublicationSheet, detents: [.custom(350)]) {
+                            AddPublicationSheet(
+                                isPresentActualStoryView: $isPresentActualStoryView,
+                                isPresentCreateTextPost: $isPresentCreateTextPost,
+                                isPresentCreateMediaPost: $isPresentCreateMediaPost,
+                                isPresentCreateStory: $isPresentCreateStory
+                            )
+                        }
+                    Spacer(minLength: 0)
+                    Button(action: {
+                        self.isSettingsSheet.toggle()
+                    }, label: {
+                        Image("profile.menu.icon")
+                    })
+                        .bottomSheet(isPresented: $isSettingsSheet, detents: [.custom(440)], backgroundColor: .clear) {
+                            SettingsSheet(
+                                yourActivityPresent: self.$yourActivityPresent,
+                                savedPresent: self.$savedPresent,
+                                interestingPeoplePresent: self.$interestingPeoplePresent,
+                                editUserPresent: self.$editUserPresent,
+                                settingsPresent: self.$settingsPresent
+                            )
+                        }
+                }
+                else{
+                    Button(action: {
+                        if isPresented != nil{
+                            isPresented = false
+                        }
+                        else if presentationMode != nil{
+                            presentationMode.wrappedValue.dismiss()
+                        }
+                    }) {
+                        Image("big_arrow_left_white")
+                            .resizable()
+                            .frame(width: 24, height: 24)
+                            .aspectRatio(contentMode: .fill)
                     }
-                Spacer(minLength: 0)
-                Button(action: {
-                    self.isSettingsSheet.toggle()
-                }, label: {
-                    Image("profile.menu.icon")
-                })
-                    .bottomSheet(isPresented: $isSettingsSheet, detents: [.custom(440)], backgroundColor: .clear) {
-                        SettingsSheet(
-                            yourActivityPresent: self.$yourActivityPresent,
-                            savedPresent: self.$savedPresent,
-                            interestingPeoplePresent: self.$interestingPeoplePresent,
-                            editUserPresent: self.$editUserPresent,
-                            settingsPresent: self.$settingsPresent
-                        )
+                    Spacer(minLength: 0)
+                    Button(action: {
+                        
+                    }) {
+                        Color.clear
+                            .frame(width: 24, height: 24)
+                            
                     }
+                    .opacity(0)
+                }
             }
             .padding()
                 .padding(.top, edges?.top ?? 10)
@@ -506,43 +537,145 @@ private struct BlurView: UIViewRepresentable{
     }
 }
 
+struct FollowUserControll: View {
+    @StateObject var followViewModel: FollowViewModel = FollowViewModel()
+    @State var load: Bool = false
+    @State var followOnHim: Bool = false
+    let userId: String
+
+    init (userId: String) {
+        self.userId = userId
+    }
+
+    var body: some View {
+        HStack {
+            Spacer()
+            Button(action: {
+                if !self.load {
+                    self.handleFollow()
+                }
+            }) {
+                RoundedRectangle(cornerRadius: 15)
+                    .fill(Color(hex: self.followOnHim ? "#36DCD8" : "#5B86E5"))
+                    .frame(width: 151, height: 45, alignment: .center)
+                    .overlay(
+                        self.Loading(),
+                        alignment: .center
+                    )
+            }
+            Spacer(minLength: 10)
+            Button(action: {}) {
+                Capsule(style: .continuous)
+                    .stroke(Color(hex: "#DDE8E8"), style: StrokeStyle(lineWidth: 1))
+                    .frame(width: 151, height: 45, alignment: .center)
+                    .overlay(
+                        Text("Написать")
+                            .foregroundColor(Color(hex: "#2E313C")),
+                        alignment: .center
+                    )
+            }
+            Spacer()
+        }
+        .padding(.top, 14)
+        .onAppear(perform: {
+            followViewModel.checkFollowOnFollower(userId: userId, completion: {status in
+                if let status = status {
+                    if status {
+                        self.followOnHim = true
+                    } else {
+                        self.followOnHim = false
+                    }
+                }
+            })
+        })
+    }
+
+    @ViewBuilder
+    private func Loading() -> some View {
+        if self.load {
+            ProgressView()
+        } else {
+            Text(self.followOnHim ? "Вы Подписаны" : "Подписаться")
+                .foregroundColor(Color.white)
+        }
+    }
+
+    private func handleFollow() {
+        self.load = true
+        if self.followOnHim {
+            followViewModel.unFollowOnUser(userId: userId, completion: {_ in 
+                DispatchQueue.main.async {
+                    self.followOnHim = false
+                    self.load = false
+                }
+            })
+        } else {
+            followViewModel.followOnUser(userId: userId, completion: {_ in 
+                DispatchQueue.main.async {
+                    self.followOnHim = true
+                    self.load = false
+                }
+            })
+        }
+    }
+}
+
 private struct ActualStoryList: View{
+    var userId: String
     var body: some View{
         VStack{
-            VStack(alignment: .leading){
-                Text("Актуальное из историй")
-                    .font(.system(size: 14))
-                    .foregroundColor(.black)
-                    .fontWeight(.bold)
-                Text("Сохраняйте свои лучшие истории в профиле")
-                    .font(.system(size: 14))
-                    .foregroundColor(.black)
-                    .padding(.trailing, 70)
+            if self.userId == UserDefaults.standard.string(forKey: "userId") {
+                VStack(alignment: .leading){
+                    Text("Актуальное из историй")
+                        .font(.system(size: 14))
+                        .foregroundColor(.black)
+                        .fontWeight(.bold)
+                    Text("Сохраняйте свои лучшие истории в профиле")
+                        .font(.system(size: 14))
+                        .foregroundColor(.black)
+                        .padding(.trailing, 70)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.bottom, 5)
+                .padding(.horizontal)
             }
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(.bottom, 5)
-            .padding(.horizontal)
+            
             ScrollView(.horizontal, showsIndicators: false){
                 HStack(spacing: 20){
-                    NavigationLink(destination: ActualStoryView()
-                                    .ignoreDefaultHeaderBar){
-                        VStack{
-                            Circle()
-                                .stroke(Color.gray.opacity(0.2), lineWidth: 1)
-                                .frame(width: 60, height: 60)
-                                .overlay(
-                                    Image(systemName: "plus")
-                                        .foregroundColor(.black)
-                                )
-                            Text("Добавить")
-                                .font(.system(size: 12))
-                                .foregroundColor(.black)
-                        }
-                    }
-                    .buttonStyle(FlatLinkStyle())
-                    ForEach(0..<5, id: \.self){_ in
+                    if self.userId == UserDefaults.standard.string(forKey: "userId") {
                         NavigationLink(destination: ActualStoryView()
                                         .ignoreDefaultHeaderBar){
+                            VStack{
+                                Circle()
+                                    .stroke(Color.gray.opacity(0.2), lineWidth: 1)
+                                    .frame(width: 60, height: 60)
+                                    .overlay(
+                                        Image(systemName: "plus")
+                                            .foregroundColor(.black)
+                                    )
+                                Text("Добавить")
+                                    .font(.system(size: 12))
+                                    .foregroundColor(.black)
+                            }
+                        }
+                        .buttonStyle(FlatLinkStyle())
+                    }
+                    ForEach(0..<5, id: \.self){_ in
+                        if self.userId == UserDefaults.standard.string(forKey: "userId") {
+                            NavigationLink(destination: ActualStoryView()
+                                            .ignoreDefaultHeaderBar){
+                                VStack{
+                                    Circle()
+                                        .fill(Color.gray.opacity(0.2))
+                                        .frame(width: 60, height: 60)
+                                    Text("")
+                                        .font(.system(size: 12))
+                                        .foregroundColor(.black)
+                                }
+                            }
+                            .buttonStyle(FlatLinkStyle())
+                        }
+                        else{
                             VStack{
                                 Circle()
                                     .fill(Color.gray.opacity(0.2))
@@ -552,7 +685,6 @@ private struct ActualStoryList: View{
                                     .foregroundColor(.black)
                             }
                         }
-                        .buttonStyle(FlatLinkStyle())
                     }
                 }
                 .padding(.horizontal)
@@ -817,7 +949,7 @@ private struct ProfileСompletionView: View{
         ProfileСompletion(icon: "person.2", title: "Найдите людей для подписки", subtitle: "Подпишитесь на 5 или более аккаунтов.", buttonText: "Найти еще"),
         ProfileСompletion(icon: "person", title: "Укажите свое имя", subtitle: "Добавьте имя и фамилию, чтобы друзья знали, что это вы.", buttonText: "Редактировать имя"),
         ProfileСompletion(icon: "person.circle", title: "Добавьте фото профиля", subtitle: "Выберите фото для своего профиля Scrollo", buttonText: "Изменить фото"),
-        ProfileСompletion(icon: "person.circle", title: "Добавьте биографию", subtitle: "Расскажите своим подписчикам немного о себе.", buttonText: "Редактировать биографию"),
+        ProfileСompletion(icon: "text.word.spacing", title: "Добавьте биографию", subtitle: "Расскажите своим подписчикам немного о себе.", buttonText: "Редактировать биографию"),
         
     ]
     

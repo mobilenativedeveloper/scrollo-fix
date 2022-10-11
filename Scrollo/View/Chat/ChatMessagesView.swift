@@ -37,7 +37,7 @@ struct ChatMessagesView: View {
     
     var user: ChatListModel.ChatModel.ChatUser
     
-    @State var profilePresent: Bool = false
+    @State var profilePresent: Bool? = false
     
     var body: some View {
         VStack(spacing: 0) {
@@ -193,7 +193,7 @@ struct ChatMessagesView: View {
             }
         }
         .navigationView(isPresent: $profilePresent, content: {
-            ProfileView(userId: user.id)
+            ProfileView(userId: user.id, isPresented: $profilePresent)
         })
         .alert(isPresented: $isRequestPermission){
             Alert(title: Text("Разрешить доступ к микрофону"), message: Text("Чтобы отправлять голосовые сообщения, предоставьте этому приложению доступ к микрофону в настройках устройства"), primaryButton: .default(Text("Отмена")), secondaryButton: .default(Text("Настройки")){
@@ -246,7 +246,7 @@ private struct HeaderBar: View{
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
     @State var isPresentChatSettings: Bool = false
     var user: ChatListModel.ChatModel.ChatUser
-    @Binding var profilePresent: Bool
+    @Binding var profilePresent: Bool?
     
     var body: some View{
         HStack {

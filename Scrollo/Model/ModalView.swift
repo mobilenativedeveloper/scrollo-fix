@@ -8,7 +8,7 @@
 import SwiftUI
 
 extension View{
-    func navigationView<Content: View>(isPresent: Binding<Bool>, content: @escaping() -> Content) -> some View{
+    func navigationView<Content: View>(isPresent: Binding<Bool?>, content: @escaping() -> Content) -> some View{
         return NavigationViewHelper(isPresent: isPresent, mainContent: self, content: content())
     }
 }
@@ -17,12 +17,12 @@ struct NavigationViewHelper<MainContent: View, Content: View>: View{
     
     var mainContent: MainContent
     var content: Content
-    @Binding var isPresent: Bool
+    @Binding var isPresent: Bool?
     
     @GestureState var gestureState: CGFloat = 0
     @State var offset: CGFloat = 0
     
-    init(isPresent: Binding<Bool>, mainContent: MainContent, content: Content){
+    init(isPresent: Binding<Bool?>, mainContent: MainContent, content: Content){
         self._isPresent = isPresent
         self.mainContent = mainContent
         self.content = content
@@ -31,10 +31,10 @@ struct NavigationViewHelper<MainContent: View, Content: View>: View{
     var body: some View{
         GeometryReader{proxy in
             mainContent
-                .offset(x: isPresent && offset >= 0 ? getOffset(size: proxy.size.width) : 0)
+                .offset(x: isPresent! && offset >= 0 ? getOffset(size: proxy.size.width) : 0)
                 .overlay(
                     ZStack{
-                        if isPresent{
+                        if isPresent!{
                             content
                                 .background(Color.white.shadow(radius: 1.3).ignoresSafeArea())
                                 .offset(x: offset > 0 ? offset : 0)

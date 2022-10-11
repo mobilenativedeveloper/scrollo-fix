@@ -16,7 +16,7 @@ struct CommentsOverview: View {
     
     @StateObject var commentsViewModel: CommentsViewModel = CommentsViewModel()
     
-    @State var profilePresent: Bool = false
+    @State var profilePresent: Bool? = false
     
     var body: some View {
         VStack(spacing: 0){
@@ -164,7 +164,7 @@ struct CommentsOverview: View {
         .ignoresSafeArea(.container, edges: .bottom)
         .navigationView(isPresent: $profilePresent){
             NavigationView{
-                ProfileView(userId: post.creator.id)
+                ProfileView(userId: post.creator.id, isPresented: $profilePresent)
                     .ignoreDefaultHeaderBar
             }
         }

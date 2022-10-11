@@ -113,9 +113,11 @@ private struct ActionView: View{
     @State var isFollow: Bool = false
     var action: ActionResponse.ActionModel
     
+    @State var profilePresent: Bool? = nil
+    
     var body: some View {
         HStack(alignment: .top, spacing: 0) {
-            NavigationLink(destination: ProfileView(userId: action.creator.id)
+            NavigationLink(destination: ProfileView(userId: action.creator.id, isPresented: $profilePresent)
                             .ignoreDefaultHeaderBar){
                 if let avatar = action.creator.avatar {
                     WebImage(url: URL(string: "\(API_URL)/uploads/\(avatar)")!)

@@ -23,6 +23,8 @@ struct SavedView: View {
     @State var albumOverviewPresent: Bool = false
     @State var selectedAlbum: AlbumModel? = nil
     
+    @State var createAlbumPresent: Bool = false
+    
     var body: some View {
         VStack{
             HStack {
@@ -42,7 +44,9 @@ struct SavedView: View {
                     .foregroundColor(Color(hex: "#1F2128"))
                 Spacer(minLength: 0)
                 Button(action: {
-                   
+                    withAnimation{
+                        createAlbumPresent.toggle()
+                    }
                 }) {
                     
                     Image("blue.circle.outline.plus")
@@ -113,6 +117,10 @@ struct SavedView: View {
                     albumOverviewPresent.toggle()
                 }
             })
+        })
+        .fullScreenCover(isPresented: $createAlbumPresent, content: {
+            CreateAlbumView(isPresent: $createAlbumPresent)
+                .environmentObject(albumsViewModel)
         })
         .onAppear {
             albumsViewModel.getAlbums(composition: true)

@@ -16,7 +16,7 @@ struct PublicationMediaPostView: View {
     @State private var isPresentCamera: Bool = false
     @State private var isPresentVideoCamera: Bool = false
     
-    @State private var isPresentAddMediaPost: Bool = false
+    @State private var isPresentAddMediaPost: Bool? = false
     @State var presentationSelectFromAlboum: Bool = false
     
     var body: some View {
@@ -51,7 +51,7 @@ struct PublicationMediaPostView: View {
                 Spacer(minLength: 0)
                 Button(action: {
                     withAnimation {
-                        isPresentAddMediaPost.toggle()
+                        isPresentAddMediaPost!.toggle()
                     }
                 }) {
                     Image("circle.right.arrow.blue")
@@ -187,7 +187,7 @@ struct CameraView : View {
     @EnvironmentObject var mediaPost: AddMediaPostViewModel
     @StateObject var cameraController: CameraController = CameraController()
     @State var playAnimated: Bool = false
-    @Binding var isPresentAddMediaPost: Bool
+    @Binding var isPresentAddMediaPost: Bool?
     
     var body : some View {
         
@@ -266,7 +266,7 @@ struct CameraView : View {
                     cameraController.previewURL = nil
                     cameraController.didFinishRecordingTo = false
                     
-                    isPresentAddMediaPost.toggle()
+                    isPresentAddMediaPost!.toggle()
                     present.wrappedValue.dismiss()
                 }
             }
@@ -509,7 +509,7 @@ private struct SelectedPostImageView: View {
 struct AddMediaPostView: View {
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
     @EnvironmentObject var mediaPost: AddMediaPostViewModel
-    @Binding var isPresent: Bool
+    @Binding var isPresent: Bool?
     
     var body: some View {
         
@@ -518,7 +518,7 @@ struct AddMediaPostView: View {
             HStack {
                 Button(action: {
                     if !mediaPost.isPublished {
-                        isPresent.toggle()
+                        isPresent!.toggle()
                         mediaPost.pickedPhoto = [mediaPost.allPhotos[0][0]]
                         mediaPost.selection = mediaPost.allPhotos[0][0]
                         mediaPost.content = ""
@@ -540,7 +540,7 @@ struct AddMediaPostView: View {
                     mediaPost.publish { post in
 //                        guard let post = post else {return}
                         
-                        isPresent.toggle()
+                        isPresent!.toggle()
                         mediaPost.pickedPhoto = [mediaPost.allPhotos[0][0]]
                         mediaPost.selection = mediaPost.allPhotos[0][0]
                         

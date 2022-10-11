@@ -147,9 +147,10 @@ struct SearchView: View {
 private struct SearchUserItem: View {
     let user: UserModel.User
 
+    @State var profilePresent: Bool? = nil
     
     var body: some View {
-        NavigationLink(destination: ProfileView(userId: user.id)
+        NavigationLink(destination: ProfileView(userId: user.id, isPresented: $profilePresent)
                         .ignoreDefaultHeaderBar){
             HStack(alignment: .center, spacing: 0) {
                     if let avatar = self.user.avatar {

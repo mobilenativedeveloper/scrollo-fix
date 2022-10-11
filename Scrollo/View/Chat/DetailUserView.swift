@@ -10,7 +10,7 @@ import SDWebImageSwiftUI
 
 struct DetailUserView: View {
     var user: ChatListModel.ChatModel.ChatUser
-    @Binding var profilePresent: Bool
+    @Binding var profilePresent: Bool?
     var body: some View {
         VStack(spacing: 0){
             if let avatar = user.avatar {

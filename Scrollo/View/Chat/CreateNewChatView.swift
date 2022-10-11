@@ -11,7 +11,7 @@ import SDWebImageSwiftUI
 
 struct CreateNewChatView: View {
     @ObservedObject var createChatViewModel : CreateChatViewModel = CreateChatViewModel()
-    @Binding var presentNewChat: Bool
+    @Binding var presentNewChat: Bool?
     var onCreated: (ChatListModel.ChatModel)->Void
     var body: some View {
         VStack {
@@ -75,12 +75,12 @@ struct CreateNewChatView: View {
 }
 
 private struct HeaderBar: View {
-    @Binding var presentNewChat: Bool
+    @Binding var presentNewChat: Bool?
     var body: some View{
         HStack(spacing: 0) {
             Button(action: {
                 withAnimation{
-                    presentNewChat.toggle()
+                    presentNewChat!.toggle()
                 }
             }) {
                 Image("circle_close")

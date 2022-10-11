@@ -17,6 +17,8 @@ struct HomeView: View {
     @State var publicationTextPostViewPresent: Bool = false
     @State var publicationStoryViewPresent: Bool = false
     
+    @State var isPresentedProfile: Bool? = nil
+    
     var body: some View {
         NavigationView{
             
@@ -38,7 +40,7 @@ struct HomeView: View {
                             .opacity(selectedTab == "search" ? 1 : 0)
                         ActionsView()
                             .opacity(selectedTab == "activities" ? 1 : 0)
-                        ProfileView(userId: UserDefaults.standard.string(forKey: "userId")!)
+                        ProfileView(userId: UserDefaults.standard.string(forKey: "userId")!, isPresented: $isPresentedProfile)
                             .ignoresSafeArea(SafeAreaRegions.container, edges: .bottom)
                             .opacity(selectedTab == "profile" ? 1 : 0)
                     }

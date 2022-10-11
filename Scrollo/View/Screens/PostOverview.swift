@@ -24,7 +24,7 @@ struct PostOverview: View {
     
     @State var isSharePresent: Bool = false
     
-    @State var profilePresent: Bool = false
+    @State var profilePresent: Bool? = false
     
     var body: some View {
         VStack(alignment: .leading){
@@ -52,7 +52,7 @@ struct PostOverview: View {
                         }
                         .onTapGesture {
                             withAnimation(.easeInOut){
-                                profilePresent.toggle()
+                                profilePresent!.toggle()
                             }
                         }
                         Spacer()
@@ -424,7 +424,7 @@ struct PostOverview: View {
         .ignoresSafeArea(.container, edges: [.bottom, .top])
         .navigationView(isPresent: $profilePresent){
             NavigationView{
-                ProfileView(userId: post.creator.id)
+                ProfileView(userId: post.creator.id, isPresented: $profilePresent)
                     .ignoreDefaultHeaderBar
             }
         }
