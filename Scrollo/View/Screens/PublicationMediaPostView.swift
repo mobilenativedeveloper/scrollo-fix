@@ -28,7 +28,7 @@ struct PublicationMediaPostView: View {
                 Button(action: {
                     presentationMode.wrappedValue.dismiss()
                 }) {
-                    Image("circle_close")
+                    Image("circle.xmark.black")
                         .resizable()
                         .frame(width: 24, height: 24)
                         .aspectRatio(contentMode: .fill)
@@ -54,7 +54,7 @@ struct PublicationMediaPostView: View {
                         isPresentAddMediaPost.toggle()
                     }
                 }) {
-                    Image("circle.right.arrow")
+                    Image("circle.right.arrow.blue")
                         .resizable()
                         .frame(width: 24, height: 24)
                         .aspectRatio(contentMode: .fill)
@@ -524,7 +524,7 @@ struct AddMediaPostView: View {
                         mediaPost.content = ""
                     }
                 }) {
-                    Image("circle_close")
+                    Image("circle.xmark.black")
                         .resizable()
                         .frame(width: 24, height: 24)
                         .aspectRatio(contentMode: .fill)
@@ -552,7 +552,7 @@ struct AddMediaPostView: View {
                     if mediaPost.isPublished {
                         ProgressView()
                     } else {
-                        Image("circle.right.arrow")
+                        Image("circle.right.arrow.blue")
                             .resizable()
                             .frame(width: 24, height: 24)
                             .aspectRatio(contentMode: .fill)

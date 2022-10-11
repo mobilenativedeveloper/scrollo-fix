@@ -216,7 +216,7 @@ private struct UploadView : View {
                     Spacer(minLength: 0)
                     HStack(spacing: 18) {
                         UploadButtonView(icon: "gallery_icon", title: "Фото")
-                        onTapGesture {
+                            .onTapGesture {
                             withAnimation(.easeInOut(duration: 0.2)){
                                 show = false
                             }
