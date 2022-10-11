@@ -65,7 +65,8 @@ struct SignInView: View{
                             Text("Еще нет аккуанта?")
                                 .font(.system(size: 12))
                                 .foregroundColor(.white)
-                            NavigationLink(destination: Text("")) {
+                            NavigationLink(destination: SignUpView()
+                                            .ignoreDefaultHeaderBar) {
                                 Text("Зарегистрировать")
                                     .font(.system(size: 12))
                                     .fontWeight(.bold)
