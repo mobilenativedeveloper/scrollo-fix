@@ -11,9 +11,13 @@ import SDWebImageSwiftUI
 struct AlbumOverview: View {
     @Binding var isPresent: Bool
     
-    var album: AlbumModel?
+    @Binding var album: AlbumModel?
+    
+    var onRemove: ()->()
     
     @StateObject var savedPostsViewModel: SavedPostsViewModel = SavedPostsViewModel()
+    
+    @State var deleteAlbum: Bool = false
     
     var body: some View {
         VStack{
@@ -36,7 +40,7 @@ struct AlbumOverview: View {
                     .foregroundColor(Color(hex: "#1F2128"))
                 Spacer(minLength: 0)
                 Button(action: {
-                    
+                    deleteAlbum.toggle()
                 }) {
                     Image(systemName: "ellipsis")
                         .font(.system(size: 18))
@@ -63,6 +67,14 @@ struct AlbumOverview: View {
             Spacer(minLength: 0)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .alert(isPresented: self.$deleteAlbum) {
+            Alert(title: Text("Вы действительно хотите удалить альбом?"), message: nil, primaryButton: .destructive(Text("Удалить")){
+                
+                savedPostsViewModel.removeAlbum(albumId: album!.id) {
+                    onRemove()
+                }
+            }, secondaryButton: .default(Text("Отменить")))
+        }
         .onAppear(perform: {
             savedPostsViewModel.getSavedMediaPosts(albumId: album!.id)
         })

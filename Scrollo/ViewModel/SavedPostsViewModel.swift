@@ -80,4 +80,26 @@ class SavedPostsViewModel: ObservableObject {
         
         return postComposition
     }
+    
+    func removeAlbum (albumId: String, completion: @escaping () -> Void) -> Void {
+        
+        guard let url = URL(string: "\(API_URL)\(API_SAVED_ALBUM)/\(albumId)") else {return}
+        
+        guard let request = Request(url: url, httpMethod: "DELETE", body: nil) else {return}
+        
+        URLSession.shared.dataTask(with: request) { _, response, _ in
+            
+            guard let response = response as? HTTPURLResponse else {return}
+            
+            print("removeAlbum: \(response.statusCode)")
+            if response.statusCode == 200 {
+                
+                DispatchQueue.main.async {
+                    completion()
+                }
+            }
+            
+        }.resume()
+    }
+    
 }

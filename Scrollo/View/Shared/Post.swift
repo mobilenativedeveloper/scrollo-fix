@@ -740,7 +740,7 @@ struct SelectAlbum: View {
     
     @ObservedObject var postViewModel: PostViewModel = PostViewModel()
     
-    @StateObject var albumsViewModel: AlbumsViewModel = AlbumsViewModel(composition: true)
+    @StateObject var albumsViewModel: AlbumsViewModel = AlbumsViewModel()
     
     let savedItemSize: CGFloat = (screen_rect.width / 2) - 26 - 9
     
@@ -786,28 +786,25 @@ struct SelectAlbum: View {
                     ScrollView {
                         VStack(spacing: 0) {
                             ForEach(0..<albumsViewModel.albumsComposition.count, id: \.self){index in
-                                ForEach(0..<albumsViewModel.albumsComposition[index].count, id: \.self) {_ in
-                                    
-                                    HStack(spacing: 0) {
-                                        if albumsViewModel.albumsComposition[index].count >= 1 {
-                                            SavedItem(album: albumsViewModel.albumsComposition[index][0])
-                                                .onTapGesture {
-                                                    postViewModel.savePost(postId: post.id, albumId: albumsViewModel.albumsComposition[index][0].id) {
-                                                        post.inSaved = true
-                                                        isPresented.toggle()
-                                                    }
+                                HStack(spacing: 0) {
+                                    if albumsViewModel.albumsComposition[index].count >= 1 {
+                                        SavedItem(album: albumsViewModel.albumsComposition[index][0])
+                                            .onTapGesture {
+                                                postViewModel.savePost(postId: post.id, albumId: albumsViewModel.albumsComposition[index][0].id) {
+                                                    post.inSaved = true
+                                                    isPresented.toggle()
                                                 }
-                                        }
-                                        Spacer(minLength: 0)
-                                        if albumsViewModel.albumsComposition[index].count == 2 {
-                                            SavedItem(album: albumsViewModel.albumsComposition[index][1])
-                                                .onTapGesture {
-                                                    postViewModel.savePost(postId: post.id, albumId: albumsViewModel.albumsComposition[index][1].id) {
-                                                        post.inSaved = true
-                                                        isPresented.toggle()
-                                                    }
+                                            }
+                                    }
+                                    Spacer(minLength: 0)
+                                    if albumsViewModel.albumsComposition[index].count == 2 {
+                                        SavedItem(album: albumsViewModel.albumsComposition[index][1])
+                                            .onTapGesture {
+                                                postViewModel.savePost(postId: post.id, albumId: albumsViewModel.albumsComposition[index][1].id) {
+                                                    post.inSaved = true
+                                                    isPresented.toggle()
                                                 }
-                                        }
+                                            }
                                     }
                                 }
                             }
@@ -816,7 +813,7 @@ struct SelectAlbum: View {
                     }
                 }
                 else{
-                    Text("Clear")
+                    
                 }
             }
             else{
@@ -826,6 +823,9 @@ struct SelectAlbum: View {
             
             Spacer(minLength: 0)
         }
+        .onAppear(perform: {
+            albumsViewModel.getAlbums(composition: true)
+        })
         .navigationView(isPresent: $createAlbumPresent, content: {
             CreateAlbumView(isPresent: $createAlbumPresent)
                 .environmentObject(albumsViewModel)

@@ -17,9 +17,6 @@ class AlbumsViewModel: ObservableObject {
     
     @Published var name: String = ""
     
-    init (composition: Bool = false) {
-        getAlbums(composition: composition)
-    }
     
     func getAlbums (composition: Bool) {
         

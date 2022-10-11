@@ -14,7 +14,7 @@ struct SavedView: View {
     
     @StateObject var savedPostsViewModel: SavedPostsViewModel = SavedPostsViewModel()
     
-    @StateObject var albumsViewModel: AlbumsViewModel = AlbumsViewModel(composition: true)
+    @StateObject var albumsViewModel: AlbumsViewModel = AlbumsViewModel()
     
     @State private var currentTab: String = "media"
     @Namespace var animation
@@ -63,29 +63,26 @@ struct SavedView: View {
                 if currentTab == "media"{
                     VStack(spacing: 0) {
                         ForEach(0..<albumsViewModel.albumsComposition.count, id: \.self){index in
-                            ForEach(0..<albumsViewModel.albumsComposition[index].count, id: \.self) {_ in
-                                
-                                HStack(spacing: 0) {
-                                    if albumsViewModel.albumsComposition[index].count >= 1 {
-                                        SavedItem(album: albumsViewModel.albumsComposition[index][0])
-                                            .onTapGesture {
-                                                selectedAlbum = albumsViewModel.albumsComposition[index][0]
-                                                withAnimation(.easeInOut) {
-                                                    albumOverviewPresent.toggle()
-                                                }
+                            HStack(spacing: 0) {
+                                if albumsViewModel.albumsComposition[index].count >= 1 {
+                                    SavedItem(album: albumsViewModel.albumsComposition[index][0])
+                                        .onTapGesture {
+                                            selectedAlbum = albumsViewModel.albumsComposition[index][0]
+                                            withAnimation(.easeInOut) {
+                                                albumOverviewPresent.toggle()
                                             }
-                                    }
-                                    Spacer(minLength: 0)
-                                    if albumsViewModel.albumsComposition[index].count == 2 {
-                                        SavedItem(album: albumsViewModel.albumsComposition[index][1])
-                                            .onTapGesture {
-                                                selectedAlbum = albumsViewModel.albumsComposition[index][1]
-                                                withAnimation(.easeInOut) {
-                                                    albumOverviewPresent.toggle()
-                                                }
+                                        }
+                                }
+                                Spacer(minLength: 0)
+                                if albumsViewModel.albumsComposition[index].count == 2 {
+                                    SavedItem(album: albumsViewModel.albumsComposition[index][1])
+                                        .onTapGesture {
+                                            selectedAlbum = albumsViewModel.albumsComposition[index][1]
+                                            withAnimation(.easeInOut) {
+                                                albumOverviewPresent.toggle()
                                             }
-                                            
-                                    }
+                                        }
+                                        
                                 }
                             }
                         }
@@ -110,9 +107,15 @@ struct SavedView: View {
             
         }
         .navigationView(isPresent: $albumOverviewPresent, content: {
-            AlbumOverview(isPresent: $albumOverviewPresent, album: selectedAlbum)
+            AlbumOverview(isPresent: $albumOverviewPresent, album: $selectedAlbum, onRemove:{
+                albumsViewModel.getAlbums(composition: true)
+                withAnimation {
+                    albumOverviewPresent.toggle()
+                }
+            })
         })
         .onAppear {
+            albumsViewModel.getAlbums(composition: true)
             savedPostsViewModel.getSavedTextPosts()
         }
     }
