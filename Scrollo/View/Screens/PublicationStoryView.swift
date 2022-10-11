@@ -224,6 +224,7 @@ private struct StoryCamera : View {
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
     @StateObject var cameraController: CameraController = CameraController()
     @State var selectedMode: Int = 0
+    
     let modes: [String] = ["Type", "Live", "Normal", "Boomerang", "Superzoom"]
     
     var body : some View {

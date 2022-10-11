@@ -285,20 +285,6 @@ struct PostOverview: View {
                                 }
 
                             }
-                            }) {
-                                if post.inSaved {
-                                    Image("bookmark_active")
-                                        .resizable()
-                                        .aspectRatio(contentMode: .fit)
-                                        .frame(width: 21, height: 21)
-                                } else {
-                                    Image("bookmark_inactive")
-                                        .resizable()
-                                        .aspectRatio(contentMode: .fit)
-                                        .frame(width: 21, height: 21)
-                                }
-
-                            }
                             .fullScreenCover(isPresented: $mediaPostSaveAlbumPresent) {
                                 SelectAlbum(isPresented: $mediaPostSaveAlbumPresent, post: $post)
                             }

@@ -9,6 +9,7 @@ import SwiftUI
 
 struct EditProfileThumbsCameraView: View {
     
+    
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
     
     @State var cameraController: CameraController = CameraController()
@@ -78,7 +79,9 @@ struct EditProfileThumbsCameraView: View {
             
             Spacer(minLength: 0)
             
-            Button(action: {}){
+            Button(action: {
+                
+            }){
                 Circle()
                     .fill(Color(hex: "#cdcdcd"))
                     .frame(width: 70, height: 70)
@@ -93,5 +96,6 @@ struct EditProfileThumbsCameraView: View {
             Spacer(minLength: 0)
             
         }
+        .onAppear(perform: cameraController.permission)
     }
 }
