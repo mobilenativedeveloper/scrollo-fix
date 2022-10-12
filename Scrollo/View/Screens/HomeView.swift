@@ -20,103 +20,99 @@ struct HomeView: View {
     @State var isPresentedProfile: Bool? = nil
     
     var body: some View {
-        NavigationView{
-            
-            ZStack(alignment: Alignment(horizontal: .center, vertical: .bottom)) {
-                VStack(spacing: 0){
-                    GeometryReader{_ in
-                        FeedView(offset: $offset)
-                            .ignoresSafeArea(SafeAreaRegions.container, edges: .bottom)
-                            .opacity(selectedTab == "home" ? 1 : 0)
-                            .onAppear(perform: {
-                                if selectedTab == "home" {
-                                    isScrollEnabled = true
-                                }
-                            })
-                            .onDisappear {
-                                isScrollEnabled = false
+        ZStack(alignment: Alignment(horizontal: .center, vertical: .bottom)) {
+            VStack(spacing: 0){
+                GeometryReader{_ in
+                    FeedView(offset: $offset)
+                        .ignoresSafeArea(SafeAreaRegions.container, edges: .bottom)
+                        .opacity(selectedTab == "home" ? 1 : 0)
+                        .onAppear(perform: {
+                            if selectedTab == "home" {
+                                isScrollEnabled = true
                             }
-                        SearchView()
-                            .opacity(selectedTab == "search" ? 1 : 0)
-                        ActionsView()
-                            .opacity(selectedTab == "activities" ? 1 : 0)
-                        ProfileView(userId: UserDefaults.standard.string(forKey: "userId")!, isPresented: $isPresentedProfile)
-                            .ignoresSafeArea(SafeAreaRegions.container, edges: .bottom)
-                            .opacity(selectedTab == "profile" ? 1 : 0)
-                    }
-                }
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .ignoreDefaultHeaderBar
-                
-                if self.upload {
-                    BlurView(style: .light)
-                        .opacity(0.8)
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
-                        .ignoresSafeArea(.all, edges: .all)
-                        .onTapGesture {
-                            withAnimation(.easeInOut) {
-                                self.upload = false
-                            }
-                            isScrollEnabled = true
+                        })
+                        .onDisappear {
+                            isScrollEnabled = false
                         }
+                    SearchView()
+                        .opacity(selectedTab == "search" ? 1 : 0)
+                    ActionsView()
+                        .opacity(selectedTab == "activities" ? 1 : 0)
+                    ProfileView(userId: UserDefaults.standard.string(forKey: "userId")!, isPresented: $isPresentedProfile)
+                        .ignoresSafeArea(SafeAreaRegions.container, edges: .bottom)
+                        .opacity(selectedTab == "profile" ? 1 : 0)
                 }
-                HStack(spacing: 0) {
-                    TabbarButton(image: "home_inactive", image_active: "home_active", action: {
-                        onPressTab(tab: "home")
-                        isScrollEnabled = true
-                    }, isActive: selectedTab == "home" && !self.upload)
-                    Spacer(minLength: 0)
-                    TabbarButton(image: "search_inactive", image_active: "search_active", action: {
-                        onPressTab(tab: "search")
-                        isScrollEnabled = false
-                    }, isActive: selectedTab == "search" && !self.upload)
-                    Spacer(minLength: 0)
-                    TabbarButton(image: "plus_fill_inactive", image_active: "plus_fill_active", action: {
-                        withAnimation(.easeInOut(duration: 0.2)){
-                            self.upload.toggle()
-                        }
-                        isScrollEnabled = false
-                    }, isActive: self.upload)
-                    Spacer(minLength: 0)
-                    TabbarButton(image: "alarm_inactive", image_active: "alarm_active", action: {
-                        onPressTab(tab: "activities")
-                        isScrollEnabled = false
-                    }, isActive: selectedTab == "activities" && !self.upload)
-                    Spacer(minLength: 0)
-                    TabbarButton(image: "profile_inactive", image_active: "profile_active", action: {
-                        onPressTab(tab: "profile")
-                        isScrollEnabled = false
-                    },isActive: selectedTab == "profile" && !self.upload)
-                }
-                .frame(height: 50)
-                .padding(.horizontal, 30)
-                .padding(.vertical)
-                .background(Color.white.cornerRadius(12))
-                .padding(.horizontal)
-                .padding(.vertical)
-                .padding(.bottom, edges?.bottom ?? 50)
-                .overlay(
-                    UploadView(
-                        show: self.$upload,
-                        publicationTextPostViewPresent: $publicationTextPostViewPresent,
-                        publicationStoryViewPresent: $publicationStoryViewPresent,
-                        publicationMediaPostViewPresent: $publicationMediaPostViewPresent
-                    ),
-                    alignment: Alignment(horizontal: .center, vertical: .top)
-                )
-                .background(
-                    ZStack{
-                        NavigationLink(destination: PublicationTextPostView()
-                                        .ignoreDefaultHeaderBar, isActive: $publicationTextPostViewPresent){ EmptyView() }
-                        NavigationLink(destination: PublicationStoryView()
-                                        .ignoreDefaultHeaderBar, isActive: $publicationStoryViewPresent){ EmptyView() }
-                        NavigationLink(destination: PublicationMediaPostView()
-                                        .ignoreDefaultHeaderBar, isActive: $publicationMediaPostViewPresent){ EmptyView() }
-                    }
-                )
             }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            
+            if self.upload {
+                BlurView(style: .light)
+                    .opacity(0.8)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .ignoresSafeArea(.all, edges: .all)
+                    .onTapGesture {
+                        withAnimation(.easeInOut) {
+                            self.upload = false
+                        }
+                        isScrollEnabled = true
+                    }
+            }
+            HStack(spacing: 0) {
+                TabbarButton(image: "home_inactive", image_active: "home_active", action: {
+                    onPressTab(tab: "home")
+                    isScrollEnabled = true
+                }, isActive: selectedTab == "home" && !self.upload)
+                Spacer(minLength: 0)
+                TabbarButton(image: "search_inactive", image_active: "search_active", action: {
+                    onPressTab(tab: "search")
+                    isScrollEnabled = false
+                }, isActive: selectedTab == "search" && !self.upload)
+                Spacer(minLength: 0)
+                TabbarButton(image: "plus_fill_inactive", image_active: "plus_fill_active", action: {
+                    withAnimation(.easeInOut(duration: 0.2)){
+                        self.upload.toggle()
+                    }
+                    isScrollEnabled = false
+                }, isActive: self.upload)
+                Spacer(minLength: 0)
+                TabbarButton(image: "alarm_inactive", image_active: "alarm_active", action: {
+                    onPressTab(tab: "activities")
+                    isScrollEnabled = false
+                }, isActive: selectedTab == "activities" && !self.upload)
+                Spacer(minLength: 0)
+                TabbarButton(image: "profile_inactive", image_active: "profile_active", action: {
+                    onPressTab(tab: "profile")
+                    isScrollEnabled = false
+                },isActive: selectedTab == "profile" && !self.upload)
+            }
+            .frame(height: 50)
+            .padding(.horizontal, 30)
+            .padding(.vertical)
+            .background(Color.white.cornerRadius(12))
+            .padding(.horizontal)
+            .padding(.vertical)
+            .padding(.bottom, (edges?.bottom ?? 0) + 50)
+            .overlay(
+                UploadView(
+                    show: self.$upload,
+                    publicationTextPostViewPresent: $publicationTextPostViewPresent,
+                    publicationStoryViewPresent: $publicationStoryViewPresent,
+                    publicationMediaPostViewPresent: $publicationMediaPostViewPresent
+                ),
+                alignment: Alignment(horizontal: .center, vertical: .top)
+            )
+            .background(
+                ZStack{
+                    NavigationLink(destination: PublicationTextPostView()
+                                    .ignoreDefaultHeaderBar, isActive: $publicationTextPostViewPresent){ EmptyView() }
+                    NavigationLink(destination: PublicationStoryView()
+                                    .ignoreDefaultHeaderBar, isActive: $publicationStoryViewPresent){ EmptyView() }
+                    NavigationLink(destination: PublicationMediaPostView()
+                                    .ignoreDefaultHeaderBar, isActive: $publicationMediaPostViewPresent){ EmptyView() }
+                }
+            )
         }
-        .edgesIgnoringSafeArea(.all)
+        .ignoresSafeArea(.all, edges: .bottom)
         
     }
     

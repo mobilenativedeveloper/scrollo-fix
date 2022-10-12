@@ -80,7 +80,10 @@ private struct CoverCollectionView: View {
             }) {
                 Image(systemName: "photo")
                     .resizable()
-                    .frame(width: 20, height: 18)
+                    .frame(
+                        width: (UIScreen.main.bounds.width - (widthOfHiddenCards*2) - (spacing*2)) / 2,
+                        height: (UIScreen.main.bounds.width - (widthOfHiddenCards*2) - (spacing*2)) / 2
+                    )
                     .foregroundColor(.white)
             }
             .frame(
@@ -90,7 +93,7 @@ private struct CoverCollectionView: View {
             )
             .transition(AnyTransition.slide)
             .animation(.default)
-            
+            .zIndex(10)
             ForEach(0..<covers.count, id: \.self) { index in
                 WebImage(url: URL(string: covers[index].url)!)
                     .resizable()

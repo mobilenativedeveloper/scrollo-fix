@@ -18,24 +18,28 @@ struct ContentView: View {
     
     var body: some View {
         
-        ZStack{
-            if self.userId.isEmpty {
-                NavigationView{
+        NavigationView{
+            VStack{
+                if self.userId.isEmpty {
                     AuthView()
+                } else {
+                    DashboardView()
                 }
-            } else {
-                DashboardView()
-                    
             }
+            .frame(width: screen_rect.width, height: screen_rect.height)
+            .ignoresSafeArea()
+            .navigationBarHidden(true)
+            .navigationBarTitle(Text("Scrollo"))
+//            .edgesIgnoringSafeArea([.top, .bottom])
+            .onAppear(perform: {
+                NotificationCenter.default.addObserver(forName: NSNotification.Name("userId"), object: nil, queue: .main) { (payload) in
+                    self.userId = UserDefaults.standard.value(forKey: "userId") as? String ?? String()
+                }
+                NotificationCenter.default.addObserver(forName: NSNotification.Name("logout"), object: nil, queue: .main) { (payload) in
+                    self.userId = String()
+                }
+            })
         }
-        .onAppear(perform: {
-            NotificationCenter.default.addObserver(forName: NSNotification.Name("userId"), object: nil, queue: .main) { (payload) in
-                self.userId = UserDefaults.standard.value(forKey: "userId") as? String ?? String()
-            }
-            NotificationCenter.default.addObserver(forName: NSNotification.Name("logout"), object: nil, queue: .main) { (payload) in
-                self.userId = String()
-            }
-        })
     }
 }
 

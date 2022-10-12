@@ -242,31 +242,26 @@ struct EditUserProfile: View {
                 }
             }.edgesIgnoringSafeArea(.all)
         })
-//        .fullScreenCover(isPresented: self.$cameraBackgroundPresent, content: {
-//            ImagePickerView(sourceType: .camera) { image in
-//                self.selectedBackground = image
-//                updateUserBackground(background: image) {
-//                    onUpdateProfile()
-//                    cameraBackgroundPresent = false
-//                }
-//            }
-//            .edgesIgnoringSafeArea(.all)
-//        })
-//        .fullScreenCover(isPresented: self.$cameraAvatarPresent, content: {
-//            ImagePickerView(sourceType: .camera) { image in
-//                self.selectedBackground = image
-//                updateUserAvatar(avatar: image) {
-//                    onUpdateProfile()
-//                    cameraAvatarPresent = false
-//                }
-//            }
-//            .edgesIgnoringSafeArea(.all)
-//        })
         .fullScreenCover(isPresented: self.$cameraAvatarPresent, content: {
-            EditProfileThumbsCameraView()
+            EditProfileThumbsCameraView(onUpdate: {newImage in
+                self.selectedAvatar = newImage
+                
+                updateUserAvatar(avatar: newImage) {
+                    cameraAvatarPresent = false
+                    onUpdateProfile()
+                    
+                }
+                
+            })
         })
         .fullScreenCover(isPresented: self.$cameraBackgroundPresent, content: {
-            EditProfileThumbsCameraView()
+            EditProfileThumbsCameraView(onUpdate: {newImage in
+                self.selectedBackground = newImage
+                updateUserBackground(background: newImage) {
+                    cameraBackgroundPresent = false
+                    onUpdateProfile()
+                }
+            })
         })
         .actionSheet(isPresented: $showingOptions) {
             if optionsMenu == .background {

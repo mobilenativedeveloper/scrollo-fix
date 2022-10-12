@@ -19,6 +19,8 @@ struct EditProfileThumbsCameraView: View {
     
     @State var image: UIImage?
     
+    var onUpdate: (UIImage) -> ()
+    
     var body: some View {
         VStack(spacing: 0){
             
@@ -46,15 +48,7 @@ struct EditProfileThumbsCameraView: View {
                 }
             }
             .padding(.horizontal)
-            
-            GeometryReader {proxy in
-                
-                let size = proxy.size
-                CustomCameraRepresentable(image: self.$image, didTapCapture: $didTapCapture, size: size)
-                
-            }
-            .frame(height: screen_rect.height / 2)
-            .background(Color.black)
+            CustomCameraRepresentable(image: self.$image, didTapCapture: $didTapCapture)
             .padding(.top)
             .overlay(
                 Button(action: {
@@ -84,7 +78,7 @@ struct EditProfileThumbsCameraView: View {
             Spacer(minLength: 0)
             
             Button(action: {
-                
+                didTapCapture = true
             }){
                 Circle()
                     .fill(Color(hex: "#cdcdcd"))
@@ -96,7 +90,11 @@ struct EditProfileThumbsCameraView: View {
                     )
                 
             }
-            
+            .onChange(of: image) { newValue in
+                if let newImage = newValue {
+                    onUpdate(newImage)
+                }
+            }
             Spacer(minLength: 0)
             
         }
@@ -109,7 +107,7 @@ struct CustomCameraRepresentable: UIViewControllerRepresentable {
     @Environment(\.presentationMode) var presentationMode
     @Binding var image: UIImage?
     @Binding var didTapCapture: Bool
-    var size: CGSize
+    
     
     func makeUIViewController(context: Context) -> CustomCameraController {
         let controller = CustomCameraController()
@@ -119,7 +117,6 @@ struct CustomCameraRepresentable: UIViewControllerRepresentable {
     }
     
     func updateUIViewController(_ cameraViewController: CustomCameraController, context: Context) {
-        cameraViewController.view.frame = CGRect(x: 0, y: 0, width: size.width, height: size.height)
         if(self.didTapCapture) {
             cameraViewController.didTapRecord()
         }
@@ -227,7 +224,7 @@ class CustomCameraController: UIViewController {
       
         self.cameraPreviewLayer?.videoGravity = AVLayerVideoGravity.resizeAspectFill
         self.cameraPreviewLayer?.connection?.videoOrientation = AVCaptureVideoOrientation.portrait
-//        self.cameraPreviewLayer?.frame = self.size
+        self.cameraPreviewLayer?.frame = CGRect(x: 0, y: 0, width: screen_rect.width, height: screen_rect.height / 2)
         self.view.layer.insertSublayer(cameraPreviewLayer!, at: 0)
         
     }
