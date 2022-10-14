@@ -378,21 +378,24 @@ struct PostActionsSheet: View {
                        .frame(width: UIScreen.main.bounds.width - 42, height: 1)
                }
                .padding(.bottom, 13)
-               Button(action: {
-                   if UserDefaults.standard.string(forKey: "userId") == userId{
-                       presentationMode.wrappedValue.dismiss()
-                       deletePost.toggle()
-                   }
-                   
-               }){
-                   VStack(spacing: 0) {
-                       Text("Удалить")
-                           .font(.system(size: 12))
-                           .foregroundColor(Color(hex: "#EB5757"))
-                           .padding(.bottom, 15)
+               if UserDefaults.standard.string(forKey: "userId") == userId{
+                   Button(action: {
+                       if UserDefaults.standard.string(forKey: "userId") == userId{
+                           presentationMode.wrappedValue.dismiss()
+                           deletePost.toggle()
+                       }
+                       
+                   }){
+                       VStack(spacing: 0) {
+                           Text("Удалить")
+                               .font(.system(size: 12))
+                               .foregroundColor(Color(hex: "#EB5757"))
+                               .padding(.bottom, 15)
+                       }
                    }
                }
-               .opacity(UserDefaults.standard.string(forKey: "userId") == userId ? 1 : 0)
+               
+               
                Spacer(minLength: 0)
            }
            .frame(width: (UIScreen.main.bounds.width - 42))

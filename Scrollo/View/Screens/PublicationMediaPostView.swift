@@ -65,9 +65,10 @@ struct PublicationMediaPostView: View {
             .background(Color.white)
             .zIndex(1)
             //MARK: List media
+            SelectedPostImageView(multiply: $mediaPost.multiply, pickedPhoto: $mediaPost.pickedPhoto, selection: $mediaPost.selection)
             if mediaPost.loadImages {
                 if let selection = mediaPost.selection {
-                    SelectedPostImageView(multiply: $mediaPost.multiply, pickedPhoto: $mediaPost.pickedPhoto, selection: $mediaPost.selection)
+                    
                     ScrollView(showsIndicators: false) {
 
                         ForEach(0..<mediaPost.allPhotos.count, id: \.self) {index in
@@ -106,9 +107,11 @@ struct PublicationMediaPostView: View {
                                     }
                                 }
                             }
+                            
                         }
                         Color.clear.frame(height: 100)
                     }
+                    .frame(maxWidth: .infinity)
                 }
             } else {
                 Spacer()
@@ -414,6 +417,7 @@ private struct SelectedPostImageView: View {
                 .resizable()
                 .scaledToFill()
                 .frame(width: UIScreen.main.bounds.width, height: 300)
+                .background(Color(hex: "#1F2128"))
                 .clipped()
             
             Button(action: {
@@ -472,6 +476,7 @@ private struct SelectedPostImageView: View {
             )
         }
         .frame(height: 300)
+        .background(Color(hex: "#1F2128"))
         .onAppear {
             
             if self.help == nil {

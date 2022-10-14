@@ -45,6 +45,10 @@ let API_CHAT_FAVORITE = "/api/v1/chat/favorite/"
 
 let API_GET_USER_FOLLOWING = "/api/v1/follow/following/me"
 
+let API_GET_FOLLOWING = "/api/v1/follow/following/"
+
+let API_GET_FOLLOWERS = "/api/v1/follow/followers/"
+
 let API_USER = "/api/v1/user/"
 
 let API_SAVED_TEXT_POSTS = "/api/v1/post/saved-text-posts"

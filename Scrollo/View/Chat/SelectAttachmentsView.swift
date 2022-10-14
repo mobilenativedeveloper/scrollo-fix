@@ -355,11 +355,12 @@ private struct AlbumsListItemView: View{
                 Text("\(photos.getAlbumTitle(album: album))")
                     .font(.system(size: 13))
                     .foregroundColor(.black)
-                Spacer()
+                Spacer(minLength: 0)
                 Text("\(photos.getCountMediaInAlbum(album: album))")
                     .font(.system(size: 13))
                     .foregroundColor(.black)
             }
+            .frame(maxWidth: .infinity)
             .padding()
         }
         .onAppear{

@@ -785,7 +785,7 @@ private struct ImageGalleryPicker: View{
                             Thumbnail(asset: galleryImagesViewModel.assets[index], size: size)
                                 .onAppear {
                                     let manager = PHCachingImageManager.default()
-                                    manager.requestImage(for: galleryImagesViewModel.assets[index].asset, targetSize: CGSize(width: 100, height: 100), contentMode: .aspectFill, options: nil) { image, _ in
+                                    manager.requestImage(for: galleryImagesViewModel.assets[index].asset, targetSize: CGSize(width: 400, height: 400), contentMode: .aspectFill, options: nil) { image, _ in
                                         galleryImagesViewModel.assets[index].thumbnail = image
                                     }
                                 }

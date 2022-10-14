@@ -51,7 +51,7 @@ struct EmptyFeed: View{
                 .font(.system(size: 14))
                 .foregroundColor(.gray)
                 .multilineTextAlignment(.center)
-                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
+                .frame(maxWidth: .infinity, alignment: .center)
                 .padding(.horizontal, 40)
             
             SnapCarousel(spacing: 0, trailingSpace: 160, index: $currentIndex, items: data) {account in
@@ -61,5 +61,6 @@ struct EmptyFeed: View{
             }
             .padding(.top)
         }
+        .frame(height: 500)
     }
 }

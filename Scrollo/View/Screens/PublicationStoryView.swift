@@ -45,12 +45,13 @@ struct PublicationStoryView: View {
             .background(Color(hex: "#1F2128"))
             
             
-            
+            PreviewStoryView(mediaAlbum: $mediaAlbum)
+                .environmentObject(galleryImagesViewModel)
             if galleryImagesViewModel.loadAssets {
-                PreviewStoryView(mediaAlbum: $mediaAlbum)
-                    .environmentObject(galleryImagesViewModel)
-                ScrollView(showsIndicators: false) {
-                    makeGrid()
+                VStack(spacing: 0){
+                    ScrollView(showsIndicators: false) {
+                        makeGrid()
+                    }
                 }
                 Spacer()
             } else {
@@ -85,8 +86,11 @@ struct PublicationStoryView: View {
                         }
                     }
                 }
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
             }
         }
+        .padding(.horizontal, 9)
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
         .padding(.top, 10)
     }
 }
@@ -174,57 +178,59 @@ private struct PreviewStoryAlbumPickerView : View {
     @State var cameraPresentation: Bool = false
     
     var body : some View {
-        
-        Menu {
-            Button(action: {
-                cameraPresentation.toggle()
-            }) {
-                HStack {
-                    Text("Открыть камеру")
-                        .font(.system(size: 10))
-                        .foregroundColor(.white)
-                        .colorMultiply(.white)
-                        .textCase(.uppercase)
-                        .padding(.vertical, 15)
-                    Image(systemName: "camera")
+        if galleryImagesViewModel.loadAlbums{
+            Menu {
+                Button(action: {
+                    cameraPresentation.toggle()
+                }) {
+                    HStack {
+                        Text("Открыть камеру")
+                            .font(.system(size: 10))
+                            .foregroundColor(.white)
+                            .colorMultiply(.white)
+                            .textCase(.uppercase)
+                            .padding(.vertical, 15)
+                        Image(systemName: "camera")
+                    }
                 }
-            }
-            ForEach(0..<galleryImagesViewModel.albums.count, id: \.self) {index in
-                if let album = galleryImagesViewModel.albums[index] {
-                    Button(action: {
-                        withAnimation(.none) {
-                            galleryImagesViewModel.selectedAlbum = index
-                        }
-                    }) {
-                        HStack {
-                            if galleryImagesViewModel.selectedAlbum == index {
-                                Image(systemName: "checkmark")
+                ForEach(0..<galleryImagesViewModel.albums.count, id: \.self) {index in
+                    if let album = galleryImagesViewModel.albums[index] {
+                        Button(action: {
+                            withAnimation(.none) {
+                                galleryImagesViewModel.selectedAlbum = index
                             }
-                            Text("\(galleryImagesViewModel.getAlbumTitle(album: album))")
-                                .font(.system(size: 10))
-                                .foregroundColor(.white)
-                                .colorMultiply(.white)
-                                .textCase(.uppercase)
-                                .padding(.vertical, 15)
+                        }) {
+                            HStack {
+                                if galleryImagesViewModel.selectedAlbum == index {
+                                    Image(systemName: "checkmark")
+                                }
+                                Text("\(galleryImagesViewModel.getAlbumTitle(album: album))")
+                                    .font(.system(size: 10))
+                                    .foregroundColor(.white)
+                                    .colorMultiply(.white)
+                                    .textCase(.uppercase)
+                                    .padding(.vertical, 15)
+                            }
                         }
                     }
                 }
+            } label: {
+                Text(galleryImagesViewModel.getAlbumTitle(album: galleryImagesViewModel.albums[galleryImagesViewModel.selectedAlbum]))
+                        .foregroundColor(Color.white)
+                Image(systemName: "chevron.down")
+                    .font(.system(size: 15))
+                    .foregroundColor(.white)
             }
-        } label: {
-            Text(galleryImagesViewModel.getAlbumTitle(album: galleryImagesViewModel.albums[galleryImagesViewModel.selectedAlbum]))
-                    .foregroundColor(Color.white)
-            Image(systemName: "chevron.down")
-                .font(.system(size: 15))
-                .foregroundColor(.white)
+            .onChange(of: galleryImagesViewModel.selectedAlbum) { _ in
+                galleryImagesViewModel.getThumbnailAssetsFromAlbum(onlyPhoto: false)
+            }
+            .fullScreenCover(isPresented: $cameraPresentation) {
+                
+            } content: {
+                StoryCamera()
+            }
         }
-        .onChange(of: galleryImagesViewModel.selectedAlbum) { _ in
-            galleryImagesViewModel.getThumbnailAssetsFromAlbum(onlyPhoto: false)
-        }
-        .fullScreenCover(isPresented: $cameraPresentation) {
-            
-        } content: {
-            StoryCamera()
-        }
+        
     }
     
 }

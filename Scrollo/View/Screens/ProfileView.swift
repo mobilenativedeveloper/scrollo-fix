@@ -122,6 +122,7 @@ struct ProfileView: View {
                         
                         
                         HStack{
+                            
                             if self.userId == UserDefaults.standard.string(forKey: "userId") {
                                 NavigationLink(destination: FollowView(firstOpen: "followers", userId: userId)
                                                 .ignoreDefaultHeaderBar){

@@ -44,9 +44,11 @@ struct FeedView: View {
                         FeedPosts(loadPosts: self.loadPosts, endFeed: self.$endFeed)
                             .environmentObject(postViewModel)
                     }
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
                 }   
-                
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
             .pullToRefresh(refreshing: $refreshing, backgroundColor: Color(hex: "#F9F9F9")) { done in
                 postViewModel.getPostsFeed{
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.2){
@@ -57,8 +59,9 @@ struct FeedView: View {
             }
             
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
         .padding(.top, edges?.top ?? 15)
-        .background(Color(hex: "#F9F9F9").ignoresSafeArea())
+        .background(Color(hex: "#F9F9F9").edgesIgnoringSafeArea(.all))
         .onAppear {
             if !self.loadPosts{
                 postViewModel.getPostsFeed {

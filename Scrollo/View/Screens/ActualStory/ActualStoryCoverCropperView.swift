@@ -79,11 +79,7 @@ private struct CoverCollectionView: View {
                 print("presentationSelectFromAlboum")
             }) {
                 Image(systemName: "photo")
-                    .resizable()
-                    .frame(
-                        width: (UIScreen.main.bounds.width - (widthOfHiddenCards*2) - (spacing*2)) / 2,
-                        height: (UIScreen.main.bounds.width - (widthOfHiddenCards*2) - (spacing*2)) / 2
-                    )
+                    .font(.system(size: 30))
                     .foregroundColor(.white)
             }
             .frame(
