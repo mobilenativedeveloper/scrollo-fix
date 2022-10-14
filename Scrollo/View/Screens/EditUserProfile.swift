@@ -573,7 +573,7 @@ private struct ImageGalleryPicker: View{
     
     @State var showListAlubms: Bool = false
     
-    @StateObject var galleryImagesViewModel: GalleryImagesViewModel = GalleryImagesViewModel()
+    @StateObject var galleryImagesViewModel: GalleryImagesViewModel = .init(onlyPhoto: true)
     
     private let columns = 3
     private let size = (UIScreen.main.bounds.width / 3) - 12
@@ -721,6 +721,8 @@ private struct ImageGalleryPicker: View{
                             }
                             .padding(.vertical, 15)
                             .padding(.horizontal)
+                            .background(Color.white)
+                            .zIndex(5)
                             ScrollView {
                                 makeGrid()
                             }
@@ -756,17 +758,18 @@ private struct ImageGalleryPicker: View{
                 }
             }
         }
-        
         .onChange(of: galleryImagesViewModel.loadAssets, perform: { newValue in
             if newValue {
                 if galleryImagesViewModel.assets.count > 0{
-                    setUpImage(image: galleryImagesViewModel.assets[0].thumbnail)
+                    let manager = PHCachingImageManager.default()
+                    manager.requestImage(for: galleryImagesViewModel.assets[0].asset, targetSize: CGSize(width: 100, height: 100), contentMode: .aspectFill, options: nil) { image, _ in
+                        galleryImagesViewModel.assets[0].thumbnail = image
+                        setUpImage(image: image)
+                    }
+                    
                 }
             }
         })
-        .onAppear {
-            galleryImagesViewModel.loadMedia(onlyPhoto: true)
-        }
     }
     
     func makeGrid() -> some View {
@@ -780,6 +783,12 @@ private struct ImageGalleryPicker: View{
                         let index = row * self.columns + column
                         if index < count {
                             Thumbnail(asset: galleryImagesViewModel.assets[index], size: size)
+                                .onAppear {
+                                    let manager = PHCachingImageManager.default()
+                                    manager.requestImage(for: galleryImagesViewModel.assets[index].asset, targetSize: CGSize(width: 100, height: 100), contentMode: .aspectFill, options: nil) { image, _ in
+                                        galleryImagesViewModel.assets[index].thumbnail = image
+                                    }
+                                }
                                 .environmentObject(galleryImagesViewModel)
                                 .onTapGesture {
                                     setUpImage(image: galleryImagesViewModel.assets[index].thumbnail)
@@ -970,12 +979,18 @@ private struct Thumbnail : View {
     var asset: AssetModel
     var size: CGFloat
     var body : some View {
-        Image(uiImage: asset.thumbnail)
-            .resizable()
-            .scaledToFill()
-            .frame(width: size, height: 180)
-            .cornerRadius(8)
-            .clipped()
+        if let image = asset.thumbnail{
+            Image(uiImage: image)
+                .resizable()
+                .scaledToFill()
+                .frame(width: size, height: 180)
+                .cornerRadius(8)
+                .clipped()
+        }
+        else{
+            ProgressView()
+                .frame(width: size, height: 180, alignment: .center)
+        }
     }
 }
 

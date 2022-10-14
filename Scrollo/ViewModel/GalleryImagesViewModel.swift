@@ -22,6 +22,9 @@ class GalleryImagesViewModel: ObservableObject{
     @Published var selectedAlbum: Int = 0
     @Published var assets: [AssetModel] = []
     
+    init(onlyPhoto: Bool){
+        loadMedia(onlyPhoto: onlyPhoto)
+    }
     
     func loadMedia(onlyPhoto: Bool){
         PHPhotoLibrary.requestAuthorization(for: .readWrite) { [self](status) in
@@ -91,19 +94,19 @@ class GalleryImagesViewModel: ObservableObject{
         self.loadAssets = false
         self.assets = []
         let fetchOptions = PHFetchOptions()
+        fetchOptions.includeHiddenAssets = false
+        fetchOptions.includeAssetSourceTypes = [.typeUserLibrary]
         fetchOptions.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: false)]
         
         let assetsAlbum = PHAsset.fetchAssets(in: self.albums[self.selectedAlbum], options: fetchOptions)
         
         assetsAlbum.enumerateObjects { asset, index, _ in
             self.PHAssetToUIImage(asset: asset) { thumbnail in
+                let imageAsset: AssetModel = .init(asset: asset)
+                self.assets.append(imageAsset)
                 
-                self.assets.append(AssetModel(asset: asset, thumbnail: thumbnail))
-                print("append: \(asset.creationDate!)")
                 if index == assetsAlbum.count - 1 {
-                    var sortArray: [AssetModel] = self.assets
-                    sortArray.sort(by: {$0.asset.creationDate! < $1.asset.creationDate!})
-                    self.assets = sortArray
+                    
                     self.loadAssets = true
                     
                 }

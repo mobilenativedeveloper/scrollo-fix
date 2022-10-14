@@ -30,14 +30,20 @@ struct ImageMessageView: View {
                             .opacity(0)
                     }
                     else{
-                        Image(uiImage: message.asset!.thumbnail)
-                            .resizable()
-                            .aspectRatio(contentMode: .fill)
-                            .frame(width: UIScreen.main.bounds.width - 150, height: 150)
-                            .contentShape(Rectangle())
-                            .clipped()
-                            .cornerRadius(0)
-                            .opacity(0)
+                        if let image = message.asset!.thumbnail{
+                            Image(uiImage: image)
+                                .resizable()
+                                .aspectRatio(contentMode: .fill)
+                                .frame(width: UIScreen.main.bounds.width - 150, height: 150)
+                                .contentShape(Rectangle())
+                                .clipped()
+                                .cornerRadius(0)
+                                .opacity(0)
+                        }
+                        else{
+                            ProgressView()
+                                .frame(width: UIScreen.main.bounds.width - 150, height: 150, alignment: .center)
+                        }
                     }
                 } else {
                     if message.image != nil{
@@ -58,20 +64,27 @@ struct ImageMessageView: View {
                             }
                     }
                     else {
-                        Image(uiImage: message.asset!.thumbnail)
-                            .resizable()
-                            .aspectRatio(contentMode: .fill)
-                            .frame(width: UIScreen.main.bounds.width - 150, height: 150)
-                            .contentShape(Rectangle())
-                            .clipped()
-                            .matchedGeometryEffect(id: message.id, in: animation)
-                            .clipShape(CustomCorner(radius: 10, corners: [.topLeft, .bottomLeft, .bottomRight]))
-                            .onTapGesture {
-                                withAnimation(.easeInOut(duration: 0.2)){
-                                    expandedMedia = message
-                                    isExpanded.toggle()
+                        if let image = message.asset!.thumbnail{
+                            Image(uiImage: image)
+                                .resizable()
+                                .aspectRatio(contentMode: .fill)
+                                .frame(width: UIScreen.main.bounds.width - 150, height: 150)
+                                .contentShape(Rectangle())
+                                .clipped()
+                                .matchedGeometryEffect(id: message.id, in: animation)
+                                .clipShape(CustomCorner(radius: 10, corners: [.topLeft, .bottomLeft, .bottomRight]))
+                                .onTapGesture {
+                                    withAnimation(.easeInOut(duration: 0.2)){
+                                        expandedMedia = message
+                                        isExpanded.toggle()
+                                    }
                                 }
-                            }
+                        }
+                        else{
+                            ProgressView()
+                                .frame(width: UIScreen.main.bounds.width - 150, height: 150, alignment: .center)
+                        }
+                        
                     }
                 }
                 

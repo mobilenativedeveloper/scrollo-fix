@@ -10,7 +10,7 @@ import Photos
 
 struct PublicationStoryView: View {
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
-    @StateObject var galleryImagesViewModel: GalleryImagesViewModel = GalleryImagesViewModel()
+    @StateObject var galleryImagesViewModel: GalleryImagesViewModel = .init(onlyPhoto: false)
     @State var mediaAlbum: Bool = false
     private let columns = 3
     private let size = (UIScreen.main.bounds.width / 3) - 12
@@ -59,9 +59,6 @@ struct PublicationStoryView: View {
                 Spacer()
             }
         }
-        .onAppear {
-            galleryImagesViewModel.loadMedia(onlyPhoto: false)
-        }
     }
     
     private func makeGrid() -> some View {
@@ -75,6 +72,12 @@ struct PublicationStoryView: View {
                         let index = row * self.columns + column
                         if index < count {
                             GridThumbnailGallery(asset: galleryImagesViewModel.assets[index], size: size)
+                                .onAppear {
+                                    let manager = PHCachingImageManager.default()
+                                    manager.requestImage(for: galleryImagesViewModel.assets[index].asset, targetSize: CGSize(width: 100, height: 100), contentMode: .aspectFill, options: nil) { image, _ in
+                                        galleryImagesViewModel.assets[index].thumbnail = image
+                                    }
+                                }
                                 .environmentObject(galleryImagesViewModel)
                         } else {
                             AnyView(EmptyView())
@@ -95,12 +98,18 @@ private struct GridThumbnailGallery : View {
     var body : some View {
         ZStack(alignment: .topTrailing) {
             ZStack(alignment: .bottomLeading) {
-                Image(uiImage: asset.thumbnail)
-                    .resizable()
-                    .scaledToFill()
-                    .frame(width: size, height: 180)
-                    .cornerRadius(8)
-                    .clipped()
+                if let image = asset.thumbnail{
+                    Image(uiImage: image)
+                        .resizable()
+                        .scaledToFill()
+                        .frame(width: size, height: 180)
+                        .cornerRadius(8)
+                        .clipped()
+                }
+                else{
+                    ProgressView()
+                        .frame(width: size, height: 180, alignment: .center)
+                }
                 if asset.asset.mediaType == .video {
                     Text(galleryImagesViewModel.getVideoDuration(asset: asset))
                         .font(.system(size: 12))

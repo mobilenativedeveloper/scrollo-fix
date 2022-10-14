@@ -256,12 +256,18 @@ private struct GridThumbnailGallery : View {
     var body : some View {
         ZStack(alignment: .topTrailing) {
             ZStack(alignment: .bottomLeading) {
-                Image(uiImage: asset.thumbnail)
-                    .resizable()
-                    .scaledToFill()
-                    .frame(width: size, height: size)
-                    .contentShape(Rectangle())
-                    .clipped()
+                if let image = asset.thumbnail{
+                    Image(uiImage: image)
+                        .resizable()
+                        .scaledToFill()
+                        .frame(width: size, height: size)
+                        .contentShape(Rectangle())
+                        .clipped()
+                }
+                else{
+                    ProgressView()
+                        .frame(width: size, height: size, alignment: .center)
+                }
                     
                 if asset.asset.mediaType == .video {
                     Text(photos.getVideoDuration(asset: asset))

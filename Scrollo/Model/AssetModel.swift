@@ -11,7 +11,7 @@ import Photos
 struct AssetModel: Identifiable {
     var id = UUID().uuidString
     var asset: PHAsset
-    var thumbnail: UIImage
+    var thumbnail: UIImage?
 }
 
 struct Asset: Identifiable {
