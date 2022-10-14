@@ -140,6 +140,7 @@ struct SearchView: View {
                 .transition(.opacity)
             }
         }
+        .padding(.top, edges?.top ?? 15)
         .background(Color.white.edgesIgnoringSafeArea(.all))
     }
 }

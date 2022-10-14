@@ -76,6 +76,7 @@ struct ActionsView: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: Alignment(horizontal: .leading, vertical: .top))
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: Alignment(horizontal: .leading, vertical: .top))
+        .padding(.top, edges?.top ?? 15)
         .background(Color(hex: "#F9F9F9").ignoresSafeArea(.all))
     }
     

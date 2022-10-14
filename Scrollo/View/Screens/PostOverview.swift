@@ -11,7 +11,7 @@ import SDWebImageSwiftUI
 struct PostOverview: View {
     @Environment(\.presentationMode) var presentation: Binding<PresentationMode>
     
-    @ObservedObject var keyboardHelper : KeyboardHelper = KeyboardHelper()
+//    @ObservedObject var keyboardHelper : KeyboardHelper = KeyboardHelper()
     
     @EnvironmentObject var postViewModel: PostViewModel
     
@@ -445,7 +445,7 @@ struct PostOverview: View {
             .background(Color.white)
             .clipShape(CustomCorner(radius: 20, corners: [.topLeft, .topRight]))
             .shadow(color: Color(hex: "#282828").opacity(0.03), radius: 10, x: 0, y: -14)
-            .offset(y: -self.keyboardHelper.keyboardHeight)
+//            .offset(y: -self.keyboardHelper.keyboardHeight)
         }
         .background(Color(hex: "#F9F9F9").edgesIgnoringSafeArea(.all))
         .ignoresSafeArea(.container, edges: [.bottom, .top])

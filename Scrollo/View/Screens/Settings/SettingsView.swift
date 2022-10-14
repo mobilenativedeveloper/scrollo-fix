@@ -42,9 +42,9 @@ struct SettingsView: View {
                     ScrollView {
                         VStack(spacing: 0) {
                             SettingsItemButton(label: "Пригласить друзей", icon: "invite")
-                            NavigationLink(destination: AccountView().ignoreDefaultHeaderBar) {
-                                SettingsItemButton(label: "Аккаунт", icon: "acoount")
-                            }
+//                            NavigationLink(destination: AccountView().ignoreDefaultHeaderBar) {
+//                                SettingsItemButton(label: "Аккаунт", icon: "acoount")
+//                            }
                             NavigationLink(destination: SafetyView().ignoreDefaultHeaderBar) {
                                 SettingsItemButton(label: "Безопастность", icon: "secure")
                             }

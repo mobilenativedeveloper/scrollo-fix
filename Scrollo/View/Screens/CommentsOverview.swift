@@ -10,7 +10,7 @@ import SwiftUI
 struct CommentsOverview: View {
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
     
-    @ObservedObject var keyboardHelper : KeyboardHelper = KeyboardHelper()
+//    @ObservedObject var keyboardHelper : KeyboardHelper = KeyboardHelper()
     
     @Binding var post : PostModel
     
@@ -157,7 +157,7 @@ struct CommentsOverview: View {
                 .clipShape(CustomCorner(radius: 20, corners: [.topLeft, .topRight]))
                 .shadow(color: Color(hex: "#282828").opacity(0.03), radius: 10, x: 0, y: -14)
             }
-            .offset(y: -self.keyboardHelper.keyboardHeight)
+//            .offset(y: -self.keyboardHelper.keyboardHeight)
             
         }
         .background(Color(hex: "#F9F9F9").edgesIgnoringSafeArea(.all))

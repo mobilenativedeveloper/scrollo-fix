@@ -10,7 +10,8 @@ import SwiftUI
 struct HomeView: View {
     @Binding var selectedTab: String
     @State var upload: Bool = false
-    @Binding var offset: CGFloat
+    
+    @Binding var showMessanger: Bool
     @Binding var isScrollEnabled: Bool
     
     @State var publicationMediaPostViewPresent: Bool = false
@@ -23,7 +24,7 @@ struct HomeView: View {
         ZStack(alignment: Alignment(horizontal: .center, vertical: .bottom)) {
             VStack(spacing: 0){
                 GeometryReader{_ in
-                    FeedView(offset: $offset)
+                    FeedView(showMessanger: $showMessanger)
                         .ignoresSafeArea(SafeAreaRegions.container, edges: .bottom)
                         .opacity(selectedTab == "home" ? 1 : 0)
                         .onAppear(perform: {
@@ -46,7 +47,7 @@ struct HomeView: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             
             if self.upload {
-                BlurView(style: .light)
+                TabbarBlurView(style: .light)
                     .opacity(0.8)
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                     .ignoresSafeArea(.all, edges: .all)
@@ -91,7 +92,7 @@ struct HomeView: View {
             .background(Color.white.cornerRadius(12))
             .padding(.horizontal)
             .padding(.vertical)
-            .padding(.bottom, (edges?.bottom ?? 0) + 50)
+            .padding(.bottom, (edges?.bottom ?? 0) + 15)
             .overlay(
                 UploadView(
                     show: self.$upload,
@@ -112,8 +113,7 @@ struct HomeView: View {
                 }
             )
         }
-        .ignoresSafeArea(.all, edges: .bottom)
-        
+        .ignoresSafeArea(.all, edges: .all)
     }
     
     func onPressTab (tab: String) {
@@ -126,7 +126,7 @@ struct HomeView: View {
     }
 }
 
-private struct TabbarButton: View {
+struct TabbarButton: View {
     var image: String
     var image_active: String
     var action: () -> Void
@@ -172,11 +172,11 @@ private struct TabbarButton: View {
     }
 }
 
-private struct BlurView: UIViewRepresentable {
+struct TabbarBlurView: UIViewRepresentable {
 
     let style: UIBlurEffect.Style
 
-    func makeUIView(context: UIViewRepresentableContext<BlurView>) -> UIView {
+    func makeUIView(context: UIViewRepresentableContext<TabbarBlurView>) -> UIView {
         let view = UIView(frame: .zero)
         view.backgroundColor = UIColor(Color(hex: "#D8D2E5").opacity(0.25))
         let blurEffect = UIBlurEffect(style: style)
@@ -191,12 +191,12 @@ private struct BlurView: UIViewRepresentable {
     }
 
     func updateUIView(_ uiView: UIView,
-                      context: UIViewRepresentableContext<BlurView>) {
+                      context: UIViewRepresentableContext<TabbarBlurView>) {
 
     }
 }
 
-private struct UploadView : View {
+struct UploadView : View {
     @Binding var show: Bool
     
     @Binding var publicationTextPostViewPresent: Bool
@@ -256,7 +256,7 @@ private struct UploadView : View {
     }
 }
 
-private struct UploadButtonView : View {
+struct UploadButtonView : View {
     private let icon : String
     private let title : String
     
@@ -287,7 +287,7 @@ private struct UploadButtonView : View {
     }
 }
 
-private struct Triangle: Shape {
+struct Triangle: Shape {
   func path(in rect: CGRect) -> Path {
     var path = Path()
     

@@ -9,9 +9,9 @@ import SwiftUI
 import SDWebImageSwiftUI
 
 struct ChatListView: View {
-    @Binding var offset: CGFloat
     @Binding var selectedTab: String
     @Binding var isScrollEnabled: Bool
+    @Binding var showMessanger: Bool
     @StateObject var chatViewModel : ChatViewModel = ChatViewModel()
     @State private var searchText : String = String()
     @State var isShowing: Bool = false
@@ -24,7 +24,7 @@ struct ChatListView: View {
     
     var body: some View {
         VStack(spacing: 0) {
-            HeaderBar(offset: $offset, presentNewChat: $presentNewChat)
+            HeaderBar(showMessanger: $showMessanger, presentNewChat: $presentNewChat)
             VStack {
                 HStack(spacing: 0) {
                     Image(systemName: "magnifyingglass")
@@ -133,12 +133,12 @@ struct ChatListView: View {
 }
 
 private struct HeaderBar: View {
-    @Binding var offset: CGFloat
+    @Binding var showMessanger: Bool
     @Binding var presentNewChat: Bool?
     var body: some View{
         HStack {
             Button(action: {
-                offset = 0
+                showMessanger = false
             }) {
                 Image("circle.left.arrow.black")
                     .resizable()

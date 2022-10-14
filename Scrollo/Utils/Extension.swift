@@ -71,9 +71,11 @@ extension UIApplication {
 extension View {
     var ignoreDefaultHeaderBar: some View {
         self
-            .navigationBarTitle("")
-            .navigationBarBackButtonHidden(true)
+            .navigationBarTitleDisplayMode(.inline)
             .navigationBarHidden(true)
+//            .navigationBarHidden(true)
+//            .navigationBarTitle(Text("Scrollo"))
+//            .edgesIgnoringSafeArea([.top, .bottom])
     }
 }
 
@@ -120,5 +122,14 @@ extension View {
                 endPoint: .bottomTrailing)
         )
             .mask(self)
+    }
+}
+
+extension View {
+    
+    func hasScrollEnabled(_ value: Bool) -> some View {
+        self.onAppear {
+            UITableView.appearance().isScrollEnabled = value
+        }
     }
 }
